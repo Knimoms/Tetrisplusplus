@@ -104,7 +104,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Tetris++\Libraries\GLFW\include;$(SolutionDir)Tetris++\Libraries\glew-2.1.0\include;$(SolutionDir)Tetris+Source\HeaderLibraries;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Tetris++\Source;$(SolutionDir)Tetris++\Source\Game\Public;$(SolutionDir)Tetris++\Source\Graphics\Public;$(SolutionDir)Tetris++\Libraries\GLFW\include;$(SolutionDir)Tetris++\Libraries\glew-2.1.0\include;$(SolutionDir)Tetris++\Source\HeaderLibraries</AdditionalIncludeDirectories>
+      <AdditionalHeaderUnitDependencies>
+      </AdditionalHeaderUnitDependencies>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -121,7 +123,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Tetris++\Libraries\GLFW\include;$(SolutionDir)Tetris++\Libraries\glew-2.1.0\include;$(SolutionDir)Tetris+Source\HeaderLibraries;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Tetris++\Source;$(SolutionDir)Tetris++\Source\Game\Public;$(SolutionDir)Tetris++\Source\Graphics\Public;$(SolutionDir)Tetris++\Libraries\GLFW\include;$(SolutionDir)Tetris++\Libraries\glew-2.1.0\include;$(SolutionDir)Tetris++\Source\HeaderLibraries</AdditionalIncludeDirectories>
+      <AdditionalHeaderUnitDependencies>
+      </AdditionalHeaderUnitDependencies>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,7 +137,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Graphics\Private\ElementBuffer.cpp" />
     <ClCompile Include="Source\Main.cpp" />
+    <ClCompile Include="Source\Graphics\Private\VertexBuffer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Graphics\Public\ElementBuffer.h" />
+    <ClInclude Include="Source\Graphics\Public\VertexBuffer.h" />
+    <ClInclude Include="Source\Graphics\Public\VertexBufferLayout.h" />
+    <ClInclude Include="Source\Macros.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
