@@ -1,7 +1,7 @@
 #include "ElementBuffer.h"
 #include <GL/glew.h>
 
-ElementBuffer::ElementBuffer(std::vector<unsigned int>& indices)
+ElementBuffer::ElementBuffer(const std::vector<unsigned int>& indices)
 	:m_Count(indices.size())
 {
 	glGenBuffers(1, &m_RendererID);

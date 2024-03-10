@@ -9,7 +9,7 @@ private:
 	unsigned int m_Count;
 
 public:
-	ElementBuffer(std::vector<unsigned int>& indices);
+	ElementBuffer(const std::vector<unsigned int>& indices);
 	~ElementBuffer();
 
 	void Bind() const;
