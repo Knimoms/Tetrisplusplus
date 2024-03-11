@@ -137,6 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Graphics\Private\Renderer.cpp" />
     <ClCompile Include="Source\Graphics\Private\Shader.cpp" />
     <ClCompile Include="Source\Graphics\Private\Mesh.cpp" />
     <ClCompile Include="Source\Graphics\Private\ElementBuffer.cpp" />
@@ -145,6 +146,7 @@
     <ClCompile Include="Source\Graphics\Private\VertexArray.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Graphics\Public\Renderer.h" />
     <ClInclude Include="Source\Graphics\Public\Shader.h" />
     <ClInclude Include="Source\Graphics\Public\Mesh.h" />
     <ClInclude Include="Source\Graphics\Public\ElementBuffer.h" />
