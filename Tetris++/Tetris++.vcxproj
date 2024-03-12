@@ -24,6 +24,7 @@
     <ProjectGuid>{ee9cbe2b-4653-4f80-8fbe-962c94ebb54f}</ProjectGuid>
     <RootNamespace>Tetris</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Tetris++</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -40,13 +41,13 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -137,15 +138,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Game\Private\Game.cpp" />
     <ClCompile Include="Source\Graphics\Private\Renderer.cpp" />
     <ClCompile Include="Source\Graphics\Private\Shader.cpp" />
     <ClCompile Include="Source\Graphics\Private\Mesh.cpp" />
     <ClCompile Include="Source\Graphics\Private\ElementBuffer.cpp" />
-    <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Graphics\Private\VertexBuffer.cpp" />
     <ClCompile Include="Source\Graphics\Private\VertexArray.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Game\Public\Game.h" />
     <ClInclude Include="Source\Graphics\Public\Renderer.h" />
     <ClInclude Include="Source\Graphics\Public\Shader.h" />
     <ClInclude Include="Source\Graphics\Public\Mesh.h" />
@@ -154,10 +156,6 @@
     <ClInclude Include="Source\Graphics\Public\VertexBufferLayout.h" />
     <ClInclude Include="Source\Macros.h" />
     <ClInclude Include="Source\Graphics\Public\VertexArray.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Shader\Default.frag" />
-    <None Include="Resources\Shader\Default.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

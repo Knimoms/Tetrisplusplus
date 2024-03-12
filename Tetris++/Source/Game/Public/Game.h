@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Renderer.h"
+#include <string>
+struct GLFWwindow;
 
 class Game
 {
@@ -11,5 +12,9 @@ private:
 
 public:
 	Game(const std::string& gameName, int windowWidth, int windowHeight);
+
+	void Run();
+	GLFWwindow* CreateWindow();
+	bool SetupOpenGLSettings(); //returns if Setup was successful
 };
 
