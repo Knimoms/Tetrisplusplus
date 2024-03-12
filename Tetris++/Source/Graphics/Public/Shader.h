@@ -26,6 +26,13 @@ public:
 
 	void SetUniformMat4f(const std::string& name, const glm::mat4& matrix) const;
 
+	static Shader& GetDefaultShader()
+	{
+		static Shader defaultShader("Resources/Shader/Default.vert", "Resources/Shader/Default.frag");
+
+		return defaultShader;
+	}
+
 	void Bind() const;
 	static void Unbind();
 

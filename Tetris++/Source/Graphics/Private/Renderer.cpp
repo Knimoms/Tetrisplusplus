@@ -3,10 +3,7 @@
 
 #include "GL/glew.h"
 
-Renderer::Renderer()
-	:m_DefaultShader("Resources/Shader/Default.vert", "Resources/Shader/Default.frag")
-{
-}
+void Renderer::DrawMesh(const Mesh& inMesh, const Transform& inTransform, Shader& inShader)
 
 void Renderer::DrawMesh(const Mesh& inMesh)
 {
