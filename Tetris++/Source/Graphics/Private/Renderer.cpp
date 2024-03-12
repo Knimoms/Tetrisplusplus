@@ -1,23 +1,16 @@
 #include "Renderer.h"
-#include "Mesh.h"
 
 #include "GL/glew.h"
 
 void Renderer::DrawMesh(const Mesh& inMesh, const Transform& inTransform, Shader& inShader)
-
-void Renderer::DrawMesh(const Mesh& inMesh)
-{
-	inMesh.Bind();
-	m_DefaultShader.Bind();
-	glDrawElements(GL_TRIANGLES, inMesh.GetElementBuffer().GetCount(), GL_UNSIGNED_INT, nullptr);
-	Mesh::Unbind();
-	Shader::Unbind();
-}
-
-void Renderer::DrawMesh(const Mesh& inMesh, const Shader& inShader)
 {
 	inMesh.Bind();
 	inShader.Bind();
+
+	glm::mat4 model = glm::translate(glm::mat4(1), { inTransform.position, 0.f });
+	model = glm::rotate(model, glm::radians(inTransform.rotation), { 0, 0, 1 });
+	glm::mat4 mvp = m_ProjectionMatrix * model;
+	inShader.SetUniformMat4f("u_MVP", mvp);
 	glDrawElements(GL_TRIANGLES, inMesh.GetElementBuffer().GetCount(), GL_UNSIGNED_INT, nullptr);
 	Mesh::Unbind();
 	Shader::Unbind();
