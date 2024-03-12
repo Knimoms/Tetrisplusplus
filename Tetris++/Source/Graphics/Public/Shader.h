@@ -24,6 +24,8 @@ public:
 	Shader(const std::string& vertexFilepath, const std::string& fragmentFilepath);
 	~Shader();
 
+	void SetUniformMat4f(const std::string& name, const glm::mat4& matrix) const;
+
 	void Bind() const;
 	static void Unbind();
 

@@ -21,6 +21,11 @@ Shader::~Shader()
 	glDeleteProgram(m_RendererID);
 }
 
+void Shader::SetUniformMat4f(const std::string& name, const glm::mat4& matrix) const
+{
+	glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]);
+}
+
 void Shader::Bind() const
 {
 	glUseProgram(m_RendererID);
