@@ -1,9 +1,8 @@
 #include "Game.h"
+#include "Renderer.h"
 
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
-
-#include <iostream>
 
 Game::Game(const std::string& gameName, int windowWidth, int windowHeight)
 	:m_GameName(gameName), m_WindowWidth(windowWidth), m_WindowHeight(windowHeight)
@@ -12,7 +11,20 @@ Game::Game(const std::string& gameName, int windowWidth, int windowHeight)
 
 void Game::Run()
 {
+	GLFWwindow* window = CreateWindow();
+	SetupOpenGLSettings();
 
+	Renderer renderer;
+
+	while (!glfwWindowShouldClose(window))
+	{
+		renderer.Clear();
+
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+	}
+
+	glfwTerminate();
 }
 
 bool Game::SetupOpenGLSettings()
