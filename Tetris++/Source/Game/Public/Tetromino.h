@@ -14,7 +14,7 @@ private:
 public:
 	Tetromino(bool (&collisionMat)[5][5], const glm::vec3& color, InputHandler& inputHandler);
 
-	Mesh GenerateMeshFromMat5(bool(&collisionMat)[5][5], const glm::vec3& color);
+	static Mesh GenerateMeshFromMat5(bool(&collisionMat)[5][5], const glm::vec3& color);
 
 	virtual void SetupInput() override;
 
