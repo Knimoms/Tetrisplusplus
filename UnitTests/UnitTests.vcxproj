@@ -57,7 +57,7 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>$(SolutionDir)Tetris++\Source;$(SolutionDir)Tetris++\Source\Game\Public;$(SolutionDir)Tetris++\Source\Graphics\Public;$(SolutionDir)Tetris++\Libraries\GLFW\include;$(SolutionDir)Tetris++\Libraries\glew-2.1.0\include;$(SolutionDir)Tetris++\Source\HeaderLibraries</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Tetris++\Source;$(SolutionDir)Tetris++\Source\Framework\Public;$(SolutionDir)Tetris++\Source\Game\Public;$(SolutionDir)Tetris++\Source\Framework\Graphics\Public;$(SolutionDir)Tetris++\Libraries\GLFW\include;$(SolutionDir)Tetris++\Libraries\glew-2.1.0\include;$(SolutionDir)Tetris++\Source\Framework\HeaderLibraries</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -90,7 +90,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>$(SolutionDir)Tetris++\Source;$(SolutionDir)Tetris++\Source\Game\Public;$(SolutionDir)Tetris++\Source\Graphics\Public;$(SolutionDir)Tetris++\Libraries\GLFW\include;$(SolutionDir)Tetris++\Libraries\glew-2.1.0\include;$(SolutionDir)Tetris++\Source\HeaderLibraries</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Tetris++\Source;$(SolutionDir)Tetris++\Source\Framework\Public;$(SolutionDir)Tetris++\Source\Game\Public;$(SolutionDir)Tetris++\Source\Framework\Graphics\Public;$(SolutionDir)Tetris++\Libraries\GLFW\include;$(SolutionDir)Tetris++\Libraries\glew-2.1.0\include;$(SolutionDir)Tetris++\Source\Framework\HeaderLibraries</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
