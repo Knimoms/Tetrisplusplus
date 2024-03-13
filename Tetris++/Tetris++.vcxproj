@@ -108,6 +108,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Tetris++\Source;$(SolutionDir)Tetris++\Source\Game\Public;$(SolutionDir)Tetris++\Source\Graphics\Public;$(SolutionDir)Tetris++\Libraries\GLFW\include;$(SolutionDir)Tetris++\Libraries\glew-2.1.0\include;$(SolutionDir)Tetris++\Source\HeaderLibraries</AdditionalIncludeDirectories>
       <AdditionalHeaderUnitDependencies>
       </AdditionalHeaderUnitDependencies>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,6 +128,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Tetris++\Source;$(SolutionDir)Tetris++\Source\Game\Public;$(SolutionDir)Tetris++\Source\Graphics\Public;$(SolutionDir)Tetris++\Libraries\GLFW\include;$(SolutionDir)Tetris++\Libraries\glew-2.1.0\include;$(SolutionDir)Tetris++\Source\HeaderLibraries</AdditionalIncludeDirectories>
       <AdditionalHeaderUnitDependencies>
       </AdditionalHeaderUnitDependencies>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,7 +140,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Game\Private\InputHandler.cpp" />
     <ClCompile Include="Source\Game\Private\Game.cpp" />
+    <ClCompile Include="Source\Game\Private\InputReceiver.cpp" />
     <ClCompile Include="Source\Graphics\Private\Renderer.cpp" />
     <ClCompile Include="Source\Graphics\Private\Shader.cpp" />
     <ClCompile Include="Source\Graphics\Private\Mesh.cpp" />
@@ -148,7 +152,9 @@
     <ClCompile Include="Source\Game\Private\Tetromino.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Game\Public\InputHandler.h" />
     <ClInclude Include="Source\Game\Public\Game.h" />
+    <ClInclude Include="Source\Game\Public\InputReceiver.h" />
     <ClInclude Include="Source\Graphics\Public\Renderer.h" />
     <ClInclude Include="Source\Graphics\Public\Shader.h" />
     <ClInclude Include="Source\Graphics\Public\Mesh.h" />
