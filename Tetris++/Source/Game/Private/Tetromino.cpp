@@ -70,8 +70,8 @@ void Tetromino::Rotate()
 {
 	float newRotation = m_Transform.rotation;
 	newRotation -= 90.f;
-	if (newRotation > 360.f)
-		newRotation -= 360.f;
+	if (newRotation < -360.f)
+		newRotation += 360.f;
 
-	m_Transform.rotation -= newRotation;
+	m_Transform.rotation = newRotation;
 }
