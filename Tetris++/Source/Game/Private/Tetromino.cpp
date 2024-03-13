@@ -6,6 +6,37 @@ Tetromino::Tetromino(const std::vector<Vertex> vertices, const std::vector<unsig
 	for (int i = 0; i < 5; ++i)
 		for (int j = 0; j < 5; ++j)
 			m_CollisionMatrix[i][j] = collisionMat[i][j];
+Mesh Tetromino::GenerateMeshFromMat5(bool(&collisionMat)[5][5], const glm::vec3& color)
+{
+	std::vector<Vertex> vertices;
+	std::vector<unsigned int> indices;
+
+	for (int i = 0; i < 5; ++i)
+		for (int j = 0; j < 5; ++j)
+		{
+			if (!collisionMat[i][j])
+				continue;
+
+			float x = (float)(j - 2);
+			float y = (float)(i - 2);
+
+			const std::vector<glm::vec2>& cubePositions = Mesh::GetCubeVertPositions();
+			
+			int indexOffset = (int)vertices.size();
+			
+			for (int z = 0; z < 4; ++z)
+				vertices.push_back({ {cubePositions[z][0] + x, cubePositions[z][1] + y}, color});
+
+			const std::vector<unsigned int>& cubeIndices = Mesh::GetCubeIndices();
+
+			for (int z = 0; z < 6; ++z)
+				indices.push_back(cubeIndices[z] + indexOffset);
+			
+		}
+
+	return Mesh(vertices, indices);
+}
+
 }
 
 void Tetromino::MoveLeft()

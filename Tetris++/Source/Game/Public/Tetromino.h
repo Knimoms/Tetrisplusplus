@@ -11,6 +11,7 @@ private:
 
 public:
 	Tetromino(const std::vector<Vertex> vertices, const std::vector<unsigned int> indices, bool (&collisionMat)[5][5]);
+	Mesh GenerateMeshFromMat5(bool(&collisionMat)[5][5], const glm::vec3& color);
 
 	void MoveLeft();
 	void MoveRight();

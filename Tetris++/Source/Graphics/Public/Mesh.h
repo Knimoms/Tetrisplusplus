@@ -34,4 +34,28 @@ public:
 
 	void Bind() const;
 	static void Unbind();
+
+	static const std::vector<glm::vec2>& GetCubeVertPositions()
+	{
+		static std::vector<glm::vec2> positions
+		{
+			{ -0.5f, -0.5f},
+			{  0.5f, -0.5f},
+			{  0.5f,  0.5f},
+			{ -0.5f,  0.5f}
+		};
+
+		return positions;
+	}
+
+	static const std::vector<unsigned int>& GetCubeIndices()
+	{
+		static std::vector<unsigned int> indices
+		{
+			0, 1, 2,
+			2, 3, 0
+		};
+
+		return indices;
+	}
 };
