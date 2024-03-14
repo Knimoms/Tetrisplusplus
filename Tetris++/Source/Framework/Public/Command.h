@@ -10,8 +10,11 @@ public:
 	virtual void Execute(T) = 0;
 };
 
-template<typename T, typename U>
-class ObjectCommand : Command<U>
+/*
+* The first template argument states what class the object is, the second argument states what parameter type this command uses.
+*/
+template<class T, typename U>
+class ObjectCommand : public Command<U>
 {
 private:
 	typedef void (T::* MemberFunction)(U);
@@ -32,11 +35,11 @@ public:
 	}
 };
 
-template<typename T>
-class ObjectCommand<T, void> : Command<void>
+template<class T>
+class ObjectCommand<T, void> : public Command<void>
 {
 private:
-	typedef void (T::* MemberFunction)(U);
+	typedef void (T::* MemberFunction)(void);
 
 	T* m_Object;
 	MemberFunction m_Method;
