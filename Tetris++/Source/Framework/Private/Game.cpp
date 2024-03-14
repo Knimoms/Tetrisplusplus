@@ -6,8 +6,7 @@
 #include "GLFW/glfw3.h"
 #include <chrono>
 
-Game::Game(const std::string& gameName, int windowWidth, int windowHeight)
-	:m_GameName(gameName), m_WindowWidth(windowWidth), m_WindowHeight(windowHeight)
+Game::Game()
 {
 }
 

@@ -8,15 +8,26 @@ struct GLFWwindow;
 
 class Game
 {
+public:
+	static Game& GetGameInstance()
+	{
+		static Game game;
+		return game;
+	}
+
 private:
-	std::string m_GameName;
-	int m_WindowWidth;
-	int m_WindowHeight;
+	std::string m_GameName = "Tetris++";
+	int m_WindowWidth = 500;
+	int m_WindowHeight = 1000;
 
 	Event<float> m_UpdateEvent;
 
+private:
+	Game();
+
 public:
-	Game(const std::string& gameName, int windowWidth, int windowHeight);
+	Game(Game const&) = delete;
+	void operator=(Game const&) = delete;
 
 	void Run();
 	GLFWwindow* CreateWindow();
