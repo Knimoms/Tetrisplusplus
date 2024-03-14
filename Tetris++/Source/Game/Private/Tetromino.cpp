@@ -1,7 +1,7 @@
 #include "Tetromino.h"
 #include "InputHandler.h"
 
-Tetromino::Tetromino(bool(&collisionMat)[5][5], const glm::vec3& color, InputHandler& inputHandler)
+Tetromino::Tetromino(bool collisionMat[5][5], const glm::vec3& color, InputHandler* inputHandler)
 	:m_Mesh(GenerateMeshFromMat5(collisionMat, color)), m_Transform({{5.5f, 0.5f}, 0.f}), InputReceiver(inputHandler)
 {
 	for (int i = 0; i < 5; ++i)
@@ -11,7 +11,7 @@ Tetromino::Tetromino(bool(&collisionMat)[5][5], const glm::vec3& color, InputHan
 	SetupInput();
 }
 
-Mesh Tetromino::GenerateMeshFromMat5(bool(&collisionMat)[5][5], const glm::vec3& color)
+Mesh Tetromino::GenerateMeshFromMat5(bool collisionMat[5][5], const glm::vec3& color)
 {
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;

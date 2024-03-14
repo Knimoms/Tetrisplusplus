@@ -9,12 +9,11 @@ private:
 	Mesh m_Mesh;
 	Transform m_Transform;
 	bool m_CollisionMatrix[5][5];
-	glm::vec3 m_Color;
 
 public:
-	Tetromino(bool (&collisionMat)[5][5], const glm::vec3& color, InputHandler& inputHandler);
+	Tetromino(bool collisionMat[5][5], const glm::vec3& color, InputHandler* inputHandler);
 
-	static Mesh GenerateMeshFromMat5(bool(&collisionMat)[5][5], const glm::vec3& color);
+	static Mesh GenerateMeshFromMat5(bool collisionMat[5][5], const glm::vec3& color);
 
 	virtual void SetupInput() override;
 
