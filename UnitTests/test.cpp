@@ -5,9 +5,10 @@
 #include "GL/glew.h"
 #include "Mesh.h"
 #include "Renderer.h"
+#include "Shader.h"
 
 TEST(GraphicsTest, OpenGLSetupTest) {
-	Game game("servus", 10, 10);
+	Game& game = Game::GetGameInstance();
 	EXPECT_TRUE(!!game.CreateWindow());
 	EXPECT_TRUE(game.SetupOpenGLSettings());
 
@@ -23,8 +24,10 @@ TEST(GraphicsTest, OpenGLSetupTest) {
 
 	Mesh triangle(triangleVertices, triangleIndices);
 
+	Transform transform = { {0, 0}, 0 };
+
 	Renderer renderer;
-	renderer.DrawMesh(triangle);
+	renderer.AddRenderEntry(&triangle, &transform, &Shader::GetDefaultShader());
 
 	EXPECT_EQ(GL_NO_ERROR, glGetError());
 }
