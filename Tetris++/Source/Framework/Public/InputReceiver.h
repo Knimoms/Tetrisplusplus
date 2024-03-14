@@ -5,7 +5,7 @@
 class InputReceiver
 {
 private:
-	std::vector<int> m_OccupiedKeys;
+	std::vector<std::tuple<int, KeyAction>> m_OccupiedInputs;
 	InputHandler& m_InputHandler;
 
 public:
@@ -15,12 +15,11 @@ public:
 	virtual void RemoveInput();
 
 	inline InputHandler& GetInputHandler() const { return m_InputHandler; }
-	void AddOccupiedKey(int key);
 
 	template<typename T>
-	void AddInput(int key, T* object, void (T::* memberFunction)(void))
+	void AddInput(int key, KeyAction executeOn, T* inObject, void (T::* inMethod)(void))
 	{
-		m_InputHandler.AddInput(key, object, memberFunction);
-		m_OccupiedKeys.push_back(key);
+		m_InputHandler.AddInput(key, executeOn, inObject, inMethod);
+		m_OccupiedInputs.push_back({ key, executeOn });
 	}
 };
