@@ -6,30 +6,32 @@ InputHandler::InputHandler(GLFWwindow* inWindow)
 {
 }
 
-void InputHandler::RemoveInput(int key)
+void InputHandler::RemoveInput(int key, KeyAction executeOn)
 {
-	free(m_KeyFunctions[key]);
+	std::vector<KeyCommand>::iterator position = std::find_if(m_KeyCommands.begin(), m_KeyCommands.end(), 
+		[key, executeOn](const KeyCommand& keycommand) -> bool { return (keycommand.key == key) && (keycommand.executeAction == executeOn) ; });
 
-	m_KeyFunctions.erase(key);
+	m_KeyCommands.erase(position);
+
 }
 
-void InputHandler::Tick(float DeltaSeconds)
+#include <iostream>
+void InputHandler::KeyboardInputTick()
 {
-	for (auto [key, value] : m_KeyFunctions)
+	size_t keyCommandsNum = m_KeyCommands.size();
+
+	for (int i = 0; i < keyCommandsNum; ++i)
 	{
-		if (!value)
-			continue;
-		
-		if (!glfwGetKey(m_InputWindow, key))
-		{
-			m_PressedKeys[key] = false;
-			continue;
-		}
+		int key = m_KeyCommands[i].key;
+		bool currentlyPressed = glfwGetKey(m_InputWindow, key);
+		std::cout << currentlyPressed << std::endl;
 
-		if (m_PressedKeys[key])
+		if (currentlyPressed == m_PressedKeys[key])
 			continue;
 
-		m_PressedKeys[key] = true;
-		value->CallFunction();
+		m_PressedKeys[key] = currentlyPressed;
+
+		if (currentlyPressed == (bool)m_KeyCommands[i].executeAction)
+			m_KeyCommands[i].Command->Execute();
 	}
 }

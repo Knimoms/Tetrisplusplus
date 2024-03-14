@@ -44,10 +44,10 @@ Mesh Tetromino::GenerateMeshFromMat5(bool(&collisionMat)[5][5], const glm::vec3&
 
 void Tetromino::SetupInput()
 {
-	AddInput(65, this, &Tetromino::MoveLeft);
-	AddInput(68, this, &Tetromino::MoveRight);
-	AddInput(83, this, &Tetromino::Fall);
-	AddInput(87, this, &Tetromino::Rotate);
+	AddInput(65, KeyAction::PRESSED, this, &Tetromino::MoveLeft);
+	AddInput(68, KeyAction::PRESSED, this, &Tetromino::MoveRight);
+	AddInput(83, KeyAction::PRESSED, this, &Tetromino::Fall);
+	AddInput(87, KeyAction::PRESSED, this, &Tetromino::Rotate);
 
 }
 

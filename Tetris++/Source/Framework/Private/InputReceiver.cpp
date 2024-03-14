@@ -12,13 +12,8 @@ InputReceiver::~InputReceiver()
 
 void InputReceiver::RemoveInput()
 {
-	size_t occupiedKeysNum = m_OccupiedKeys.size();
+	size_t occupiedKeysNum = m_OccupiedInputs.size();
 
 	for (int i = 0; i < occupiedKeysNum; ++i)
-		m_InputHandler.RemoveInput(m_OccupiedKeys[i]);
-}
-
-void InputReceiver::AddOccupiedKey(int key)
-{
-	m_OccupiedKeys.push_back(key);
+		m_InputHandler.RemoveInput(std::get<0>(m_OccupiedInputs[i]),std::get<1>(m_OccupiedInputs[i]));
 }
