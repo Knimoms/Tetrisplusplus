@@ -1,25 +1,26 @@
 #pragma once
 
-#include <vector>
 #include "Command.h"
 
+#include <vector>
+#include <memory>
 /*
 * The template argument states what parameter type this Event supports.
 */
 template<typename T>
 class Event {
 private:
-	std::vector<Command<T>*> m_CommandsOnEmit;
+	std::vector<std::shared_ptr<Command<T>>> m_CommandsOnEmit;
 
 public:
-	void AddCommand(Command<T>* addingCommand)
+	void AddCommand(std::shared_ptr<Command<T>> addingCommand)
 	{
 		m_CommandsOnEmit.push_back(addingCommand);
 	}
 
-	void RemoveCommand(Command<T>* removingCommand)
+	void RemoveCommand(std::shared_ptr<Command<T>> removingCommand)
 	{
-		typename std::vector<Command<T>*>::iterator position = std::find(m_CommandsOnEmit.begin(), m_CommandsOnEmit.end(), removingCommand);
+		typename std::vector<std::shared_ptr<Command<T>>>::iterator position = std::find(m_CommandsOnEmit.begin(), m_CommandsOnEmit.end(), removingCommand);
 		m_CommandsOnEmit.erase(position);
 	}
 
