@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "Renderer.h"
+#include "InputHandler.h"
 
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
@@ -13,11 +14,12 @@ void Game::Run()
 {
 	GLFWwindow* window = CreateWindow();
 	SetupOpenGLSettings();
-
+	InputHandler inputHandler(window);
 	Renderer renderer;
 
 	while (!glfwWindowShouldClose(window))
 	{
+		inputHandler.KeyboardInputTick();
 		renderer.Clear();
 
 		glfwSwapBuffers(window);
