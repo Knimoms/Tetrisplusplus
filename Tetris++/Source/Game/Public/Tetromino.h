@@ -1,9 +1,10 @@
 #pragma once
 
 #include "InputReceiver.h"
+#include "GameObject.h"
 #include "Mesh.h"
 
-class Tetromino : InputReceiver
+class Tetromino : public GameObject, InputReceiver
 {
 private:
 	Mesh m_Mesh;
@@ -16,6 +17,8 @@ public:
 	static Mesh GenerateMeshFromMat5(bool collisionMat[5][5], const glm::vec3& color);
 
 	virtual void SetupInput() override;
+
+	virtual void Update(float DeltaTimeSeconds) override;
 
 	void MoveLeft();
 	void MoveRight();

@@ -75,3 +75,8 @@ void Tetromino::Rotate()
 
 	m_Transform.rotation = newRotation;
 }
+
+void Tetromino::Update(float DeltaTimeSeconds)
+{
+
+}
