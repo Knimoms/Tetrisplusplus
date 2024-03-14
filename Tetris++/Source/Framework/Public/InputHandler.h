@@ -12,7 +12,7 @@ enum KeyAction
 
 struct KeyCommand
 {
-	std::unique_ptr<Command<void>> Command;
+	std::shared_ptr<Command<void>> Command;
 	KeyAction executeAction;
 };
 
@@ -34,7 +34,7 @@ public:
 	void AddInput(int key, T* object, void (T::* memberFunction)(void), KeyAction executeOn)
 	{
 		Command<T>* newInput = new Command<>(object, memberFunction);
-		m_KeyFunctions[key] = { std::unique_ptr<Command<void>>, executeOn };
+		m_KeyFunctions[key] = { std::shared_ptr<Command<void>>, executeOn };
 		m_PressedKeys[key] = false;
 	}
 
