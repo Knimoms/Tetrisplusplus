@@ -14,23 +14,27 @@ void Game::Run()
 {
 	GLFWwindow* window = CreateWindow();
 	SetupOpenGLSettings();
-	InputHandler inputHandler(window);
+
 	Renderer renderer;
-	
+	m_Renderer = &renderer;
+
+	InputHandler inputHandler(window);
+	m_InputHandler = &inputHandler;
+
 	auto lastTimestamp = std::chrono::high_resolution_clock::now();
 
 	while (!glfwWindowShouldClose(window))
 	{
-		inputHandler.KeyboardInputTick();
-
 		auto currentTimestamp = std::chrono::high_resolution_clock::now();
 		float deltaTimeSeconds = (float)std::chrono::duration_cast<std::chrono::duration<double>>(currentTimestamp - lastTimestamp).count();
 
+		m_InputHandler->KeyboardInputTick();
 		m_UpdateEvent.Emit(deltaTimeSeconds);
 
 		lastTimestamp = currentTimestamp;
 
-		renderer.Clear();
+		m_Renderer->Clear();
+		m_Renderer->RenderFrame();
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
