@@ -15,7 +15,6 @@ void InputHandler::RemoveInput(int key, KeyAction executeOn)
 
 }
 
-#include <iostream>
 void InputHandler::KeyboardInputTick()
 {
 	size_t keyCommandsNum = m_KeyCommands.size();
@@ -24,7 +23,6 @@ void InputHandler::KeyboardInputTick()
 	{
 		int key = m_KeyCommands[i].key;
 		bool currentlyPressed = glfwGetKey(m_InputWindow, key);
-		std::cout << currentlyPressed << std::endl;
 
 		if (currentlyPressed == m_PressedKeys[key])
 			continue;
