@@ -4,6 +4,7 @@
 
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
+#include <chrono>
 
 Game::Game(const std::string& gameName, int windowWidth, int windowHeight)
 	:m_GameName(gameName), m_WindowWidth(windowWidth), m_WindowHeight(windowHeight)
@@ -16,10 +17,20 @@ void Game::Run()
 	SetupOpenGLSettings();
 	InputHandler inputHandler(window);
 	Renderer renderer;
+	
+	auto lastTimestamp = std::chrono::high_resolution_clock::now();
 
 	while (!glfwWindowShouldClose(window))
 	{
 		inputHandler.KeyboardInputTick();
+
+		auto currentTimestamp = std::chrono::high_resolution_clock::now();
+		float deltaTimeSeconds = (float)std::chrono::duration_cast<std::chrono::duration<double>>(currentTimestamp - lastTimestamp).count();
+
+		m_UpdateEvent.Emit(deltaTimeSeconds);
+
+		lastTimestamp = currentTimestamp;
+
 		renderer.Clear();
 
 		glfwSwapBuffers(window);
