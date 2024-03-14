@@ -152,6 +152,7 @@
     <ClCompile Include="Source\Game\Private\Tetromino.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Framework\Public\Command.h" />
     <ClInclude Include="Source\Game\Public\Game.h" />
     <ClInclude Include="Source\Framework\Public\InputHandler.h" />
     <ClInclude Include="Source\Framework\Public\InputReceiver.h" />
