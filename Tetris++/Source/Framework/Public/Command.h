@@ -1,10 +1,13 @@
 #pragma once
 
+/*
+* The template argument states what parameter type this command uses.
+*/
 template<typename T>
 class Command
 {
 public:
-	virtual void Execute(<T>) = 0;
+	virtual void Execute(T) = 0;
 };
 
 template<typename T, typename U>
