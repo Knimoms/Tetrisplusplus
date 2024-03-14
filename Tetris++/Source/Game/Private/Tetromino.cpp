@@ -1,5 +1,8 @@
 #include "Tetromino.h"
 #include "InputHandler.h"
+#include "Game.h"
+#include "Renderer.h"
+#include "Shader.h"
 
 Tetromino::Tetromino(bool collisionMat[5][5], const glm::vec3& color, InputHandler* inputHandler)
 	:m_Mesh(GenerateMeshFromMat5(collisionMat, color)), m_Transform({{5.5f, 0.5f}, 0.f}), InputReceiver(inputHandler)
@@ -9,6 +12,12 @@ Tetromino::Tetromino(bool collisionMat[5][5], const glm::vec3& color, InputHandl
 			m_CollisionMatrix[i][j] = collisionMat[i][j];
 
 	SetupInput();
+	Game::GetGameInstance().GetRenderer()->AddRenderEntry(&m_Mesh, &m_Transform, &Shader::GetDefaultShader());
+}
+
+Tetromino::~Tetromino()
+{
+	Game::GetGameInstance().GetRenderer()->RemoveRenderEntry(&m_Mesh);
 }
 
 Mesh Tetromino::GenerateMeshFromMat5(bool collisionMat[5][5], const glm::vec3& color)
