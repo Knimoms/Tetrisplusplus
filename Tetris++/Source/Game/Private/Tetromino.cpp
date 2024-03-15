@@ -95,7 +95,8 @@ void Tetromino::Fall()
 {
 	glm::vec2 newPosition = m_Transform.position;
 	newPosition[1] += 1.f;
-	SetPosition(newPosition);
+	if(!SetPosition(newPosition))
+		m_DroppedEvent.Emit();
 }
 
 void Tetromino::Rotate()

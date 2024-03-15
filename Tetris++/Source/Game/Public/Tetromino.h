@@ -3,6 +3,7 @@
 #include "InputReceiver.h"
 #include "GameObject.h"
 #include "Mesh.h"
+#include "Event.h"
 
 class Tetromino : public GameObject, InputReceiver
 {
@@ -19,6 +20,8 @@ private:
 
 	float m_HoldingInputForSeconds = 0.f;
 	float m_LastInputSecondsAgo = 0.f;
+
+	Event<void> m_DroppedEvent;
 
 public:
 	Tetromino(bool shapeMatrix[5][5], const glm::vec3& color);
@@ -57,6 +60,7 @@ public:
 	inline const Mesh& GetMesh() const { return m_Mesh; }
 	inline const Transform& GetTransform() const { return m_Transform; }
 	inline const bool (&GetShapeMatrix() const)[5][5] { return m_ShapeMatrix; }
+	inline Event<void>& GetDroppedEvent() { return m_DroppedEvent; }
 
 };
 
