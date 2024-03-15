@@ -12,7 +12,7 @@ private:
 	bool m_CollisionMatrix[5][5];
 
 public:
-	Tetromino(bool collisionMat[5][5], const glm::vec3& color, InputHandler* inputHandler);
+	Tetromino(bool collisionMat[5][5], const glm::vec3& color);
 	~Tetromino();
 
 	static Mesh GenerateMeshFromMat5(bool collisionMat[5][5], const glm::vec3& color);

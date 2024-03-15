@@ -9,7 +9,7 @@ private:
 	InputHandler* m_InputHandler;
 
 public:
-	InputReceiver(InputHandler* inputHandler);
+	InputReceiver();
 	~InputReceiver();
 	virtual void SetupInput() = 0;
 	virtual void RemoveInput();

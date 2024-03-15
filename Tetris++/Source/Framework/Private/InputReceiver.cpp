@@ -1,7 +1,8 @@
 #include "InputReceiver.h"
+#include "Game.h"
 
-InputReceiver::InputReceiver(InputHandler* inputHandler)
-	:m_InputHandler(inputHandler)
+InputReceiver::InputReceiver()
+	:m_InputHandler(Game::GetGameInstance().GetInputHandler())
 {
 }
 
