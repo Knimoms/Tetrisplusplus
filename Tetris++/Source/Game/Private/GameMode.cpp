@@ -77,7 +77,11 @@ GameMode::GameMode()
 
 void GameMode::Update(float DeltaTimeSeconds)
 {
-	
+	if (!b_ActiveTetromino)
+	{
+		m_CurrentTetromino = SpawnRandomTetromino();
+		b_ActiveTetromino = true;
+	}
 }
 
 std::shared_ptr<Tetromino> GameMode::SpawnRandomTetromino()
