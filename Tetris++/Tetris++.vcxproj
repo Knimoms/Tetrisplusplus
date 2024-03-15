@@ -140,7 +140,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Framework\Private\GameMode.cpp" />
+    <ClCompile Include="Source\Game\Private\GameMode.cpp" />
     <ClCompile Include="Source\Framework\Private\GameObject.cpp" />
     <ClCompile Include="Source\Framework\Private\Game.cpp" />
     <ClCompile Include="Source\Framework\Private\InputHandler.cpp" />
@@ -154,7 +154,7 @@
     <ClCompile Include="Source\Game\Private\Tetromino.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Framework\Public\GameMode.h" />
+    <ClInclude Include="Source\Game\Public\GameMode.h" />
     <ClInclude Include="Source\Framework\Public\Event.h" />
     <ClInclude Include="Source\Framework\Public\Command.h" />
     <ClInclude Include="Source\Framework\Public\GameObject.h" />
