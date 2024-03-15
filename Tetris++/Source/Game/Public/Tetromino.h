@@ -38,7 +38,7 @@ public:
 	void Fall();
 	void Rotate();
 
-	void SetPosition(const glm::vec2& inPosition);
+	bool SetPosition(const glm::vec2& inPosition);
 
 	bool ValidateCurrentTransform();
 
@@ -63,4 +63,3 @@ public:
 	inline Event<void>& GetDroppedEvent() { return m_DroppedEvent; }
 
 };
-

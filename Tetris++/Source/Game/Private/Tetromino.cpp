@@ -126,15 +126,16 @@ void Tetromino::Rotate()
 		m_BlockOffsets[i] = oldBlockOffsets[i];
 }
 
-void Tetromino::SetPosition(const glm::vec2& inPosition)
+bool Tetromino::SetPosition(const glm::vec2& inPosition)
 {
 	glm::vec2 oldPosition = m_Transform.position;
 	m_Transform.position = inPosition;
 
 	if (ValidateCurrentTransform())
-		return;
+		return true;
 
 	m_Transform.position = oldPosition;
+	return false;
 }
 
 bool Tetromino::ValidateCurrentTransform()
