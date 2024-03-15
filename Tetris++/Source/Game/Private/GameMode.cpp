@@ -82,5 +82,6 @@ void GameMode::Update(float DeltaTimeSeconds)
 
 std::shared_ptr<Tetromino> GameMode::SpawnRandomTetromino()
 {
-	
+	int i = m_RNG();
+	return SpawnGameObject<Tetromino>(m_AllTetrominoShapes[i].shape, m_AllTetrominoShapes[i].color);
 }
