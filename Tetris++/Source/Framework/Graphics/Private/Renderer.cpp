@@ -30,7 +30,7 @@ void Renderer::DrawRenderEntry(RenderEntry& renderEntry)
 
 void Renderer::AddRenderEntry(Mesh* inMesh, Transform* inTransform, Shader* inShader)
 {
-	m_RenderEntries.push_back({ inMesh, inTransform, inShader });
+	m_RenderEntries.push_back({ inMesh, inTransform? inTransform : &Transform::ZeroTransform, inShader? inShader : &Shader::GetDefaultShader() });
 }
 
 void Renderer::RemoveRenderEntry(Mesh* inMesh)
