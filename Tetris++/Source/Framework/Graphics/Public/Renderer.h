@@ -17,7 +17,7 @@ class Renderer
 {
 private:
 	glm::vec3 m_BackgroundColor = { 0.f, 0.f, 0.f };
-	glm::mat4 m_ProjectionMatrix = glm::ortho(0.f, 10.f, 20.f, 0.f, -1.f, 1.f);
+	glm::mat4 m_ProjectionMatrix = glm::ortho(-0.5f, 9.5f, 19.5f, -0.5f, -1.f, 1.f);
 	std::vector<RenderEntry> m_RenderEntries;
 
 public:

@@ -5,7 +5,7 @@
 #include "Shader.h"
 
 Tetromino::Tetromino(bool collisionMat[5][5], const glm::vec3& color)
-	:m_Mesh(GenerateMeshFromMat5(collisionMat, color)), m_Transform({{5.5f, 0.5f}, 0.f}), InputReceiver()
+	:m_Mesh(GenerateMeshFromMat5(shapeMatrix, color)), m_Transform({{5.f, 0.f}, 0.f}), InputReceiver()
 {
 	for (int i = 0; i < 5; ++i)
 		for (int j = 0; j < 5; ++j)
