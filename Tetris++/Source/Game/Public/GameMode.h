@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "Command.h"
 
 #include "glm/glm.hpp"
 #include <memory>
@@ -25,12 +26,14 @@ private:
 	CappedRNG m_RNG;
 	bool b_ActiveTetromino = false;
 
+	std::shared_ptr<Command<void>> m_TetrominoDroppedCommand;
+
 public:
 	GameMode();
-
+	virtual void Init() override;
 	virtual void Update(float DeltaTimeSeconds) override;
-
 	std::shared_ptr<Tetromino> SpawnRandomTetromino();
 
-};
+	void CurrentTetrominoDropped();
 
+};
