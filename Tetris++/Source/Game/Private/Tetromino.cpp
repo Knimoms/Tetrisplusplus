@@ -4,12 +4,22 @@
 #include "Renderer.h"
 #include "Shader.h"
 
-Tetromino::Tetromino(bool collisionMat[5][5], const glm::vec3& color)
+Tetromino::Tetromino(bool shapeMatrix[5][5], const glm::vec3& color)
 	:m_Mesh(GenerateMeshFromMat5(shapeMatrix, color)), m_Transform({{5.f, 0.f}, 0.f}), InputReceiver()
 {
+	int blockOffsetsIndex = 0;
+
 	for (int i = 0; i < 5; ++i)
 		for (int j = 0; j < 5; ++j)
-			m_CollisionMatrix[i][j] = collisionMat[i][j];
+		{
+			m_ShapeMatrix[i][j] = shapeMatrix[i][j];
+
+			if(!shapeMatrix[i][j] || (i == 2) && (j == 2))
+				continue;
+
+			m_BlockOffsets[blockOffsetsIndex] = {j - 2, i - 2};
+			++blockOffsetsIndex;
+		}
 
 	SetupInput();
 	Game::GetGameInstance().GetRenderer()->AddRenderEntry(&m_Mesh, &m_Transform, &Shader::GetDefaultShader());
@@ -28,7 +38,7 @@ Mesh Tetromino::GenerateMeshFromMat5(bool collisionMat[5][5], const glm::vec3& c
 	for (int i = 0; i < 5; ++i)
 		for (int j = 0; j < 5; ++j)
 		{
-			if (!collisionMat[i][j])
+			if (!shapeMatrix[i][j])
 				continue;
 
 			float x = (float)(j - 2);

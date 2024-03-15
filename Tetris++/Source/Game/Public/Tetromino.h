@@ -9,7 +9,8 @@ class Tetromino : public GameObject, InputReceiver
 private:
 	Mesh m_Mesh;
 	Transform m_Transform;
-	bool m_CollisionMatrix[5][5];
+	bool m_ShapeMatrix[5][5];
+	glm::vec2 m_BlockOffsets[3];
 
 	bool b_MovingLeft = false;
 	bool b_MovingRight = false;
@@ -20,10 +21,10 @@ private:
 	float m_LastInputSecondsAgo = 0.f;
 
 public:
-	Tetromino(bool collisionMat[5][5], const glm::vec3& color);
+	Tetromino(bool shapeMatrix[5][5], const glm::vec3& color);
 	~Tetromino();
 
-	static Mesh GenerateMeshFromMat5(bool collisionMat[5][5], const glm::vec3& color);
+	static Mesh GenerateMeshFromMat5(bool shapeMatrix[5][5], const glm::vec3& color);
 
 	virtual void SetupInput() override;
 
@@ -48,7 +49,7 @@ public:
 
 	inline const Mesh& GetMesh() const { return m_Mesh; }
 	inline const Transform& GetTransform() const { return m_Transform; }
-	inline const bool (&GetCollisionMatrix() const)[5][5] { return m_CollisionMatrix; }
+	inline const bool (&GetShapeMatrix() const)[5][5] { return m_ShapeMatrix; }
 
 };
 
