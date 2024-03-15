@@ -27,9 +27,10 @@ void InputHandler::KeyboardInputTick()
 		if (currentlyPressed == m_PressedKeys[key])
 			continue;
 
-		m_PressedKeys[key] = currentlyPressed;
-
 		if (currentlyPressed == (bool)m_KeyCommands[i].executeAction)
+		{
+			m_PressedKeys[key] = currentlyPressed;
 			m_KeyCommands[i].Command->Execute();
+		}
 	}
 }

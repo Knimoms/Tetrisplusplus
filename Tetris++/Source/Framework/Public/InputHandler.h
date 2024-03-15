@@ -3,6 +3,8 @@
 #include "Command.h"
 
 #include <memory>
+#include <unordered_map>
+#include <string>
 
 enum KeyAction
 {
@@ -16,9 +18,6 @@ struct KeyCommand
 	KeyAction executeAction;
 	std::shared_ptr<Command<void>> Command;
 };
-
-#include <unordered_map>
-#include <string>
 
 struct GLFWwindow;
 
