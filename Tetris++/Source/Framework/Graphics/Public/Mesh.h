@@ -10,6 +10,8 @@ struct Transform
 {
 	glm::vec2 position = { 0, 0 };
 	float rotation = 0.f;
+
+	static Transform ZeroTransform;
 };
 
 class Mesh

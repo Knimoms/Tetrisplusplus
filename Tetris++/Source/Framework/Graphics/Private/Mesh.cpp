@@ -1,6 +1,8 @@
 #include "Mesh.h"
 #include "VertexBufferLayout.h"
 
+Transform Transform::ZeroTransform = { {0, 0}, 0 };
+
 Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices)
 	:m_Vertices(vertices), m_Indices(indices), m_VertexBuffer(vertices), m_ElementBuffer(indices)
 {
