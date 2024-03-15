@@ -30,7 +30,7 @@ Tetromino::~Tetromino()
 	Game::GetGameInstance().GetRenderer()->RemoveRenderEntry(&m_Mesh);
 }
 
-Mesh Tetromino::GenerateMeshFromMat5(bool collisionMat[5][5], const glm::vec3& color)
+Mesh Tetromino::GenerateMeshFromMat5(bool shapeMatrix[5][5], const glm::vec3& color)
 {
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
@@ -79,27 +79,95 @@ void Tetromino::SetupInput()
 
 void Tetromino::MoveLeft()
 {
-	m_Transform.position[0] -= 1.f;
+	glm::vec2 newPosition = m_Transform.position;
+	newPosition[0] -= 1.f;
+	SetPosition(newPosition);
 }
 
 void Tetromino::MoveRight()
 {
-	m_Transform.position[0] += 1.f;
+	glm::vec2 newPosition = m_Transform.position;
+	newPosition[0] += 1.f;
+	SetPosition(newPosition);
 }
 
 void Tetromino::Fall()
 {
-	m_Transform.position[1] += 1.f;
+	glm::vec2 newPosition = m_Transform.position;
+	newPosition[1] += 1.f;
+	SetPosition(newPosition);
 }
 
 void Tetromino::Rotate()
 {
-	float newRotation = m_Transform.rotation;
+	float oldRotation = m_Transform.rotation;
+	float newRotation = oldRotation;
+
 	newRotation -= 90.f;
 	if (newRotation < -360.f)
 		newRotation += 360.f;
 
 	m_Transform.rotation = newRotation;
+
+	glm::vec2 oldBlockOffsets[3];
+
+	for (int i = 0; i < 3; ++i)
+		oldBlockOffsets[i] = m_BlockOffsets[i];
+
+
+	RotateBlockOffsetsCCW();
+
+	if (ValidateCurrentTransform())
+		return;
+
+	m_Transform.rotation = oldRotation;
+	for (int i = 0; i < 3; ++i)
+		m_BlockOffsets[i] = oldBlockOffsets[i];
+}
+
+void Tetromino::SetPosition(const glm::vec2& inPosition)
+{
+	glm::vec2 oldPosition = m_Transform.position;
+	m_Transform.position = inPosition;
+
+	if (ValidateCurrentTransform())
+		return;
+
+	m_Transform.position = oldPosition;
+}
+
+bool Tetromino::ValidateCurrentTransform()
+{
+	if (m_Transform.position.y > 19 || m_Transform.position.x < 0 || m_Transform.position.x > 9)
+		return false;
+
+	for (int i = 0; i < 3; i++)
+		if (m_Transform.position.y + m_BlockOffsets[i][1] > 19 || m_Transform.position.x + m_BlockOffsets[i][0] < 0 || m_Transform.position.x + m_BlockOffsets[i][0] > 9)
+			return false;
+
+	return true;
+}
+
+void Tetromino::RotateBlockOffsetsCCW()
+{
+	for (int i = 0; i < 3; ++i)
+	{
+		float x = m_BlockOffsets[i][0];
+		float y = m_BlockOffsets[i][1];
+
+		m_BlockOffsets[i] = { y , 0 - x };
+	}
+}
+
+void Tetromino::RotateBlockOffsetsCW()
+{
+	for (int i = 0; i < 3; ++i)
+	{
+		float x = m_BlockOffsets[i][0];
+		float y = m_BlockOffsets[i][1];
+
+		m_BlockOffsets[i] = { 0 - y, x };
+	}
 }
 
 void Tetromino::MoveLeft_Pressed()

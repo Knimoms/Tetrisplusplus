@@ -35,6 +35,13 @@ public:
 	void Fall();
 	void Rotate();
 
+	void SetPosition(const glm::vec2& inPosition);
+
+	bool ValidateCurrentTransform();
+
+	void RotateBlockOffsetsCCW();
+	void RotateBlockOffsetsCW();
+
 	void MoveLeft_Pressed();
 	void MoveLeft_Released();
 
