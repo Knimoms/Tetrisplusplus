@@ -13,7 +13,12 @@ void DroppedBlocksContainer::AddTetromino(Tetromino* addingTetromino)
 	glm::vec2(&blockOffsets)[3] = addingTetromino->GetBlockOffsets();
 	
 	for (int i = 0; i < 3; ++i)
+	{
+		if(position[1] + blockOffsets[i][1] < 0)
+			continue;
+
 		m_ColorMatrix[(unsigned int)(position[1] + blockOffsets[i][1])][(unsigned int)(position[0] + blockOffsets[i][0])] = { 1.f, addingTetromino->GetColor() };
+	}
 
 	GenerateMesh();
 }
