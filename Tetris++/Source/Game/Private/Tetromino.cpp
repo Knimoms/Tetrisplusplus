@@ -9,20 +9,17 @@ Tetromino::Tetromino(bool shapeMatrix[5][5], const glm::vec3& color)
 	SetMesh(GenerateMeshFromMat5(shapeMatrix, color));
 	m_Transform = { {5.f, 0.f}, 0.f };
 
-	int blockOffsetsIndex = 0;
+	SetBlockOffsetsWithMat5(shapeMatrix);
 
-	for (int i = 0; i < 5; ++i)
-		for (int j = 0; j < 5; ++j)
-		{
-			m_ShapeMatrix[i][j] = shapeMatrix[i][j];
+	SetupInput();
+}
 
-			if(!shapeMatrix[i][j] || (i == 2) && (j == 2))
-				continue;
+Tetromino::Tetromino(std::shared_ptr<Mesh> mesh, bool shapeMatrix[5][5], const glm::vec3& color)
+{
+	SetMesh(mesh);
+	m_Transform = { {5.f, 0.f}, 0.f };
 
-			m_BlockOffsets[blockOffsetsIndex] = {j - 2, i - 2};
-			++blockOffsetsIndex;
-		}
-
+	SetBlockOffsetsWithMat5(shapeMatrix);
 
 	SetupInput();
 }
@@ -122,6 +119,23 @@ void Tetromino::Rotate()
 	m_Transform.rotation = oldRotation;
 	for (int i = 0; i < 3; ++i)
 		m_BlockOffsets[i] = oldBlockOffsets[i];
+}
+
+void Tetromino::SetBlockOffsetsWithMat5(bool matrix[5][5])
+{
+	int blockOffsetsIndex = 0;
+
+	for (int i = 0; i < 5; ++i)
+		for (int j = 0; j < 5; ++j)
+		{
+			m_ShapeMatrix[i][j] = matrix[i][j];
+
+			if (!matrix[i][j] || (i == 2) && (j == 2))
+				continue;
+
+			m_BlockOffsets[blockOffsetsIndex] = { j - 2, i - 2 };
+			++blockOffsetsIndex;
+		}
 }
 
 bool Tetromino::SetPosition(const glm::vec2& inPosition)

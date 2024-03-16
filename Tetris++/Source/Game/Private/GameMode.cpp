@@ -16,7 +16,7 @@ GameMode::GameMode()
 			 0, 1, 1, 1, 1,
 			 0, 0, 0, 0, 0,
 			 0, 0, 0, 0, 0},
-			{0.f, 240.f / 255.f, 0.f}
+			{0.f, 240.f / 255.f, 240.f / 255.f}
 		}),
 		ShapeColorCombination(
 		{
@@ -74,6 +74,8 @@ GameMode::GameMode()
 		})
 	};
 
+	for (int i = 0; i < 7; ++i)
+		m_AllTetrominoMeshes.push_back(Tetromino::GenerateMeshFromMat5(m_AllTetrominoShapes[i].shape, m_AllTetrominoShapes[i].color));
 }
 
 void GameMode::Init()
@@ -95,7 +97,7 @@ void GameMode::Update(float DeltaTimeSeconds)
 std::shared_ptr<Tetromino> GameMode::SpawnRandomTetromino()
 {
 	int i = m_RNG();
-	auto spawnedTetromino = SpawnGameObject<Tetromino>(m_AllTetrominoShapes[i].shape, m_AllTetrominoShapes[i].color);
+	auto spawnedTetromino = SpawnGameObject<Tetromino>(m_AllTetrominoMeshes[i], m_AllTetrominoShapes[i].shape, m_AllTetrominoShapes[i].color);
 	spawnedTetromino->GetDroppedEvent().AddCommand(m_TetrominoDroppedCommand);
 
 	return spawnedTetromino;

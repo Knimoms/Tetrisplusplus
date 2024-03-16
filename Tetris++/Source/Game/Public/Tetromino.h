@@ -23,8 +23,7 @@ private:
 
 public:
 	Tetromino(bool shapeMatrix[5][5], const glm::vec3& color);
-
-	static std::shared_ptr<Mesh> GenerateMeshFromMat5(bool shapeMatrix[5][5], const glm::vec3& color);
+	Tetromino(std::shared_ptr<Mesh> mesh, bool shapeMatrix[5][5], const glm::vec3& color);
 
 	virtual void SetupInput() override;
 
@@ -35,10 +34,7 @@ public:
 	void Fall();
 	void Rotate();
 
-	bool SetPosition(const glm::vec2& inPosition);
-
-	bool ValidateCurrentTransform();
-
+public:
 	void RotateBlockOffsetsCCW();
 	void RotateBlockOffsetsCW();
 
@@ -54,7 +50,14 @@ public:
 	void Rotate_Pressed();
 	void Rotate_Released();
 
+public:
+	void SetBlockOffsetsWithMat5(bool matrix[5][5]);
+
+	bool SetPosition(const glm::vec2& inPosition);
+	bool ValidateCurrentTransform();
+
 	inline const bool (&GetShapeMatrix() const)[5][5] { return m_ShapeMatrix; }
 	inline Event<void>& GetDroppedEvent() { return m_DroppedEvent; }
 
+	static std::shared_ptr<Mesh> GenerateMeshFromMat5(bool shapeMatrix[5][5], const glm::vec3& color);
 };

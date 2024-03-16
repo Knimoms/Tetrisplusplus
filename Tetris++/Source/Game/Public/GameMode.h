@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "Command.h"
+#include "Mesh.h"
 
 #include "glm/glm.hpp"
 #include <memory>
@@ -23,6 +24,7 @@ class GameMode : public GameObject
 private:
 	std::shared_ptr<Tetromino> m_CurrentTetromino;
 	std::vector<ShapeColorCombination> m_AllTetrominoShapes;
+	std::vector<std::shared_ptr<Mesh>> m_AllTetrominoMeshes;
 	CappedRNG m_RNG;
 	bool b_ActiveTetromino = false;
 
