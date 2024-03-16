@@ -17,6 +17,7 @@ struct KeyCommand
 	int key;
 	KeyAction executeAction;
 	std::shared_ptr<Command<void>> command;
+	bool wasPressedOnce = false;
 };
 
 struct GLFWwindow;
@@ -42,7 +43,8 @@ public:
 
 		m_KeyCommands.push_back({ owner, key, executeOn, std::make_shared<ObjectCommand<T, void>>(inObject, inMethod)});
 			
-		m_PressedKeys[key] = false;
+		if(!m_PressedKeys.contains(key))
+			m_PressedKeys[key] = false;
 	}
 
 	template<typename T>
@@ -57,5 +59,7 @@ public:
 	void RemoveInputs(void* owner);
 
 	void KeyboardInputTick();
+
+	void Clear();
 
 };

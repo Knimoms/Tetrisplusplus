@@ -27,7 +27,6 @@ void InputHandler::RemoveInputs(void* owner)
 	std::vector<KeyCommand>::iterator position;
 	while((position = GetFirstInputPosition(owner)) != m_KeyCommands.end())
 		m_KeyCommands.erase(position);
-
 }
 
 void InputHandler::KeyboardInputTick()
@@ -39,17 +38,28 @@ void InputHandler::KeyboardInputTick()
 		int key = m_KeyCommands[i].key;
 		bool currentlyPressed = glfwGetKey(m_InputWindow, key);
 
+		if (currentlyPressed && m_KeyCommands[i].executeAction && !m_KeyCommands[i].wasPressedOnce)
+		{
+			m_KeyCommands[i].wasPressedOnce = true;
+			m_KeyCommands[i].command->Execute();
+			continue;
+		}
+
 		if (currentlyPressed == m_PressedKeys[key])
 			continue;
 
 		if (currentlyPressed != (bool)m_KeyCommands[i].executeAction)
 			continue;
 		
-
 		m_KeyCommands[i].command->Execute();
 	}
 
 	for (auto [key, value] : m_PressedKeys)
 		m_PressedKeys[key] = glfwGetKey(m_InputWindow, key);
+}
 
+void InputHandler::Clear()
+{
+	m_PressedKeys.clear();
+	m_KeyCommands.clear();
 }
