@@ -10,6 +10,7 @@
 #include <functional>
 
 class Tetromino;
+class DroppedBlocksContainer;
 
 struct ShapeColorCombination
 {
@@ -22,6 +23,7 @@ typedef std::_Binder<std::_Unforced, std::uniform_int_distribution<int>, std::mt
 class GameMode : public GameObject
 {
 private:
+	std::shared_ptr<DroppedBlocksContainer> m_DroppedBlocksContainer;
 	std::shared_ptr<Tetromino> m_CurrentTetromino;
 	std::vector<ShapeColorCombination> m_AllTetrominoShapes;
 	std::vector<std::shared_ptr<Mesh>> m_AllTetrominoMeshes;

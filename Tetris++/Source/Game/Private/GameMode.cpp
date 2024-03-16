@@ -1,5 +1,6 @@
 #include "GameMode.h"
 #include "Tetromino.h"
+#include "DroppedBlocksContainer.h"
 #include "Event.h"
 
 #include <chrono>
@@ -81,6 +82,7 @@ GameMode::GameMode()
 void GameMode::Init()
 {
 	m_TetrominoDroppedCommand = std::shared_ptr<Command<void>>(new ObjectCommand<GameMode, void>(this, &GameMode::CurrentTetrominoDropped));
+	m_DroppedBlocksContainer = SpawnGameObject<DroppedBlocksContainer>();
 	GameObject::Init();
 }
 
@@ -105,5 +107,6 @@ std::shared_ptr<Tetromino> GameMode::SpawnRandomTetromino()
 
 void GameMode::CurrentTetrominoDropped()
 {
+	m_DroppedBlocksContainer->AddTetromino(m_CurrentTetromino.get());
 	m_CurrentTetromino = SpawnRandomTetromino();
 }
