@@ -49,3 +49,8 @@ void DroppedBlocksContainer::GenerateMesh()
 
 	SetMesh(std::make_shared<Mesh>(vertices, indices));
 }
+
+bool DroppedBlocksContainer::IsBlockAtPosition(int x, int y)
+{
+	return m_ColorMatrix[y][x][0];
+}

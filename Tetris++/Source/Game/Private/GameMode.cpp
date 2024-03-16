@@ -99,7 +99,7 @@ void GameMode::Update(float DeltaTimeSeconds)
 std::shared_ptr<Tetromino> GameMode::SpawnRandomTetromino()
 {
 	int i = m_RNG();
-	auto spawnedTetromino = SpawnGameObject<Tetromino>(m_AllTetrominoMeshes[i], m_AllTetrominoShapes[i].shape, m_AllTetrominoShapes[i].color);
+	auto spawnedTetromino = SpawnGameObject<Tetromino>(m_AllTetrominoMeshes[i], m_AllTetrominoShapes[i].shape, m_AllTetrominoShapes[i].color, m_DroppedBlocksContainer.get());
 	spawnedTetromino->GetDroppedEvent().AddCommand(m_TetrominoDroppedCommand);
 
 	return spawnedTetromino;

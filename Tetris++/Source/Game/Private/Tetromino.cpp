@@ -147,12 +147,20 @@ bool Tetromino::SetPosition(const glm::vec2& inPosition)
 
 bool Tetromino::ValidateCurrentTransform()
 {
-	if (m_Transform.position.y > 19 || m_Transform.position.x < 0 || m_Transform.position.x > 9)
+	int x = (int)m_Transform.position.x;
+	int y = (int)m_Transform.position.y;
+
+	if (y > 19 || x < 0 || x > 9 || m_DroppedBlockContainer->IsBlockAtPosition(x, y))
 		return false;
 
 	for (int i = 0; i < 3; i++)
-		if (m_Transform.position.y + m_BlockOffsets[i][1] > 19 || m_Transform.position.x + m_BlockOffsets[i][0] < 0 || m_Transform.position.x + m_BlockOffsets[i][0] > 9)
+	{
+		int alteredX = x + m_BlockOffsets[i][0];
+		int alteredY = y + m_BlockOffsets[i][1];
+
+		if (alteredY > 19 || alteredX < 0 || alteredX > 9 || m_DroppedBlockContainer->IsBlockAtPosition(alteredX,alteredY))
 			return false;
+	}
 
 	return true;
 }

@@ -12,8 +12,8 @@ public:
 	virtual void Update(float DeltaTimeSeconds) override;
 
 	void AddTetromino(Tetromino* addingTetromino);
-
 	void GenerateMesh();
 
+	bool IsBlockAtPosition(int x, int y);
 };
 
