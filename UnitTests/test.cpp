@@ -27,7 +27,7 @@ TEST(GraphicsTest, OpenGLSetupTest) {
 	Transform transform = { {0, 0}, 0 };
 
 	Renderer renderer;
-	renderer.AddRenderEntry(&triangle, &transform, &Shader::GetDefaultShader());
+	renderer.AddRenderEntry(this, &triangle, &transform, &Shader::GetDefaultShader());
 
 	EXPECT_EQ(GL_NO_ERROR, glGetError());
 }
