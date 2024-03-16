@@ -2,6 +2,7 @@
 #include "Tetromino.h"
 #include "DroppedBlocksContainer.h"
 #include "Event.h"
+#include "Game.h"
 
 #include <chrono>
 
@@ -58,9 +59,9 @@ GameMode::GameMode()
 		ShapeColorCombination(
 		{
 			{0, 0, 0, 0, 0,
+			 0, 0, 1, 0, 0,
+			 0, 1, 1, 1, 0,
 			 0, 0, 0, 0, 0,
-			 0, 0, 1, 1, 0,
-			 0, 1, 1, 0, 0,
 			 0, 0, 0, 0, 0},
 			{160.f / 255.f, 0.f, 240.f / 255.f}
 		}),
@@ -84,15 +85,22 @@ void GameMode::Init()
 	m_TetrominoDroppedCommand = std::shared_ptr<Command<void>>(new ObjectCommand<GameMode, void>(this, &GameMode::CurrentTetrominoDropped));
 	m_DroppedBlocksContainer = SpawnGameObject<DroppedBlocksContainer>();
 	GameObject::Init();
+
+	m_CurrentTetromino = SpawnRandomTetromino();
+
 }
 
 void GameMode::Update(float DeltaTimeSeconds)
 {
-	if (!b_ActiveTetromino)
+	if(b_GameOver)
+		return;
+	
+	LastFallSecondsAgo += DeltaTimeSeconds;
+
+	if (LastFallSecondsAgo > 0.6f)
 	{
-		m_CurrentTetromino = SpawnRandomTetromino();
-		b_ActiveTetromino = true;
-		
+		m_CurrentTetromino->Fall();	
+		LastFallSecondsAgo = 0.f;
 	}
 }
 
@@ -107,6 +115,15 @@ std::shared_ptr<Tetromino> GameMode::SpawnRandomTetromino()
 
 void GameMode::CurrentTetrominoDropped()
 {
+	if (b_GameOver )
+		return;
+
 	m_DroppedBlocksContainer->AddTetromino(m_CurrentTetromino.get());
 	m_CurrentTetromino = SpawnRandomTetromino();
+
+	if (!m_CurrentTetromino->ValidateCurrentTransform())
+	{
+		b_GameOver = true;
+		Game::GetGameInstance().GetInputHandler()->Clear();
+	}
 }

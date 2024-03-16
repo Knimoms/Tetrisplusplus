@@ -6,7 +6,6 @@ InputReceiver::InputReceiver()
 {
 }
 
-
 InputReceiver::~InputReceiver()
 {
 	m_InputHandler->RemoveInputs(this);
