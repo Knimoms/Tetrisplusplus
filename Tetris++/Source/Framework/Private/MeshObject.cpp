@@ -9,14 +9,14 @@ MeshObject::~MeshObject()
 
 void MeshObject::Register()
 {
-	Game::GetGameInstance().GetRenderer()->AddRenderEntry(m_Mesh.get(), &m_Transform, nullptr);
+	Game::GetGameInstance().GetRenderer()->AddRenderEntry(this, m_Mesh.get(), &m_Transform, nullptr);
 	b_RegisteredMesh = true;
 }
 
 void MeshObject::Unregister()
 {
 	if (b_RegisteredMesh)
-		Game::GetGameInstance().GetRenderer()->RemoveRenderEntry(m_Mesh.get());
+		Game::GetGameInstance().GetRenderer()->RemoveRenderEntry(this);
 }
 
 void MeshObject::SetMesh(std::shared_ptr<Mesh> inMesh)

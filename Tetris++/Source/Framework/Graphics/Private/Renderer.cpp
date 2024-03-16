@@ -28,15 +28,15 @@ void Renderer::DrawRenderEntry(RenderEntry& renderEntry)
 	Shader::Unbind();
 }
 
-void Renderer::AddRenderEntry(Mesh* inMesh, Transform* inTransform, Shader* inShader)
+void Renderer::AddRenderEntry(void* inOwner, Mesh* inMesh, Transform* inTransform, Shader* inShader)
 {
-	m_RenderEntries.push_back({ inMesh, inTransform? inTransform : &Transform::ZeroTransform, inShader? inShader : &Shader::GetDefaultShader() });
+	m_RenderEntries.push_back({ inOwner, inMesh, inTransform? inTransform : &Transform::ZeroTransform, inShader? inShader : &Shader::GetDefaultShader() });
 }
 
-void Renderer::RemoveRenderEntry(Mesh* inMesh)
+void Renderer::RemoveRenderEntry(void* inOwner)
 {
 	auto position = std::find_if(m_RenderEntries.begin(), m_RenderEntries.end(),
-		[inMesh](const RenderEntry& renderEntry) -> bool { return renderEntry.mesh == inMesh; });
+		[inOwner](const RenderEntry& renderEntry) -> bool { return renderEntry.owner == inOwner; });
 
 	m_RenderEntries.erase(position);
 }

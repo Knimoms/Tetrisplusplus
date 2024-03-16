@@ -19,6 +19,7 @@ public:
 	void Register();
 	void Unregister();
 
+public:
 	inline std::shared_ptr<Mesh> GetMesh() const { return m_Mesh; }
 	void SetMesh(std::shared_ptr<Mesh> inMesh);
 

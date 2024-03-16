@@ -8,6 +8,7 @@ class Shader;
 
 struct RenderEntry
 {
+	void* owner;
 	Mesh* mesh;
 	Transform* transform;
 	Shader* shader;
@@ -24,8 +25,8 @@ public:
 	void RenderFrame();
 	void DrawRenderEntry(RenderEntry& renderEntry);
 
-	void AddRenderEntry(Mesh* inMesh, Transform* inTransform, Shader* inShader);
-	void RemoveRenderEntry(Mesh* inMesh);
+	void AddRenderEntry(void* inOwner, Mesh* inMesh, Transform* inTransform, Shader* inShader);
+	void RemoveRenderEntry(void* inOwner);
 
 	void SetBackgroundColor(const glm::vec3& inColor);
 	void Clear();
