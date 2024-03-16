@@ -43,8 +43,8 @@ TEST(TetrominoTest, MeshGenerationTest){
 		0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0
 	};
-	Mesh mesh = Tetromino::GenerateMeshFromMat5(collMat, { 0.f, 0.f, 0.f });
-	size_t verticesNum = mesh.GetVertices().size();
+	auto mesh = Tetromino::GenerateMeshFromMat5(collMat, { 0.f, 0.f, 0.f });
+	size_t verticesNum = mesh->GetVertices().size();
 	size_t cubePosNum = Mesh::GetCubeVertPositions().size();
 
 	bool sameSize = cubePosNum == verticesNum;
@@ -54,7 +54,7 @@ TEST(TetrominoTest, MeshGenerationTest){
 		return;
 
 	for (int i = 0; i < verticesNum; ++i)
-		EXPECT_EQ(Mesh::GetCubeVertPositions()[i], mesh.GetVertices()[i].position);
+		EXPECT_EQ(Mesh::GetCubeVertPositions()[i], mesh->GetVertices()[i].position);
 
-	EXPECT_EQ(Mesh::GetCubeIndices(), mesh.GetIndices());
+	EXPECT_EQ(Mesh::GetCubeIndices(), mesh->GetIndices());
 }
