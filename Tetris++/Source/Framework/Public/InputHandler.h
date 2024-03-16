@@ -29,12 +29,15 @@ private:
 	std::vector<KeyCommand> m_KeyCommands;
 	GLFWwindow* m_InputWindow;
 
+	bool b_InputCleared = true;
+
 public:
 	InputHandler(GLFWwindow* inWindow);
 
 	template<typename T>
 	void AddInput(void* owner, int key, KeyAction executeOn, T* inObject, void (T::*inMethod)(void))
 	{
+		b_InputCleared = false;
 		if (m_KeyCommands.end() != GetInputPosition(owner, key, executeOn))
 		{
 			ChangeInput(owner, key, executeOn, inObject, inMethod);

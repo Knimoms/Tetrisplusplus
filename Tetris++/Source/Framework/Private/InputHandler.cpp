@@ -35,6 +35,9 @@ void InputHandler::KeyboardInputTick()
 
 	for (int i = 0; i < keyCommandsNum; ++i)
 	{
+		if (b_InputCleared)
+			return;
+
 		int key = m_KeyCommands[i].key;
 		bool currentlyPressed = glfwGetKey(m_InputWindow, key);
 
@@ -60,6 +63,9 @@ void InputHandler::KeyboardInputTick()
 
 void InputHandler::Clear()
 {
+	b_InputCleared = true;
+
 	m_PressedKeys.clear();
 	m_KeyCommands.clear();
+
 }
