@@ -3,8 +3,9 @@
 #include "Game.h"
 #include "Renderer.h"
 #include "Shader.h"
+#include "DroppedBlocksContainer.h"
 
-Tetromino::Tetromino(bool shapeMatrix[5][5], const glm::vec3& color)
+Tetromino::Tetromino(bool shapeMatrix[5][5], const glm::vec3& color, DroppedBlocksContainer* droppedBlocksC)
 	:m_Color(color)
 {
 	SetMesh(GenerateMeshFromMat5(shapeMatrix, color));
@@ -15,8 +16,8 @@ Tetromino::Tetromino(bool shapeMatrix[5][5], const glm::vec3& color)
 	SetupInput();
 }
 
-Tetromino::Tetromino(std::shared_ptr<Mesh> mesh, bool shapeMatrix[5][5], const glm::vec3& color)
-	:m_Color(color)
+Tetromino::Tetromino(std::shared_ptr<Mesh> mesh, bool shapeMatrix[5][5], const glm::vec3& color, DroppedBlocksContainer* droppedBlocksC)
+	:m_Color(color), m_DroppedBlockContainer(droppedBlocksC)
 {
 	SetMesh(mesh);
 	m_Transform = { {5.f, 0.f}, 0.f };
@@ -38,8 +39,34 @@ void Tetromino::SetupInput()
 	AddInput(83, KeyAction::RELEASED, this, &Tetromino::MoveDown_Released);
 
 	AddInput(87, KeyAction::PRESSED, this, &Tetromino::Rotate_Pressed);
-	AddInput(87, KeyAction::RELEASED, this, &Tetromino::Rotate_Released);
 
+}
+
+void Tetromino::Update(float DeltaTimeSeconds)
+{
+	if (!(b_MovingLeft || b_MovingRight || b_MovingDown))
+	{
+		m_HoldingInputForSeconds = 0.f;
+		m_LastInputSecondsAgo = 0.f;
+		return;
+	}
+
+	m_HoldingInputForSeconds += DeltaTimeSeconds;
+	m_LastInputSecondsAgo += DeltaTimeSeconds;
+
+	if (m_HoldingInputForSeconds < 0.3f || m_LastInputSecondsAgo < 0.02f)
+		return;
+
+	m_LastInputSecondsAgo = 0.f;
+
+	if (b_MovingLeft)
+		MoveLeft();
+
+	if (b_MovingRight)
+		MoveRight();
+
+	if (b_MovingDown)
+		Fall();
 }
 
 void Tetromino::MoveLeft()
@@ -188,42 +215,6 @@ void Tetromino::MoveDown_Released()
 void Tetromino::Rotate_Pressed()
 {
 	Rotate();
-	b_Rotating = true;
-}
-
-void Tetromino::Rotate_Released()
-{
-	b_Rotating = false;
-}
-
-void Tetromino::Update(float DeltaTimeSeconds)
-{
-	if (!(b_MovingLeft || b_MovingRight || b_MovingDown || b_Rotating))
-	{
-		m_HoldingInputForSeconds = 0.f;
-		m_LastInputSecondsAgo = 0.f;
-		return;
-	}
-
-	m_HoldingInputForSeconds += DeltaTimeSeconds;
-	m_LastInputSecondsAgo += DeltaTimeSeconds;
-
-	if(m_HoldingInputForSeconds < 0.3f || m_LastInputSecondsAgo < 0.02f)
-		return;
-
-	m_LastInputSecondsAgo = 0.f;
-
-	if(b_MovingLeft)
-		MoveLeft();
-
-	if(b_MovingRight)
-		MoveRight();
-
-	if(b_MovingDown)
-		Fall();
-
-	if(b_Rotating)
-		Rotate();
 }
 
 std::shared_ptr<Mesh> Tetromino::GenerateMeshFromMat5(bool shapeMatrix[5][5], const glm::vec3& color)

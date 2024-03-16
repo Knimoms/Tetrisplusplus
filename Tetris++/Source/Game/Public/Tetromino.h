@@ -5,6 +5,8 @@
 #include "Mesh.h"
 #include "Event.h"
 
+class DroppedBlocksContainer;
+
 class Tetromino : public MeshObject, InputReceiver
 {
 private:
@@ -14,16 +16,17 @@ private:
 	bool b_MovingLeft = false;
 	bool b_MovingRight = false;
 	bool b_MovingDown = false;
-	bool b_Rotating = false;
+
+	DroppedBlocksContainer* m_DroppedBlockContainer;
 
 	float m_HoldingInputForSeconds = 0.f;
 	float m_LastInputSecondsAgo = 0.f;
 
 	Event<void> m_DroppedEvent;
-
+	
 public:
-	Tetromino(bool shapeMatrix[5][5], const glm::vec3& color);
-	Tetromino(std::shared_ptr<Mesh> mesh, bool shapeMatrix[5][5], const glm::vec3& color);
+	Tetromino(bool shapeMatrix[5][5], const glm::vec3& color, DroppedBlocksContainer* droppedBlocksC);
+	Tetromino(std::shared_ptr<Mesh> mesh, bool shapeMatrix[5][5], const glm::vec3& color, DroppedBlocksContainer* droppedBlocksC);
 
 	virtual void SetupInput() override;
 
