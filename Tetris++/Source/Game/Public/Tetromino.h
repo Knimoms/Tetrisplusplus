@@ -13,22 +13,23 @@ private:
 	glm::vec2 m_BlockOffsets[3];
 	glm::vec3 m_Color;
 
+	DroppedBlocksContainer* m_DroppedBlockContainer;
+	Event<void> m_DroppedEvent;
+
 	bool b_MovingLeft = false;
 	bool b_MovingRight = false;
 	bool b_MovingDown = false;
 
-	DroppedBlocksContainer* m_DroppedBlockContainer;
-
 	float m_HoldingInputForSeconds = 0.f;
 	float m_LastInputSecondsAgo = 0.f;
-
-	Event<void> m_DroppedEvent;
 	
 public:
 	Tetromino(bool shapeMatrix[5][5], const glm::vec3& color, DroppedBlocksContainer* droppedBlocksC);
 	Tetromino(std::shared_ptr<Mesh> mesh, bool shapeMatrix[5][5], const glm::vec3& color, DroppedBlocksContainer* droppedBlocksC);
 
 	virtual void SetupInput() override;
+
+	virtual void Init() override;
 
 	virtual void Update(float DeltaTimeSeconds) override;
 

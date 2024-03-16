@@ -9,22 +9,16 @@ Tetromino::Tetromino(bool shapeMatrix[5][5], const glm::vec3& color, DroppedBloc
 	:m_Color(color)
 {
 	SetMesh(GenerateMeshFromMat5(shapeMatrix, color));
-	m_Transform = { {5.f, 0.f}, 0.f };
-
 	SetBlockOffsetsWithMat5(shapeMatrix);
 
-	SetupInput();
 }
 
 Tetromino::Tetromino(std::shared_ptr<Mesh> mesh, bool shapeMatrix[5][5], const glm::vec3& color, DroppedBlocksContainer* droppedBlocksC)
 	:m_Color(color), m_DroppedBlockContainer(droppedBlocksC)
 {
 	SetMesh(mesh);
-	m_Transform = { {5.f, 0.f}, 0.f };
-
 	SetBlockOffsetsWithMat5(shapeMatrix);
 
-	SetupInput();
 }
 
 void Tetromino::SetupInput()
@@ -40,6 +34,14 @@ void Tetromino::SetupInput()
 
 	AddInput(87, KeyAction::PRESSED, this, &Tetromino::Rotate_Pressed);
 
+}
+
+void Tetromino::Init()
+{
+	m_Transform = { {5.f, 0.f}, 0.f };
+
+	SetupInput();
+	MeshObject::Init();
 }
 
 void Tetromino::Update(float DeltaTimeSeconds)
@@ -87,8 +89,10 @@ void Tetromino::Fall()
 {
 	glm::vec2 newPosition = m_Transform.position;
 	newPosition[1] += 1.f;
-	if(!SetPosition(newPosition))
+
+	if (!SetPosition(newPosition))
 		m_DroppedEvent.Emit();
+
 }
 
 void Tetromino::Rotate()
@@ -106,7 +110,6 @@ void Tetromino::Rotate()
 
 	for (int i = 0; i < 3; ++i)
 		oldBlockOffsets[i] = m_BlockOffsets[i];
-
 
 	RotateBlockOffsetsCW();
 
