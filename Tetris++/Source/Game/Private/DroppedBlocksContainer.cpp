@@ -52,5 +52,5 @@ void DroppedBlocksContainer::GenerateMesh()
 
 bool DroppedBlocksContainer::IsBlockAtPosition(int x, int y)
 {
-	return m_ColorMatrix[y][x][0];
+	return (x < 10 && x > -1 && y < 20 && y > -1)? m_ColorMatrix[y][x][0] : false;
 }
