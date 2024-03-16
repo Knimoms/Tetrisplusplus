@@ -96,9 +96,9 @@ void Tetromino::Rotate()
 	float oldRotation = m_Transform.rotation;
 	float newRotation = oldRotation;
 
-	newRotation -= 90.f;
-	if (newRotation < -360.f)
-		newRotation += 360.f;
+	newRotation += 90.f;
+	if (newRotation > 360.f)
+		newRotation += 0.f;
 
 	m_Transform.rotation = newRotation;
 
@@ -108,7 +108,7 @@ void Tetromino::Rotate()
 		oldBlockOffsets[i] = m_BlockOffsets[i];
 
 
-	RotateBlockOffsetsCCW();
+	RotateBlockOffsetsCW();
 
 	if (ValidateCurrentTransform())
 		return;
