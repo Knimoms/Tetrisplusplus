@@ -45,16 +45,16 @@ TEST(TetrominoTest, MeshGenerationTest){
 	};
 	auto mesh = Tetromino::GenerateMeshFromMat5(collMat, { 0.f, 0.f, 0.f });
 	size_t verticesNum = mesh->GetVertices().size();
-	size_t cubePosNum = Mesh::GetCubeVertPositions().size();
+	size_t cubeVertNum = Mesh::GetCubeVertices().size();
 
-	bool sameSize = cubePosNum == verticesNum;
+	bool sameSize = cubeVertNum == verticesNum;
 	EXPECT_TRUE(sameSize);
 
 	if (!sameSize)
 		return;
 
 	for (int i = 0; i < verticesNum; ++i)
-		EXPECT_EQ(Mesh::GetCubeVertPositions()[i], mesh->GetVertices()[i].position);
+		EXPECT_EQ(Mesh::GetCubeVertices()[i].position, mesh->GetVertices()[i].position);
 
 	EXPECT_EQ(Mesh::GetCubeIndices(), mesh->GetIndices());
 }

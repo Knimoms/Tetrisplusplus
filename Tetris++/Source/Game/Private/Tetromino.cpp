@@ -242,16 +242,24 @@ std::shared_ptr<Mesh> Tetromino::GenerateMeshFromMat5(bool shapeMatrix[5][5], co
 			float x = (float)(j - 2);
 			float y = (float)(i - 2);
 
-			const std::vector<glm::vec2>& cubePositions = Mesh::GetCubeVertPositions();
+			const std::vector<Vertex>& cubeVertices = Mesh::GetCubeVertices();
 
+			size_t cubeVerticesNum = cubeVertices.size();
 			int indexOffset = (int)vertices.size();
 
-			for (int z = 0; z < 4; ++z)
-				vertices.push_back({ {cubePositions[z][0] + x, cubePositions[z][1] + y}, color });
+			for (int z = 0; z < cubeVerticesNum; ++z)
+			{
+				Vertex newVertex = cubeVertices[z];
+				newVertex.position[0] += x;
+				newVertex.position[1] += y;
+				newVertex.color = color;
+				vertices.push_back(newVertex);
+			}
 
 			const std::vector<unsigned int>& cubeIndices = Mesh::GetCubeIndices();
+			size_t cubeIndicesNum = cubeIndices.size();
 
-			for (int z = 0; z < 6; ++z)
+			for (int z = 0; z < cubeIndicesNum; ++z)
 				indices.push_back(cubeIndices[z] + indexOffset);
 
 		}

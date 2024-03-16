@@ -34,15 +34,21 @@ void DroppedBlocksContainer::GenerateMesh()
 			if(!m_ColorMatrix[j][i][0])
 				continue;
 
-			const std::vector<glm::vec2>& cubePositions = Mesh::GetCubeVertPositions();
+			const std::vector<Vertex>& cubeVertices = Mesh::GetCubeVertices();
 
-			size_t cubePositionsNum = cubePositions.size();
+			size_t cubeVerticesNum = cubeVertices.size();
 			int indexOffset = (int)vertices.size();
 
 			glm::vec3 color = { m_ColorMatrix[j][i][1], m_ColorMatrix[j][i][2], m_ColorMatrix[j][i][3] };
 
-			for (int z = 0; z < cubePositionsNum; ++z)
-				vertices.push_back({ {cubePositions[z][0] + (float)i, cubePositions[z][1] + (float)j}, color});
+			for (int z = 0; z < cubeVerticesNum; ++z)
+			{
+				Vertex newVertex = cubeVertices[z];
+				newVertex.position[0] += (float)i;
+				newVertex.position[1] += (float)j;
+				newVertex.color = color;
+				vertices.push_back(newVertex);
+			}
 
 			const std::vector<unsigned int>& cubeIndices = Mesh::GetCubeIndices();
 			size_t cubeIndicesNum = cubeIndices.size();
