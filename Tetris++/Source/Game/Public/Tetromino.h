@@ -51,7 +51,6 @@ public:
 	void MoveDown_Released();
 
 	void Rotate_Pressed();
-	void Rotate_Released();
 
 public:
 
