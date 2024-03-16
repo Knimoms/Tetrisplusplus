@@ -1,15 +1,13 @@
 #pragma once
 
 #include "InputReceiver.h"
-#include "GameObject.h"
+#include "MeshObject.h"
 #include "Mesh.h"
 #include "Event.h"
 
-class Tetromino : public GameObject, InputReceiver
+class Tetromino : public MeshObject, InputReceiver
 {
 private:
-	Mesh m_Mesh;
-	Transform m_Transform;
 	bool m_ShapeMatrix[5][5];
 	glm::vec2 m_BlockOffsets[3];
 
@@ -25,9 +23,8 @@ private:
 
 public:
 	Tetromino(bool shapeMatrix[5][5], const glm::vec3& color);
-	~Tetromino();
 
-	static Mesh GenerateMeshFromMat5(bool shapeMatrix[5][5], const glm::vec3& color);
+	static std::shared_ptr<Mesh> GenerateMeshFromMat5(bool shapeMatrix[5][5], const glm::vec3& color);
 
 	virtual void SetupInput() override;
 
@@ -57,8 +54,6 @@ public:
 	void Rotate_Pressed();
 	void Rotate_Released();
 
-	inline const Mesh& GetMesh() const { return m_Mesh; }
-	inline const Transform& GetTransform() const { return m_Transform; }
 	inline const bool (&GetShapeMatrix() const)[5][5] { return m_ShapeMatrix; }
 	inline Event<void>& GetDroppedEvent() { return m_DroppedEvent; }
 

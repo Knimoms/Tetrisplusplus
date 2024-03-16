@@ -5,8 +5,10 @@
 #include "Shader.h"
 
 Tetromino::Tetromino(bool shapeMatrix[5][5], const glm::vec3& color)
-	:m_Mesh(GenerateMeshFromMat5(shapeMatrix, color)), m_Transform({{5.f, 0.f}, 0.f}), InputReceiver()
 {
+	SetMesh(GenerateMeshFromMat5(shapeMatrix, color));
+	m_Transform = { {5.f, 0.f}, 0.f };
+
 	int blockOffsetsIndex = 0;
 
 	for (int i = 0; i < 5; ++i)
@@ -21,16 +23,12 @@ Tetromino::Tetromino(bool shapeMatrix[5][5], const glm::vec3& color)
 			++blockOffsetsIndex;
 		}
 
+
 	SetupInput();
-	Game::GetGameInstance().GetRenderer()->AddRenderEntry(&m_Mesh, &m_Transform, &Shader::GetDefaultShader());
 }
 
-Tetromino::~Tetromino()
-{
-	Game::GetGameInstance().GetRenderer()->RemoveRenderEntry(&m_Mesh);
-}
 
-Mesh Tetromino::GenerateMeshFromMat5(bool shapeMatrix[5][5], const glm::vec3& color)
+std::shared_ptr<Mesh> Tetromino::GenerateMeshFromMat5(bool shapeMatrix[5][5], const glm::vec3& color)
 {
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
@@ -58,7 +56,7 @@ Mesh Tetromino::GenerateMeshFromMat5(bool shapeMatrix[5][5], const glm::vec3& co
 			
 		}
 
-	return Mesh(vertices, indices);
+	return std::make_shared<Mesh>(vertices, indices);
 }
 
 void Tetromino::SetupInput()
