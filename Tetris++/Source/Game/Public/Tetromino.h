@@ -8,8 +8,8 @@
 class Tetromino : public MeshObject, InputReceiver
 {
 private:
-	bool m_ShapeMatrix[5][5];
 	glm::vec2 m_BlockOffsets[3];
+	glm::vec3 m_Color;
 
 	bool b_MovingLeft = false;
 	bool b_MovingRight = false;
@@ -51,12 +51,15 @@ public:
 	void Rotate_Released();
 
 public:
+
 	void SetBlockOffsetsWithMat5(bool matrix[5][5]);
+	inline glm::vec2(&GetBlockOffsets())[3] { return m_BlockOffsets; }
+
+	inline const glm::vec3& GetColor() { return m_Color; }
 
 	bool SetPosition(const glm::vec2& inPosition);
 	bool ValidateCurrentTransform();
 
-	inline const bool (&GetShapeMatrix() const)[5][5] { return m_ShapeMatrix; }
 	inline Event<void>& GetDroppedEvent() { return m_DroppedEvent; }
 
 	static std::shared_ptr<Mesh> GenerateMeshFromMat5(bool shapeMatrix[5][5], const glm::vec3& color);

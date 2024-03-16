@@ -5,6 +5,7 @@
 #include "Shader.h"
 
 Tetromino::Tetromino(bool shapeMatrix[5][5], const glm::vec3& color)
+	:m_Color(color)
 {
 	SetMesh(GenerateMeshFromMat5(shapeMatrix, color));
 	m_Transform = { {5.f, 0.f}, 0.f };
@@ -15,6 +16,7 @@ Tetromino::Tetromino(bool shapeMatrix[5][5], const glm::vec3& color)
 }
 
 Tetromino::Tetromino(std::shared_ptr<Mesh> mesh, bool shapeMatrix[5][5], const glm::vec3& color)
+	:m_Color(color)
 {
 	SetMesh(mesh);
 	m_Transform = { {5.f, 0.f}, 0.f };
@@ -22,38 +24,6 @@ Tetromino::Tetromino(std::shared_ptr<Mesh> mesh, bool shapeMatrix[5][5], const g
 	SetBlockOffsetsWithMat5(shapeMatrix);
 
 	SetupInput();
-}
-
-
-std::shared_ptr<Mesh> Tetromino::GenerateMeshFromMat5(bool shapeMatrix[5][5], const glm::vec3& color)
-{
-	std::vector<Vertex> vertices;
-	std::vector<unsigned int> indices;
-
-	for (int i = 0; i < 5; ++i)
-		for (int j = 0; j < 5; ++j)
-		{
-			if (!shapeMatrix[i][j])
-				continue;
-
-			float x = (float)(j - 2);
-			float y = (float)(i - 2);
-
-			const std::vector<glm::vec2>& cubePositions = Mesh::GetCubeVertPositions();
-			
-			int indexOffset = (int)vertices.size();
-			
-			for (int z = 0; z < 4; ++z)
-				vertices.push_back({ {cubePositions[z][0] + x, cubePositions[z][1] + y}, color});
-
-			const std::vector<unsigned int>& cubeIndices = Mesh::GetCubeIndices();
-
-			for (int z = 0; z < 6; ++z)
-				indices.push_back(cubeIndices[z] + indexOffset);
-			
-		}
-
-	return std::make_shared<Mesh>(vertices, indices);
 }
 
 void Tetromino::SetupInput()
@@ -128,8 +98,6 @@ void Tetromino::SetBlockOffsetsWithMat5(bool matrix[5][5])
 	for (int i = 0; i < 5; ++i)
 		for (int j = 0; j < 5; ++j)
 		{
-			m_ShapeMatrix[i][j] = matrix[i][j];
-
 			if (!matrix[i][j] || (i == 2) && (j == 2))
 				continue;
 
@@ -256,4 +224,35 @@ void Tetromino::Update(float DeltaTimeSeconds)
 
 	if(b_Rotating)
 		Rotate();
+}
+
+std::shared_ptr<Mesh> Tetromino::GenerateMeshFromMat5(bool shapeMatrix[5][5], const glm::vec3& color)
+{
+	std::vector<Vertex> vertices;
+	std::vector<unsigned int> indices;
+
+	for (int i = 0; i < 5; ++i)
+		for (int j = 0; j < 5; ++j)
+		{
+			if (!shapeMatrix[i][j])
+				continue;
+
+			float x = (float)(j - 2);
+			float y = (float)(i - 2);
+
+			const std::vector<glm::vec2>& cubePositions = Mesh::GetCubeVertPositions();
+
+			int indexOffset = (int)vertices.size();
+
+			for (int z = 0; z < 4; ++z)
+				vertices.push_back({ {cubePositions[z][0] + x, cubePositions[z][1] + y}, color });
+
+			const std::vector<unsigned int>& cubeIndices = Mesh::GetCubeIndices();
+
+			for (int z = 0; z < 6; ++z)
+				indices.push_back(cubeIndices[z] + indexOffset);
+
+		}
+
+	return std::make_shared<Mesh>(vertices, indices);
 }
