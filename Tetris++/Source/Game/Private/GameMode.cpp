@@ -7,6 +7,7 @@
 #include "Game.h"
 
 #include <chrono>
+#include <iostream>
 
 std::vector<ShapeColorCombination> GameMode::m_AllTetrominoShapes =
 {
@@ -110,7 +111,7 @@ void GameMode::SetupInput()
 void GameMode::Init()
 {
 	m_TetrominoDroppedCommand = std::shared_ptr<Command<void>>(new ObjectCommand<GameMode, void>(this, &GameMode::CurrentTetrominoDropped));
-
+	std::cout << "Press SPACE to start the game" << std::endl;
 	GameObject::Init();
 }
 
@@ -142,6 +143,9 @@ void GameMode::StartGame()
 	m_Level = 1;
 	m_RowsCompletedThisLevel = 0;
 
+	system("CLS");
+	std::cout << "Score: " << m_Score << " Level: " << m_Level << std::endl;
+
 	AddTetrominoPreview();
 	AddTetrominoPreview();
 
@@ -167,8 +171,6 @@ void GameMode::AddTetrominoPreview()
 	m_TetrominoPreviews.push_back(std::make_shared<TetrominoPreview>(m_AllTetrominoMeshes[shapeIndex].get(), shapeIndex));
 }
 
-#include "iostream"
-
 void GameMode::DroppedContainerFinishedAdding(int completedRows)
 {
 	m_Score += BASESCORE_ADD * completedRows * (float)pow(MULTIROW_SCORE_MULTIPLIER, completedRows);
@@ -178,7 +180,7 @@ void GameMode::DroppedContainerFinishedAdding(int completedRows)
 		LevelUp();
 
 	system("CLS");
-	std::cout << "Score: " <<  m_Score << " Level: " << m_Level << " Completed Rows: " << m_RowsCompletedThisLevel << std::endl;
+	std::cout << "Score: " <<  m_Score << " Level: " << m_Level << std::endl;
 	SpawnTetromino();
 }
 
@@ -195,6 +197,12 @@ void GameMode::SpawnTetromino()
 	if (!newTetromino->ValidateCurrentTransform())
 	{
 		b_GameOver = true;
+
+		system("CLS");
+		std::cout << "GAMEOVER" << std::endl;
+		std::cout << "Score: " << m_Score << " Level: " << m_Level << std::endl;
+		std::cout << "\nPress SPACE to play again" << std::endl;
+
 		Game::GetGameInstance().GetInputHandler()->Clear();
 		SetupInput();
 	}
