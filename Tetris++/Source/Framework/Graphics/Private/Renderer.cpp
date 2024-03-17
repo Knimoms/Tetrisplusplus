@@ -3,7 +3,51 @@
 #include "Shader.h"
 
 #include "GL/glew.h"
+#include "GLFW/glfw3.h"
 #include <algorithm>
+
+int Renderer::Init()
+{
+	if (glewInit() != GLEW_OK)
+		return 0;
+
+	glfwSwapInterval(1);
+
+	return 1;
+}
+
+GLFWwindow* Renderer::CreateWindow(const std::string& title, int width, int height)
+{
+	GLFWwindow* window;
+
+	if (!glfwInit())
+		return nullptr;
+
+	glm::ivec2 monitorResolution = GetScreenResolution();
+
+	if (!width)
+	{
+		height = (int)((float)monitorResolution[1] * 0.8f);
+		width = (int)((float)height * 0.65f);
+	}
+
+	window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
+	if (!window)
+	{
+		glfwTerminate();
+		return nullptr;
+	}
+
+	glfwMakeContextCurrent(window);
+
+	return window;
+}
+
+glm::ivec2 Renderer::GetScreenResolution()
+{
+	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+	return { mode->width, mode->height };
+}
 
 void Renderer::RenderFrame()
 {
