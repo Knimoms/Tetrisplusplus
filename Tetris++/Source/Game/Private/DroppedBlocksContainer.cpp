@@ -1,5 +1,6 @@
 #include "DroppedBlocksContainer.h"
 #include "Tetromino.h"
+#include "Game.h"
 
 void DroppedBlocksContainer::Update(float DeltaTimeSeconds)
 {
@@ -64,4 +65,71 @@ void DroppedBlocksContainer::GenerateMesh()
 bool DroppedBlocksContainer::IsBlockAtPosition(int x, int y)
 {
 	return (x < 10 && x > -1 && y < 20 && y > -1)? m_ColorMatrix[y][x][0] : false;
+}
+
+glm::ivec4 DroppedBlocksContainer::GetCompletedRows()
+{
+	glm::ivec4 completedRows = { -1, -1, -1, -1};
+
+	int completedRowIndex = 0;
+
+	for (int i = 0; i < 20; ++i)
+	{
+		bool completed = true;
+
+		for(int j = 0; j < 10; ++j)
+			if (!m_ColorMatrix[i][j][0])
+			{
+				completed = false;
+				break;
+			}
+
+		if (!completed)
+			continue;
+		
+		completedRows[completedRowIndex] = i;
+		++completedRowIndex;
+	}
+			
+	return completedRows;
+}
+
+void DroppedBlocksContainer::RemoveRow(int rowY)
+{
+	for(int i = 0; i < 10; ++i)
+		m_ColorMatrix[rowY][i] = {0.f, 0.f, 0.f, 0.f};
+
+}
+
+void DroppedBlocksContainer::DropRows()
+{
+	int droppingRows = 0;
+	for (int i = 19; i > -1; --i)
+	{
+		bool emptyRow = true;
+		for(int j = 0; j < 10; j++)
+			if (m_ColorMatrix[i][j][0])
+			{
+				emptyRow = false;
+				break;
+			}
+
+		if (emptyRow)
+		{
+			++droppingRows;
+			continue;
+		}
+
+		if(!droppingRows)
+			continue;
+
+		for (int j = 0; j < 10; j++)
+		{
+			m_ColorMatrix[i+droppingRows][j] = m_ColorMatrix[i][j];
+			m_ColorMatrix[i][j][0] = 0.f;
+		}
+			
+	}
+
+	GenerateMesh();
 }
