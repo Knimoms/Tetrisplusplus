@@ -1,9 +1,73 @@
 #include "DroppedBlocksContainer.h"
+#include "Shader.h"
 #include "Tetromino.h"
 #include "Game.h"
 
+DroppedBlocksContainer::DroppedBlocksContainer()
+{
+	std::vector<Vertex> vertices =
+	{
+		{{-5.f, -0.5f}, {0.f, 0.f, 0.f}, 1.0f},
+		{{ 5.f, -0.5f}, {0.f, 0.f, 0.f}, 1.0f},
+		{{ 5.f,  0.5f}, {0.f, 0.f, 0.f}, 1.0f},
+		{{-5.f,  0.5f}, {0.f, 0.f, 0.f}, 1.0f}
+	};
+
+	std::vector<unsigned int> indices =
+	{
+		0, 1, 2,
+		2, 3, 0
+	};
+
+	m_AnimMesh = std::make_shared<Mesh>(vertices, indices);
+	m_AnimShader = std::make_shared<Shader>("Resources/Shader/RemoveAnimShader.vert", "Resources/Shader/RemoveAnimShader.frag");
+
+	m_AnimShader->Bind();
+	m_AnimShader->SetUniform1f("u_AnimLengthSeconds", m_RemoveAnimationLengthSeconds);
+
+}
+
 void DroppedBlocksContainer::Update(float DeltaTimeSeconds)
 {
+	if(!b_AddingTetromino && !b_RemoveAnimRunning)
+		return;
+
+	if (b_AddingTetromino)
+	{
+		b_AddingTetromino = false;
+		m_CompletedRows = GetCompletedRows();
+
+		if (m_CompletedRows[0] < 0)
+		{
+			m_AddingTetrominoFinishedEvent.Emit();
+			return;
+		}
+
+		for (int i = 0; i < 4; ++i)
+			if(!(m_CompletedRows[i] < 0))
+				StartRemoveAnimation(m_CompletedRows[i]);
+		
+		return;
+	}
+
+	m_RemoveAnimationRunningForSeconds += DeltaTimeSeconds;
+	m_AnimShader->Bind();
+	m_AnimShader->SetUniform1f("u_AnimLengthProgressSeconds", m_RemoveAnimationRunningForSeconds);
+
+	if (m_RemoveAnimationRunningForSeconds < m_RemoveAnimationLengthSeconds)
+		return;
+	
+	EndRemoveAnimation();
+
+	for (int i = 0; i < 4; ++i)
+		if (!(m_CompletedRows[i] < 0))
+			RemoveRow(m_CompletedRows[i]);
+
+	DropRows();
+	b_RemoveAnimRunning = false;
+	m_RemoveAnimationRunningForSeconds = 0.f;
+	m_AddingTetrominoFinishedEvent.Emit();
+
 }
 
 void DroppedBlocksContainer::AddTetromino(Tetromino* addingTetromino)
@@ -22,6 +86,8 @@ void DroppedBlocksContainer::AddTetromino(Tetromino* addingTetromino)
 	}
 
 	GenerateMesh();
+
+	b_AddingTetromino = true;
 }
 
 void DroppedBlocksContainer::GenerateMesh()
@@ -100,6 +166,20 @@ void DroppedBlocksContainer::RemoveRow(int rowY)
 		m_ColorMatrix[rowY][i] = {0.f, 0.f, 0.f, 0.f};
 
 }
+
+void DroppedBlocksContainer::StartRemoveAnimation(int rowY)
+{
+	b_RemoveAnimRunning = true;
+	m_AnimTransforms.push_back({ {4.5f, rowY}, 0.f});
+	Game::GetGameInstance().GetRenderer()->AddRenderEntry(m_AnimMesh.get(), m_AnimMesh.get(), &m_AnimTransforms[m_AnimTransforms.size() - 1], m_AnimShader.get(), 2);
+}
+
+void DroppedBlocksContainer::EndRemoveAnimation()
+{
+	Game::GetGameInstance().GetRenderer()->RemoveRenderEntries(m_AnimMesh.get());
+	m_AnimTransforms.clear();
+}
+
 
 void DroppedBlocksContainer::DropRows()
 {

@@ -25,6 +25,7 @@ public:
 	~Shader();
 
 	void SetUniformMat4f(const std::string& name, const glm::mat4& matrix) const;
+	void SetUniform1f(const std::string& name, float value) const;
 
 	static Shader& GetDefaultShader()
 	{
