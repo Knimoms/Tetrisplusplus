@@ -8,6 +8,7 @@ class Shader;
 
 struct RenderEntry
 {
+	unsigned long id;
 	void* owner;
 	Mesh* mesh;
 	Transform* transform;
@@ -26,8 +27,9 @@ public:
 	void RenderFrame();
 	void DrawRenderEntry(RenderEntry& renderEntry);
 
-	void AddRenderEntry(void* inOwner, Mesh* inMesh, Transform* inTransform, Shader* inShader, int renderPriority);
+	unsigned long AddRenderEntry(void* inOwner, Mesh* inMesh, Transform* inTransform, Shader* inShader, int renderPriority);
 	void RemoveRenderEntries(void* inOwner);
+	void RemoveSpecificRenderEntry(unsigned int inRenderEntryID);
 
 	std::vector<RenderEntry>::iterator GetFirstRenderEntry(void* inOwner);
 

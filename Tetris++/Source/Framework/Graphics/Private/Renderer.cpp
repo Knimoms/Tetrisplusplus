@@ -19,6 +19,7 @@ void Renderer::DrawRenderEntry(RenderEntry& renderEntry)
 	renderEntry.shader->Bind();
 
 	glm::mat4 model = glm::translate(glm::mat4(1), { renderEntry.transform->position, 0.f });
+	model = glm::scale(model, { renderEntry.transform->scale, 1.0f});
 	model = glm::rotate(model, glm::radians(renderEntry.transform->rotation), { 0, 0, 1 });
 	glm::mat4 mvp = m_ProjectionMatrix * model;
 	
@@ -30,13 +31,17 @@ void Renderer::DrawRenderEntry(RenderEntry& renderEntry)
 
 }
 
-void Renderer::AddRenderEntry(void* inOwner, Mesh* inMesh, Transform* inTransform, Shader* inShader, int renderPriority)
+unsigned long Renderer::AddRenderEntry(void* inOwner, Mesh* inMesh, Transform* inTransform, Shader* inShader, int renderPriority)
 {
-	m_RenderEntries.push_back({ inOwner, inMesh, inTransform? inTransform : &Transform::ZeroTransform, inShader? inShader : &Shader::GetDefaultShader(), renderPriority });
+	unsigned long id = (unsigned long)inOwner + (unsigned long)inMesh + (unsigned long)inTransform + (unsigned long)inShader;
+
+	m_RenderEntries.push_back({ id, inOwner, inMesh, inTransform? inTransform : &Transform::ZeroTransform, inShader? inShader : &Shader::GetDefaultShader(), renderPriority });
 	std::sort(m_RenderEntries.begin(), m_RenderEntries.end(), [](RenderEntry const& left, RenderEntry const& right) -> bool
 		{
 			return left.renderPriority < right.renderPriority;
 		});
+
+	return id;
 }
 
 void Renderer::RemoveRenderEntries(void* inOwner)
@@ -45,6 +50,19 @@ void Renderer::RemoveRenderEntries(void* inOwner)
 
 	while((position = GetFirstRenderEntry(inOwner)) != m_RenderEntries.end())
 		m_RenderEntries.erase(position);
+}
+
+void Renderer::RemoveSpecificRenderEntry(unsigned int inID)
+{
+	auto position = std::find_if(m_RenderEntries.begin(), m_RenderEntries.end(),
+		[inID](const RenderEntry& renderEntry) -> bool {
+			return renderEntry.id == inID;
+		});
+
+	if (position == m_RenderEntries.end())
+		return;
+
+	m_RenderEntries.erase(position);
 }
 
 std::vector<RenderEntry>::iterator Renderer::GetFirstRenderEntry(void* inOwner)
