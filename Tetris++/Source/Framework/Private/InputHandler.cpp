@@ -6,13 +6,27 @@ InputHandler::InputHandler(GLFWwindow* inWindow)
 {
 }
 
-void InputHandler::RemoveInput(int key, KeyAction executeOn)
+std::vector<KeyCommand>::iterator InputHandler::GetInputPosition(void* owner, int key, KeyAction executeOn)
 {
-	std::vector<KeyCommand>::iterator position = std::find_if(m_KeyCommands.begin(), m_KeyCommands.end(), 
-		[key, executeOn](const KeyCommand& keycommand) -> bool { return (keycommand.key == key) && (keycommand.executeAction == executeOn) ; });
+	return std::find_if(m_KeyCommands.begin(), m_KeyCommands.end(),
+		[owner, key, executeOn](const KeyCommand& keycommand) -> bool { 
+		return (keycommand.owner == owner) && (keycommand.key == key) && (keycommand.executeAction == executeOn); 
+		});
+}
 
-	m_KeyCommands.erase(position);
+std::vector<KeyCommand>::iterator InputHandler::GetFirstInputPosition(void* owner)
+{
+	return std::find_if(m_KeyCommands.begin(), m_KeyCommands.end(),
+		[owner](const KeyCommand& keycommand) -> bool {
+			return (keycommand.owner == owner);
+		});
+}
 
+void InputHandler::RemoveInputs(void* owner)
+{
+	std::vector<KeyCommand>::iterator position;
+	while((position = GetFirstInputPosition(owner)) != m_KeyCommands.end())
+		m_KeyCommands.erase(position);
 }
 
 void InputHandler::KeyboardInputTick()
@@ -21,15 +35,37 @@ void InputHandler::KeyboardInputTick()
 
 	for (int i = 0; i < keyCommandsNum; ++i)
 	{
+		if (b_InputCleared)
+			return;
+
 		int key = m_KeyCommands[i].key;
 		bool currentlyPressed = glfwGetKey(m_InputWindow, key);
+
+		if (currentlyPressed && m_KeyCommands[i].executeAction && !m_KeyCommands[i].wasPressedOnce)
+		{
+			m_KeyCommands[i].wasPressedOnce = true;
+			m_KeyCommands[i].command->Execute();
+			continue;
+		}
 
 		if (currentlyPressed == m_PressedKeys[key])
 			continue;
 
-		m_PressedKeys[key] = currentlyPressed;
-
-		if (currentlyPressed == (bool)m_KeyCommands[i].executeAction)
-			m_KeyCommands[i].Command->Execute();
+		if (currentlyPressed != (bool)m_KeyCommands[i].executeAction)
+			continue;
+		
+		m_KeyCommands[i].command->Execute();
 	}
+
+	for (auto [key, value] : m_PressedKeys)
+		m_PressedKeys[key] = glfwGetKey(m_InputWindow, key);
+}
+
+void InputHandler::Clear()
+{
+	b_InputCleared = true;
+
+	m_PressedKeys.clear();
+	m_KeyCommands.clear();
+
 }

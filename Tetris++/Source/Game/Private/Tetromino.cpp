@@ -3,24 +3,232 @@
 #include "Game.h"
 #include "Renderer.h"
 #include "Shader.h"
+#include "DroppedBlocksContainer.h"
 
-Tetromino::Tetromino(bool collisionMat[5][5], const glm::vec3& color, InputHandler* inputHandler)
-	:m_Mesh(GenerateMeshFromMat5(collisionMat, color)), m_Transform({{5.5f, 0.5f}, 0.f}), InputReceiver(inputHandler)
+Tetromino::Tetromino(bool shapeMatrix[5][5], const glm::vec3& color, DroppedBlocksContainer* droppedBlocksC)
+	:m_Color(color)
 {
-	for (int i = 0; i < 5; ++i)
-		for (int j = 0; j < 5; ++j)
-			m_CollisionMatrix[i][j] = collisionMat[i][j];
+	SetMesh(GenerateMeshFromMat5(shapeMatrix, color));
+	SetBlockOffsetsWithMat5(shapeMatrix);
+
+}
+
+Tetromino::Tetromino(std::shared_ptr<Mesh> mesh, bool shapeMatrix[5][5], const glm::vec3& color, DroppedBlocksContainer* droppedBlocksC)
+	:m_Color(color), m_DroppedBlockContainer(droppedBlocksC)
+{
+	SetMesh(mesh);
+	SetBlockOffsetsWithMat5(shapeMatrix);
+
+}
+
+void Tetromino::SetupInput()
+{
+	AddInput(65, KeyAction::PRESSED, this, &Tetromino::MoveLeft_Pressed);
+	AddInput(65, KeyAction::RELEASED, this, &Tetromino::MoveLeft_Released);
+
+	AddInput(68, KeyAction::PRESSED, this, &Tetromino::MoveRight_Pressed);
+	AddInput(68, KeyAction::RELEASED, this, &Tetromino::MoveRight_Released);
+
+	AddInput(83, KeyAction::PRESSED, this, &Tetromino::MoveDown_Pressed);
+	AddInput(83, KeyAction::RELEASED, this, &Tetromino::MoveDown_Released);
+
+	AddInput(87, KeyAction::PRESSED, this, &Tetromino::Rotate_Pressed);
+
+}
+
+void Tetromino::Init()
+{
+	m_Transform = { {5.f, 0.f}, 0.f };
 
 	SetupInput();
-	Game::GetGameInstance().GetRenderer()->AddRenderEntry(&m_Mesh, &m_Transform, &Shader::GetDefaultShader());
+	MeshObject::Init();
 }
 
-Tetromino::~Tetromino()
+void Tetromino::Update(float DeltaTimeSeconds)
 {
-	Game::GetGameInstance().GetRenderer()->RemoveRenderEntry(&m_Mesh);
+	if (!(b_MovingLeft || b_MovingRight || b_MovingDown))
+	{
+		m_HoldingInputForSeconds = 0.f;
+		m_LastInputSecondsAgo = 0.f;
+		return;
+	}
+
+	m_HoldingInputForSeconds += DeltaTimeSeconds;
+	m_LastInputSecondsAgo += DeltaTimeSeconds;
+
+	if (m_HoldingInputForSeconds < 0.3f || m_LastInputSecondsAgo < 0.02f)
+		return;
+
+	m_LastInputSecondsAgo = 0.f;
+
+	if (b_MovingLeft)
+		MoveLeft();
+
+	if (b_MovingRight)
+		MoveRight();
+
+	if (b_MovingDown)
+		Fall();
 }
 
-Mesh Tetromino::GenerateMeshFromMat5(bool collisionMat[5][5], const glm::vec3& color)
+void Tetromino::MoveLeft()
+{
+	glm::vec2 newPosition = m_Transform.position;
+	newPosition[0] -= 1.f;
+	SetPosition(newPosition);
+}
+
+void Tetromino::MoveRight()
+{
+	glm::vec2 newPosition = m_Transform.position;
+	newPosition[0] += 1.f;
+	SetPosition(newPosition);
+}
+
+void Tetromino::Fall()
+{
+	glm::vec2 newPosition = m_Transform.position;
+	newPosition[1] += 1.f;
+
+	if (!SetPosition(newPosition))
+		m_DroppedEvent.Emit();
+
+}
+
+void Tetromino::Rotate()
+{
+	float oldRotation = m_Transform.rotation;
+	float newRotation = oldRotation;
+
+	newRotation += 90.f;
+	if (newRotation > 360.f)
+		newRotation += 0.f;
+
+	m_Transform.rotation = newRotation;
+
+	glm::vec2 oldBlockOffsets[3];
+
+	for (int i = 0; i < 3; ++i)
+		oldBlockOffsets[i] = m_BlockOffsets[i];
+
+	RotateBlockOffsetsCW();
+
+	if (ValidateCurrentTransform())
+		return;
+
+	m_Transform.rotation = oldRotation;
+	for (int i = 0; i < 3; ++i)
+		m_BlockOffsets[i] = oldBlockOffsets[i];
+}
+
+void Tetromino::SetBlockOffsetsWithMat5(bool matrix[5][5])
+{
+	int blockOffsetsIndex = 0;
+
+	for (int i = 0; i < 5; ++i)
+		for (int j = 0; j < 5; ++j)
+		{
+			if (!matrix[i][j] || (i == 2) && (j == 2))
+				continue;
+
+			m_BlockOffsets[blockOffsetsIndex] = { j - 2, i - 2 };
+			++blockOffsetsIndex;
+		}
+}
+
+bool Tetromino::SetPosition(const glm::vec2& inPosition)
+{
+	glm::vec2 oldPosition = m_Transform.position;
+	m_Transform.position = inPosition;
+
+	if (ValidateCurrentTransform())
+		return true;
+
+	m_Transform.position = oldPosition;
+	return false;
+}
+
+bool Tetromino::ValidateCurrentTransform()
+{
+	int x = (int)m_Transform.position.x;
+	int y = (int)m_Transform.position.y;
+
+	if (y > 19 || x < 0 || x > 9 || m_DroppedBlockContainer->IsBlockAtPosition(x, y))
+		return false;
+
+	for (int i = 0; i < 3; i++)
+	{
+		int alteredX = x + m_BlockOffsets[i][0];
+		int alteredY = y + m_BlockOffsets[i][1];
+
+		if (alteredY > 19 || alteredX < 0 || alteredX > 9 || m_DroppedBlockContainer->IsBlockAtPosition(alteredX,alteredY))
+			return false;
+	}
+
+	return true;
+}
+
+void Tetromino::RotateBlockOffsetsCCW()
+{
+	for (int i = 0; i < 3; ++i)
+	{
+		float x = m_BlockOffsets[i][0];
+		float y = m_BlockOffsets[i][1];
+
+		m_BlockOffsets[i] = { y , 0 - x };
+	}
+}
+
+void Tetromino::RotateBlockOffsetsCW()
+{
+	for (int i = 0; i < 3; ++i)
+	{
+		float x = m_BlockOffsets[i][0];
+		float y = m_BlockOffsets[i][1];
+
+		m_BlockOffsets[i] = { 0 - y, x };
+	}
+}
+
+void Tetromino::MoveLeft_Pressed()
+{
+	MoveLeft();
+	b_MovingLeft = true;
+}
+
+void Tetromino::MoveLeft_Released()
+{
+	b_MovingLeft = false;
+}
+
+void Tetromino::MoveRight_Pressed()
+{
+	MoveRight();
+	b_MovingRight = true;
+}
+
+void Tetromino::MoveRight_Released()
+{
+	b_MovingRight = false;
+}
+
+void Tetromino::MoveDown_Pressed()
+{
+	Fall();
+	b_MovingDown = true;
+}
+
+void Tetromino::MoveDown_Released()
+{
+	b_MovingDown = false;
+}
+
+void Tetromino::Rotate_Pressed()
+{
+	Rotate();
+}
+
+std::shared_ptr<Mesh> Tetromino::GenerateMeshFromMat5(bool shapeMatrix[5][5], const glm::vec3& color)
 {
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
@@ -28,64 +236,33 @@ Mesh Tetromino::GenerateMeshFromMat5(bool collisionMat[5][5], const glm::vec3& c
 	for (int i = 0; i < 5; ++i)
 		for (int j = 0; j < 5; ++j)
 		{
-			if (!collisionMat[i][j])
+			if (!shapeMatrix[i][j])
 				continue;
 
 			float x = (float)(j - 2);
 			float y = (float)(i - 2);
 
-			const std::vector<glm::vec2>& cubePositions = Mesh::GetCubeVertPositions();
-			
+			const std::vector<Vertex>& cubeVertices = Mesh::GetCubeVertices();
+
+			size_t cubeVerticesNum = cubeVertices.size();
 			int indexOffset = (int)vertices.size();
-			
-			for (int z = 0; z < 4; ++z)
-				vertices.push_back({ {cubePositions[z][0] + x, cubePositions[z][1] + y}, color});
+
+			for (int z = 0; z < cubeVerticesNum; ++z)
+			{
+				Vertex newVertex = cubeVertices[z];
+				newVertex.position[0] += x;
+				newVertex.position[1] += y;
+				newVertex.color = color;
+				vertices.push_back(newVertex);
+			}
 
 			const std::vector<unsigned int>& cubeIndices = Mesh::GetCubeIndices();
+			size_t cubeIndicesNum = cubeIndices.size();
 
-			for (int z = 0; z < 6; ++z)
+			for (int z = 0; z < cubeIndicesNum; ++z)
 				indices.push_back(cubeIndices[z] + indexOffset);
-			
+
 		}
 
-	return Mesh(vertices, indices);
-}
-
-void Tetromino::SetupInput()
-{
-	AddInput(65, KeyAction::PRESSED, this, &Tetromino::MoveLeft);
-	AddInput(68, KeyAction::PRESSED, this, &Tetromino::MoveRight);
-	AddInput(83, KeyAction::PRESSED, this, &Tetromino::Fall);
-	AddInput(87, KeyAction::PRESSED, this, &Tetromino::Rotate);
-
-}
-
-void Tetromino::MoveLeft()
-{
-	m_Transform.position[0] -= 1.f;
-}
-
-void Tetromino::MoveRight()
-{
-	m_Transform.position[0] += 1.f;
-}
-
-void Tetromino::Fall()
-{
-	m_Transform.position[1] += 1.f;
-}
-
-void Tetromino::Rotate()
-{
-	float newRotation = m_Transform.rotation;
-	newRotation -= 90.f;
-	if (newRotation < -360.f)
-		newRotation += 360.f;
-
-	m_Transform.rotation = newRotation;
-}
-
-void Tetromino::Update(float DeltaTimeSeconds)
-{
-
+	return std::make_shared<Mesh>(vertices, indices);
 }

@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "Renderer.h"
 #include "InputHandler.h"
+#include "GameMode.h"
 
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
@@ -20,6 +21,8 @@ void Game::Run()
 
 	InputHandler inputHandler(window);
 	m_InputHandler = &inputHandler;
+
+	std::shared_ptr<GameMode> gameMode = GameObject::SpawnGameObject<GameMode>();
 
 	auto lastTimestamp = std::chrono::high_resolution_clock::now();
 
@@ -47,6 +50,8 @@ bool Game::SetupOpenGLSettings()
 {
 	if (glewInit() != GLEW_OK)
 		return 0;
+
+	glfwSwapInterval(1);
 
 	return 1;
 }
