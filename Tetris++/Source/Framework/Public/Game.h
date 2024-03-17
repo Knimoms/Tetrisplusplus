@@ -21,8 +21,8 @@ public:
 
 private:
 	std::string m_GameName = "Tetris++";
-	int m_WindowWidth = 500;
-	int m_WindowHeight = 1000;
+	int m_WindowWidth = 0;
+	int m_WindowHeight = 0;
 
 	InputHandler* m_InputHandler;
 	Renderer* m_Renderer;
@@ -42,6 +42,8 @@ public:
 
 	inline InputHandler* GetInputHandler() { return m_InputHandler; }
 	inline Renderer* GetRenderer() { return m_Renderer; }
+
+	glm::ivec2 GetScreenResolution();
 
 	inline Event<float>& GetUpdateEvent() { return m_UpdateEvent; }
 
