@@ -143,6 +143,7 @@ void GameMode::DroppedContainerFinishedAdding(int completedRows)
 	if(m_RowsCompletedThisLevel >= COMPLETED_ROWS_TO_LEVELUP)
 		LevelUp();
 
+	system("CLS");
 	std::cout << "Score: " <<  m_Score << " Level: " << m_Level << " Completed Rows: " << m_RowsCompletedThisLevel << std::endl;
 	SpawnRandomTetromino();
 }
