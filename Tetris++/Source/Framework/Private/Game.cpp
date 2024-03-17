@@ -51,6 +51,8 @@ bool Game::SetupOpenGLSettings()
 	if (glewInit() != GLEW_OK)
 		return 0;
 
+	glfwSwapInterval(1);
+
 	return 1;
 }
 
