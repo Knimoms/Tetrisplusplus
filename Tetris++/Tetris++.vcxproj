@@ -154,6 +154,7 @@
     <ClCompile Include="Source\Framework\Graphics\Private\VertexBuffer.cpp" />
     <ClCompile Include="Source\Framework\Graphics\Private\VertexArray.cpp" />
     <ClCompile Include="Source\Game\Private\Tetromino.cpp" />
+    <ClCompile Include="Source\Game\Private\TetrominoPreview.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Framework\Public\MeshObject.h" />
@@ -174,6 +175,7 @@
     <ClInclude Include="Source\Macros.h" />
     <ClInclude Include="Source\Framework\Graphics\Public\VertexArray.h" />
     <ClInclude Include="Source\Game\Public\Tetromino.h" />
+    <ClInclude Include="Source\Game\Public\TetrominoPreview.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
