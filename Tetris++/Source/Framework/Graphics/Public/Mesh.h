@@ -1,10 +1,9 @@
 #pragma once
-
-#include <vector>
-
 #include "VertexArray.h"
 #include "VertexBuffer.h"
 #include "ElementBuffer.h"
+
+#include <vector>
 
 struct Transform
 {

@@ -12,6 +12,7 @@ struct RenderEntry
 	Mesh* mesh;
 	Transform* transform;
 	Shader* shader;
+	int renderPriority = 0;
 };
 
 class Renderer
@@ -25,8 +26,10 @@ public:
 	void RenderFrame();
 	void DrawRenderEntry(RenderEntry& renderEntry);
 
-	void AddRenderEntry(void* inOwner, Mesh* inMesh, Transform* inTransform, Shader* inShader);
-	void RemoveRenderEntry(void* inOwner);
+	void AddRenderEntry(void* inOwner, Mesh* inMesh, Transform* inTransform, Shader* inShader, int renderPriority);
+	void RemoveRenderEntries(void* inOwner);
+
+	std::vector<RenderEntry>::iterator GetFirstRenderEntry(void* inOwner);
 
 	void SetBackgroundColor(const glm::vec3& inColor);
 	void Clear();

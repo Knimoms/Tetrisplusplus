@@ -28,9 +28,7 @@ public:
 	Tetromino(std::shared_ptr<Mesh> mesh, bool shapeMatrix[5][5], const glm::vec3& color, DroppedBlocksContainer* droppedBlocksC);
 
 	virtual void SetupInput() override;
-
 	virtual void Init() override;
-
 	virtual void Update(float DeltaTimeSeconds) override;
 
 	void MoveLeft();
