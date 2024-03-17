@@ -20,7 +20,7 @@ private:
 	const float m_RemoveAnimationLengthSeconds = 1.f;
 	float m_RemoveAnimationRunningForSeconds = 0.f;
 
-	Event<void> m_AddingTetrominoFinishedEvent;
+	Event<int> m_AddingTetrominoFinishedEvent; //Parameter returns number of completed Rows
 
 public:
 	DroppedBlocksContainer();
@@ -40,6 +40,6 @@ public:
 
 	void DropRows();
 
-	inline Event<void>& GetAddingTetrominoFinishedEvent() { return m_AddingTetrominoFinishedEvent; }
+	inline Event<int>& GetAddingTetrominoFinishedEvent() { return m_AddingTetrominoFinishedEvent; }
 };
 

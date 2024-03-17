@@ -39,7 +39,7 @@ void DroppedBlocksContainer::Update(float DeltaTimeSeconds)
 
 		if (m_CompletedRows[0] < 0)
 		{
-			m_AddingTetrominoFinishedEvent.Emit();
+			m_AddingTetrominoFinishedEvent.Emit(0);
 			return;
 		}
 
@@ -59,14 +59,19 @@ void DroppedBlocksContainer::Update(float DeltaTimeSeconds)
 	
 	EndRemoveAnimation();
 
+	int removedRows = 0;
+
 	for (int i = 0; i < 4; ++i)
 		if (!(m_CompletedRows[i] < 0))
+		{
+			++removedRows;
 			RemoveRow(m_CompletedRows[i]);
+		}
 
 	DropRows();
 	b_RemoveAnimRunning = false;
 	m_RemoveAnimationRunningForSeconds = 0.f;
-	m_AddingTetrominoFinishedEvent.Emit();
+	m_AddingTetrominoFinishedEvent.Emit(removedRows);
 
 }
 

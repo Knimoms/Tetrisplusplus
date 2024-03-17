@@ -20,6 +20,12 @@ struct ShapeColorCombination
 	glm::vec3 color;
 };
 
+#define START_DELAY 0.6f
+#define COMPLETED_ROWS_TO_LEVELUP 10
+#define LEVELUP_SPEED_MULTIPLIER 0.9f
+#define BASESCORE_ADD 1000.0f
+#define MULTIROW_SCORE_MULTIPLIER 1.25f
+
 typedef std::_Binder<std::_Unforced, std::uniform_int_distribution<int>, std::mt19937> CappedRNG;
 
 class GameMode : public GameObject, InputReceiver
@@ -35,7 +41,15 @@ private:
 	std::shared_ptr<Command<void>> m_TetrominoDroppedCommand;
 
 	float LastFallSecondsAgo = 0.f;
+
 	bool b_GameOver = true;
+
+
+	float m_Score = 0.f;
+	unsigned int m_Level = 1;
+	unsigned int m_RowsCompletedThisLevel = 0;
+
+	float m_DropDelaySeconds = START_DELAY;
 
 public:
 	GameMode();
@@ -45,7 +59,9 @@ public:
 	virtual void Update(float DeltaTimeSeconds) override;
 
 	void StartGame();
+	void LevelUp();
 
+	void DroppedContainerFinishedAdding(int completedRows);
 	void SpawnRandomTetromino();
 
 	void CurrentTetrominoDropped();

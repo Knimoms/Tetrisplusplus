@@ -102,7 +102,7 @@ void GameMode::Update(float DeltaTimeSeconds)
 	
 	LastFallSecondsAgo += DeltaTimeSeconds;
 
-	if (LastFallSecondsAgo > 0.6f)
+	if (LastFallSecondsAgo > m_DropDelaySeconds)
 	{
 		m_CurrentTetromino->Fall();	
 		LastFallSecondsAgo = 0.f;
@@ -116,7 +116,34 @@ void GameMode::StartGame()
 	Game::GetGameInstance().GetInputHandler()->Clear();
 
 	m_DroppedBlocksContainer = SpawnGameObject<DroppedBlocksContainer>();
-	m_DroppedBlocksContainer->GetAddingTetrominoFinishedEvent().AddCommand(std::make_shared<ObjectCommand<GameMode, void>>(this, &GameMode::SpawnRandomTetromino));
+	m_DroppedBlocksContainer->GetAddingTetrominoFinishedEvent().AddCommand(std::make_shared<ObjectCommand<GameMode, int>>(this, &GameMode::DroppedContainerFinishedAdding));
+	
+	m_DropDelaySeconds = START_DELAY;
+	m_Score = 0.f;
+	m_Level = 1;
+	m_RowsCompletedThisLevel = 0;
+
+	SpawnRandomTetromino();
+}
+
+void GameMode::LevelUp()
+{
+	++m_Level;
+	m_DropDelaySeconds *= LEVELUP_SPEED_MULTIPLIER;
+	m_RowsCompletedThisLevel = 0;
+}
+
+#include "iostream"
+
+void GameMode::DroppedContainerFinishedAdding(int completedRows)
+{
+	m_Score += BASESCORE_ADD * completedRows * (float)pow(MULTIROW_SCORE_MULTIPLIER, completedRows);
+
+	m_RowsCompletedThisLevel += completedRows;
+	if(m_RowsCompletedThisLevel >= COMPLETED_ROWS_TO_LEVELUP)
+		LevelUp();
+
+	std::cout << "Score: " <<  m_Score << " Level: " << m_Level << " Completed Rows: " << m_RowsCompletedThisLevel << std::endl;
 	SpawnRandomTetromino();
 }
 
