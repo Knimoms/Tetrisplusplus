@@ -39,16 +39,12 @@ void Renderer::AddRenderEntry(void* inOwner, Mesh* inMesh, Transform* inTransfor
 		});
 }
 
-#include "iostream"
-
 void Renderer::RemoveRenderEntries(void* inOwner)
 {
 	std::vector<RenderEntry>::iterator position; 
 
 	while((position = GetFirstRenderEntry(inOwner)) != m_RenderEntries.end())
 		m_RenderEntries.erase(position);
-
-	std::cout << m_RenderEntries.size() << std::endl;
 }
 
 std::vector<RenderEntry>::iterator Renderer::GetFirstRenderEntry(void* inOwner)
@@ -67,5 +63,5 @@ void Renderer::SetBackgroundColor(const glm::vec3& inColor)
 void Renderer::Clear()
 {
 	glClearColor(m_BackgroundColor.x, m_BackgroundColor.y, m_BackgroundColor.z, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT);
 }
