@@ -37,13 +37,9 @@ public:
 	void operator=(Game const&) = delete;
 
 	void Run();
-	GLFWwindow* CreateWindow();
-	bool SetupOpenGLSettings(); //returns if Setup was successful
 
 	inline InputHandler* GetInputHandler() { return m_InputHandler; }
 	inline Renderer* GetRenderer() { return m_Renderer; }
-
-	glm::ivec2 GetScreenResolution();
 
 	inline Event<float>& GetUpdateEvent() { return m_UpdateEvent; }
 

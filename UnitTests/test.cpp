@@ -8,9 +8,9 @@
 #include "Shader.h"
 
 TEST(GraphicsTest, OpenGLSetupTest) {
-	Game& game = Game::GetGameInstance();
-	EXPECT_TRUE(!!game.CreateWindow());
-	EXPECT_TRUE(game.SetupOpenGLSettings());
+	Renderer renderer;
+	EXPECT_TRUE(!!renderer.CreateWindow("test"));
+	EXPECT_TRUE(renderer.Init());
 
 	std::vector<Vertex> triangleVertices = {
 		{{ -0.5f, -0.5f}, {1.f, 0.f, 0.f}}, 
@@ -26,7 +26,6 @@ TEST(GraphicsTest, OpenGLSetupTest) {
 
 	Transform transform = { {0, 0}, 0 };
 
-	Renderer renderer;
 	renderer.AddRenderEntry(this, &triangle, &transform, &Shader::GetDefaultShader(), 0);
 
 	EXPECT_EQ(GL_NO_ERROR, glGetError());
