@@ -1,10 +1,9 @@
 #include "pch.h"
 #include "vector"
 
-#include "Game.h"
 #include "GL/glew.h"
-#include "Mesh.h"
 #include "Renderer.h"
+#include "Mesh.h"
 #include "Shader.h"
 
 TEST(GraphicsTest, OpenGLSetupTest) {
@@ -56,4 +55,55 @@ TEST(TetrominoTest, MeshGenerationTest){
 		EXPECT_EQ(Mesh::GetCubeVertices()[i].position, mesh->GetVertices()[i].position);
 
 	EXPECT_EQ(Mesh::GetCubeIndices(), mesh->GetIndices());
+}
+
+#include "DroppedBlocksContainer.h"
+
+TEST(DroppedBlockContainerTest, AddingTetromioTest) {
+	DroppedBlocksContainer dpc;
+
+	bool shapeMat[5][5]
+	{
+		0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0,
+		0, 1, 1, 1, 1,
+		0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0
+	};
+
+	Tetromino* t1 = new Tetromino(shapeMat, {1.0f, 1.0f, 1.0f}, &dpc);
+	t1->SetTransform({{1.f, 19.f}});
+	
+	Tetromino* t2 = new Tetromino(shapeMat, { 1.0f, 1.0f, 1.0f }, &dpc);
+	t2->SetTransform({ {5.f, 19.f} });
+
+	bool shapeMat2[5][5]
+	{
+		0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0,
+		0, 0, 1, 1, 0,
+		0, 0, 1, 1, 0,
+		0, 0, 0, 0, 0
+	};
+	
+	Tetromino* t3 = new Tetromino(shapeMat2, { 1.0f, 1.0f, 1.0f }, &dpc);
+	t3->SetTransform({ {8.f, 18.f}});
+	
+	dpc.AddTetromino(t1);
+	for (int i = 0; i < 4; ++i)
+		EXPECT_TRUE(dpc.IsBlockAtPosition(i, 19));
+	dpc.AddTetromino(t2);
+	for (int i = 0; i < 4; ++i)
+		EXPECT_TRUE(dpc.IsBlockAtPosition(i + 4, 19));
+	dpc.AddTetromino(t3);
+	for (int i = 0; i < 2; ++i)
+		EXPECT_TRUE(dpc.IsBlockAtPosition(i + 8, 19));
+
+	dpc.RemoveRow(19);
+
+	for (int i = 0; i < 10; ++i)
+		EXPECT_TRUE(!dpc.IsBlockAtPosition(i, 19));
+
+	delete t1, t2, t3;
+
 }
