@@ -175,14 +175,17 @@ void DroppedBlocksContainer::RemoveRow(int rowY)
 void DroppedBlocksContainer::StartRemoveAnimation(int rowY)
 {
 	b_RemoveAnimRunning = true;
-	m_AnimTransforms.push_back({ {4.5f, rowY}, 0.f});
-	Game::GetGameInstance().GetRenderer()->AddRenderEntry(m_AnimMesh.get(), m_AnimMesh.get(), &m_AnimTransforms[m_AnimTransforms.size() - 1], m_AnimShader.get(), 2);
+	int i = 0;
+	for(; (i < 3) && (m_AnimTransforms[i].position[0] != 0.f); ++i);
+	m_AnimTransforms[i].position = { 4.5f, (float)rowY };
+	Game::GetGameInstance().GetRenderer()->AddRenderEntry(m_AnimMesh.get(), m_AnimMesh.get(), &m_AnimTransforms[i], m_AnimShader.get(), 2);
 }
 
 void DroppedBlocksContainer::EndRemoveAnimation()
 {
 	Game::GetGameInstance().GetRenderer()->RemoveRenderEntries(m_AnimMesh.get());
-	m_AnimTransforms.clear();
+	for(int i = 0; i < 4; ++i)
+		m_AnimTransforms[i] = Transform::ZeroTransform;
 }
 
 

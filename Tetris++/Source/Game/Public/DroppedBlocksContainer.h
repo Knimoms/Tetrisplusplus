@@ -13,7 +13,7 @@ private:
 
 	std::shared_ptr<Mesh> m_AnimMesh;
 	std::shared_ptr<Shader> m_AnimShader;
-	std::vector<Transform> m_AnimTransforms;
+	Transform m_AnimTransforms[4];
 	glm::ivec4 m_CompletedRows;
 	bool b_RemoveAnimRunning = false;
 
