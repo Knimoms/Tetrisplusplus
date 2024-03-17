@@ -6,8 +6,8 @@
 #include <string>
 #include <memory>
 
-class InputHandler;
 class Renderer;
+class InputHandler;
 struct GLFWwindow;
 
 class Game
@@ -24,8 +24,9 @@ private:
 	int m_WindowWidth = 0;
 	int m_WindowHeight = 0;
 
-	InputHandler* m_InputHandler;
-	Renderer* m_Renderer;
+	std::shared_ptr<Renderer> m_Renderer;
+	std::shared_ptr<InputHandler> m_InputHandler;
+	GLFWwindow* m_Window;
 
 	Event<float> m_UpdateEvent;
 
@@ -38,8 +39,8 @@ public:
 
 	void Run();
 
-	inline InputHandler* GetInputHandler() { return m_InputHandler; }
-	inline Renderer* GetRenderer() { return m_Renderer; }
+	inline InputHandler* GetInputHandler() { return m_InputHandler.get(); }
+	inline Renderer* GetRenderer() { return m_Renderer.get(); }
 
 	inline Event<float>& GetUpdateEvent() { return m_UpdateEvent; }
 
