@@ -97,28 +97,25 @@ void Tetromino::Fall()
 
 void Tetromino::Rotate()
 {
-	float oldRotation = m_Transform.rotation;
-	float newRotation = oldRotation;
+	float newRotation = m_Transform.rotation;
 
 	newRotation += 90.f;
 	if (newRotation > 360.f)
 		newRotation += 0.f;
 
-	m_Transform.rotation = newRotation;
-
-	glm::vec2 oldBlockOffsets[3];
+	glm::ivec2 newBlockOffsets[3];
 
 	for (int i = 0; i < 3; ++i)
-		oldBlockOffsets[i] = m_BlockOffsets[i];
+		newBlockOffsets[i] = m_BlockOffsets[i];
 
-	RotateBlockOffsetsCW();
+	RotateBlockOffsetsCW(newBlockOffsets);
 
-	if (ValidateCurrentTransform())
+	if (!ValidateBlockOffsets(newBlockOffsets))
 		return;
 
-	m_Transform.rotation = oldRotation;
+	m_Transform.rotation = newRotation;
 	for (int i = 0; i < 3; ++i)
-		m_BlockOffsets[i] = oldBlockOffsets[i];
+		m_BlockOffsets[i] = newBlockOffsets[i];
 }
 
 void Tetromino::SetBlockOffsetsWithMat5(bool matrix[5][5])
@@ -139,13 +136,12 @@ void Tetromino::SetBlockOffsetsWithMat5(bool matrix[5][5])
 bool Tetromino::SetPosition(const glm::vec2& inPosition)
 {
 	glm::vec2 oldPosition = m_Transform.position;
+
+	if (!ValidatePosition(inPosition))
+		return false;
+
 	m_Transform.position = inPosition;
-
-	if (ValidateCurrentTransform())
-		return true;
-
-	m_Transform.position = oldPosition;
-	return false;
+	return true;
 }
 
 bool Tetromino::ValidateCurrentTransform()
@@ -158,8 +154,28 @@ bool Tetromino::ValidateCurrentTransform()
 
 	for (int i = 0; i < 3; i++)
 	{
-		int alteredX = x + m_BlockOffsets[i][0];
-		int alteredY = y + m_BlockOffsets[i][1];
+		int alteredX = x + (int)m_BlockOffsets[i][0];
+		int alteredY = y + (int)m_BlockOffsets[i][1];
+
+		if (alteredY > 19 || alteredX < 0 || alteredX > 9 || m_DroppedBlockContainer->IsBlockAtPosition(alteredX, alteredY))
+			return false;
+	}
+
+	return true;
+}
+
+bool Tetromino::ValidatePosition(const glm::vec2& inPosition)
+{
+	int x = (int)inPosition.x;
+	int y = (int)inPosition.y;
+
+	if (y > 19 || x < 0 || x > 9 || m_DroppedBlockContainer->IsBlockAtPosition(x, y))
+		return false;
+
+	for (int i = 0; i < 3; i++)
+	{
+		int alteredX = x + (int)m_BlockOffsets[i][0];
+		int alteredY = y + (int)m_BlockOffsets[i][1];
 
 		if (alteredY > 19 || alteredX < 0 || alteredX > 9 || m_DroppedBlockContainer->IsBlockAtPosition(alteredX,alteredY))
 			return false;
@@ -168,25 +184,45 @@ bool Tetromino::ValidateCurrentTransform()
 	return true;
 }
 
-void Tetromino::RotateBlockOffsetsCCW()
+bool Tetromino::ValidateBlockOffsets(glm::ivec2 inBlockOffsets[3])
+{
+	int x = (int)m_Transform.position.x;
+	int y = (int)m_Transform.position.y;
+
+	if (y > 19 || x < 0 || x > 9 || m_DroppedBlockContainer->IsBlockAtPosition(x, y))
+		return false;
+
+	for (int i = 0; i < 3; i++)
+	{
+		int alteredX = x + inBlockOffsets[i][0];
+		int alteredY = y + inBlockOffsets[i][1];
+
+		if (alteredY > 19 || alteredX < 0 || alteredX > 9 || m_DroppedBlockContainer->IsBlockAtPosition(alteredX, alteredY))
+			return false;
+	}
+
+	return true;
+}
+
+void Tetromino::RotateBlockOffsetsCCW(glm::ivec2 inBlockOffsets[3])
 {
 	for (int i = 0; i < 3; ++i)
 	{
-		float x = m_BlockOffsets[i][0];
-		float y = m_BlockOffsets[i][1];
+		int x = inBlockOffsets[i][0];
+		int y = inBlockOffsets[i][1];
 
-		m_BlockOffsets[i] = { y , 0 - x };
+		inBlockOffsets[i] = { y , 0 - x };
 	}
 }
 
-void Tetromino::RotateBlockOffsetsCW()
+void Tetromino::RotateBlockOffsetsCW(glm::ivec2 inBlockOffsets[3])
 {
 	for (int i = 0; i < 3; ++i)
 	{
-		float x = m_BlockOffsets[i][0];
-		float y = m_BlockOffsets[i][1];
+		int x = inBlockOffsets[i][0];
+		int y = inBlockOffsets[i][1];
 
-		m_BlockOffsets[i] = { 0 - y, x };
+		inBlockOffsets[i] = { 0 - y, x };
 	}
 }
 

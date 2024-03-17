@@ -82,7 +82,7 @@ void DroppedBlocksContainer::AddTetromino(Tetromino* addingTetromino)
 	const glm::vec2& position = addingTetromino->GetTransform().position;
 	m_ColorMatrix[(unsigned int)position[1]][(unsigned int)position[0]] = { 1.f, addingTetromino->GetColor() };
 	
-	glm::vec2(&blockOffsets)[3] = addingTetromino->GetBlockOffsets();
+	glm::ivec2(&blockOffsets)[3] = addingTetromino->GetBlockOffsets();
 	
 	for (int i = 0; i < 3; ++i)
 	{
@@ -137,7 +137,7 @@ void DroppedBlocksContainer::GenerateMesh()
 
 bool DroppedBlocksContainer::IsBlockAtPosition(int x, int y)
 {
-	return (x < 10 && x > -1 && y < 20 && y > -1)? m_ColorMatrix[y][x][0] : false;
+	return (x < 10 && x > -1 && y < 20 && y > -1)? (bool)m_ColorMatrix[y][x][0] : false;
 }
 
 glm::ivec4 DroppedBlocksContainer::GetCompletedRows()

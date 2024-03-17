@@ -10,7 +10,7 @@ class DroppedBlocksContainer;
 class Tetromino : public MeshObject, InputReceiver
 {
 private:
-	glm::vec2 m_BlockOffsets[3];
+	glm::ivec2 m_BlockOffsets[3];
 	glm::vec3 m_Color;
 
 	DroppedBlocksContainer* m_DroppedBlockContainer;
@@ -37,8 +37,8 @@ public:
 	void Rotate();
 
 public:
-	void RotateBlockOffsetsCCW();
-	void RotateBlockOffsetsCW();
+	void RotateBlockOffsetsCCW(glm::ivec2 inBlockOffsets[3]);
+	void RotateBlockOffsetsCW(glm::ivec2 inBlockOffsets[3]);
 
 	void MoveLeft_Pressed();
 	void MoveLeft_Released();
@@ -54,12 +54,15 @@ public:
 public:
 
 	void SetBlockOffsetsWithMat5(bool matrix[5][5]);
-	inline glm::vec2(&GetBlockOffsets())[3] { return m_BlockOffsets; }
+	inline glm::ivec2(&GetBlockOffsets())[3] { return m_BlockOffsets; }
 
 	inline const glm::vec3& GetColor() { return m_Color; }
 
 	bool SetPosition(const glm::vec2& inPosition);
+
 	bool ValidateCurrentTransform();
+	bool ValidatePosition(const glm::vec2& inPosition);
+	bool ValidateBlockOffsets(glm::ivec2 inBlockOffsets[3]);
 
 	inline Event<void>& GetDroppedEvent() { return m_DroppedEvent; }
 
