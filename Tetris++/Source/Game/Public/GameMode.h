@@ -11,6 +11,7 @@
 #include <functional>
 
 class Tetromino;
+class TetrominoPreview;
 class DroppedBlocksContainer;
 class Mesh;
 
@@ -35,6 +36,10 @@ private:
 	std::shared_ptr<Tetromino> m_CurrentTetromino;
 	std::vector<ShapeColorCombination> m_AllTetrominoShapes;
 	std::vector<std::shared_ptr<Mesh>> m_AllTetrominoMeshes;
+
+	
+	std::vector<std::shared_ptr<TetrominoPreview>> m_TetrominoPreviews;
+	std::shared_ptr<Mesh> m_SidebarBackground;
 
 	CappedRNG m_RNG;
 
@@ -61,8 +66,10 @@ public:
 	void StartGame();
 	void LevelUp();
 
+	void AddTetrominoPreview();
+
 	void DroppedContainerFinishedAdding(int completedRows);
-	void SpawnRandomTetromino();
+	void SpawnTetromino();
 
 	void CurrentTetrominoDropped();
 

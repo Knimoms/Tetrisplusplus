@@ -7,7 +7,7 @@ struct Vertex
 {
 	glm::vec2 position;
 	glm::vec3 color;
-	float brightness;
+	float brightness = 1.0f;
 
 };
 

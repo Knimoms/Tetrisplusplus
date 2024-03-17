@@ -57,6 +57,9 @@
     <ClCompile Include="Source\Framework\Private\MeshObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\Private\TetrominoPreview.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Framework\Graphics\Public\VertexBuffer.h">
@@ -111,6 +114,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Framework\Public\MeshObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Public\TetrominoPreview.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
