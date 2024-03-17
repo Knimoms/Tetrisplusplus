@@ -5,6 +5,10 @@
 
 DroppedBlocksContainer::DroppedBlocksContainer()
 {
+	for(int i = 0; i < 10; ++i)
+		for(int j = 0; j < 20; ++j)
+			m_ColorMatrix[j][i] = {0.f, 0.f, 0.f, 0.f};
+
 	std::vector<Vertex> vertices =
 	{
 		{{-5.f, -0.5f}, {0.f, 0.f, 0.f}, 1.0f},
@@ -24,7 +28,6 @@ DroppedBlocksContainer::DroppedBlocksContainer()
 
 	m_AnimShader->Bind();
 	m_AnimShader->SetUniform1f("u_AnimLengthSeconds", m_RemoveAnimationLengthSeconds);
-
 }
 
 void DroppedBlocksContainer::Update(float DeltaTimeSeconds)
@@ -72,7 +75,6 @@ void DroppedBlocksContainer::Update(float DeltaTimeSeconds)
 	b_RemoveAnimRunning = false;
 	m_RemoveAnimationRunningForSeconds = 0.f;
 	m_AddingTetrominoFinishedEvent.Emit(removedRows);
-
 }
 
 void DroppedBlocksContainer::AddTetromino(Tetromino* addingTetromino)
