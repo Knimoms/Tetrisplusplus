@@ -20,7 +20,7 @@ DroppedBlocksContainer::DroppedBlocksContainer()
 	};
 
 	m_AnimMesh = std::make_shared<Mesh>(vertices, indices);
-	m_AnimShader = std::make_shared<Shader>("Resources/Shader/RemoveAnimShader.vert", "Resources/Shader/RemoveAnimShader.frag");
+	m_AnimShader = std::make_shared<Shader>("Resources/Shader/RemoveAnimShader.vert", "Resources/Shader/Default.frag");
 
 	m_AnimShader->Bind();
 	m_AnimShader->SetUniform1f("u_AnimLengthSeconds", m_RemoveAnimationLengthSeconds);

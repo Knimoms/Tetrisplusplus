@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "InputReceiver.h"
 #include "Command.h"
 #include "Event.h"
 
@@ -21,7 +22,7 @@ struct ShapeColorCombination
 
 typedef std::_Binder<std::_Unforced, std::uniform_int_distribution<int>, std::mt19937> CappedRNG;
 
-class GameMode : public GameObject
+class GameMode : public GameObject, InputReceiver
 {
 private:
 	std::shared_ptr<DroppedBlocksContainer> m_DroppedBlocksContainer;
@@ -34,13 +35,18 @@ private:
 	std::shared_ptr<Command<void>> m_TetrominoDroppedCommand;
 
 	float LastFallSecondsAgo = 0.f;
-	bool b_GameOver = false;
+	bool b_GameOver = true;
 
 public:
 	GameMode();
+
+	virtual void SetupInput() override;
 	virtual void Init() override;
 	virtual void Update(float DeltaTimeSeconds) override;
-	std::shared_ptr<Tetromino> SpawnRandomTetromino();
+
+	void StartGame();
+
+	void SpawnRandomTetromino();
 
 	void CurrentTetrominoDropped();
 

@@ -2,6 +2,7 @@
 #include "Tetromino.h"
 #include "DroppedBlocksContainer.h"
 #include "Event.h"
+#include "Command.h"
 #include "Game.h"
 
 #include <chrono>
@@ -78,16 +79,20 @@ GameMode::GameMode()
 
 	for (int i = 0; i < 7; ++i)
 		m_AllTetrominoMeshes.push_back(Tetromino::GenerateMeshFromMat5(m_AllTetrominoShapes[i].shape, m_AllTetrominoShapes[i].color));
+
+	SetupInput();
+}
+
+void GameMode::SetupInput()
+{
+	AddInput(32, PRESSED, this, &GameMode::StartGame);
 }
 
 void GameMode::Init()
 {
 	m_TetrominoDroppedCommand = std::shared_ptr<Command<void>>(new ObjectCommand<GameMode, void>(this, &GameMode::CurrentTetrominoDropped));
-	m_DroppedBlocksContainer = SpawnGameObject<DroppedBlocksContainer>();
+
 	GameObject::Init();
-
-	m_CurrentTetromino = SpawnRandomTetromino();
-
 }
 
 void GameMode::Update(float DeltaTimeSeconds)
@@ -104,13 +109,31 @@ void GameMode::Update(float DeltaTimeSeconds)
 	}
 }
 
-std::shared_ptr<Tetromino> GameMode::SpawnRandomTetromino()
+void GameMode::StartGame()
+{
+	b_GameOver = false;
+
+	Game::GetGameInstance().GetInputHandler()->Clear();
+
+	m_DroppedBlocksContainer = SpawnGameObject<DroppedBlocksContainer>();
+	m_DroppedBlocksContainer->GetAddingTetrominoFinishedEvent().AddCommand(std::make_shared<ObjectCommand<GameMode, void>>(this, &GameMode::SpawnRandomTetromino));
+	SpawnRandomTetromino();
+}
+
+void GameMode::SpawnRandomTetromino()
 {
 	int i = m_RNG();
-	auto spawnedTetromino = SpawnGameObject<Tetromino>(m_AllTetrominoMeshes[i], m_AllTetrominoShapes[i].shape, m_AllTetrominoShapes[i].color, m_DroppedBlocksContainer.get());
-	spawnedTetromino->GetDroppedEvent().AddCommand(m_TetrominoDroppedCommand);
+	auto newTetromino = SpawnGameObject<Tetromino>(m_AllTetrominoMeshes[i], m_AllTetrominoShapes[i].shape, m_AllTetrominoShapes[i].color, m_DroppedBlocksContainer.get());
+	newTetromino->GetDroppedEvent().AddCommand(m_TetrominoDroppedCommand);
 
-	return spawnedTetromino;
+	m_CurrentTetromino = newTetromino;
+
+	if (!newTetromino->ValidateCurrentTransform())
+	{
+		b_GameOver = true;
+		Game::GetGameInstance().GetInputHandler()->Clear();
+		SetupInput();
+	}
 }
 
 void GameMode::CurrentTetrominoDropped()
@@ -119,11 +142,4 @@ void GameMode::CurrentTetrominoDropped()
 		return;
 
 	m_DroppedBlocksContainer->AddTetromino(m_CurrentTetromino.get());
-	m_CurrentTetromino = SpawnRandomTetromino();
-
-	if (!m_CurrentTetromino->ValidateCurrentTransform())
-	{
-		b_GameOver = true;
-		Game::GetGameInstance().GetInputHandler()->Clear();
-	}
 }
