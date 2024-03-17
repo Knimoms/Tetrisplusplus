@@ -105,7 +105,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Tetris++\Source;$(SolutionDir)Tetris++\Source\Framework\Public;$(SolutionDir)Tetris++\Source\Game\Public;$(SolutionDir)Tetris++\Source\Framework\Graphics\Public;$(SolutionDir)Tetris++\Libraries\GLFW\include;$(SolutionDir)Tetris++\Libraries\glew-2.1.0\include;$(SolutionDir)Tetris++\Source\Framework\HeaderLibraries</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Tetris++\Source;$(SolutionDir)Tetris++\Source\Framework\Public;$(SolutionDir)Tetris++\Source\Game\Public;$(SolutionDir)Tetris++\Source\Framework\Graphics\Public;$(SolutionDir)Tetris++\Libraries\GLFW\include;$(SolutionDir)Tetris++\Libraries\glew-2.1.0\include;$(SolutionDir)Tetris++\Libraries\freetype\include;$(SolutionDir)Tetris++\Source\Framework\HeaderLibraries</AdditionalIncludeDirectories>
       <AdditionalHeaderUnitDependencies>
       </AdditionalHeaderUnitDependencies>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -125,7 +125,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Tetris++\Source;$(SolutionDir)Tetris++\Source\Framework\Public;$(SolutionDir)Tetris++\Source\Game\Public;$(SolutionDir)Tetris++\Source\Framework\Graphics\Public;$(SolutionDir)Tetris++\Libraries\GLFW\include;$(SolutionDir)Tetris++\Libraries\glew-2.1.0\include;$(SolutionDir)Tetris++\Source\Framework\HeaderLibraries</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Tetris++\Source;$(SolutionDir)Tetris++\Source\Framework\Public;$(SolutionDir)Tetris++\Source\Game\Public;$(SolutionDir)Tetris++\Source\Framework\Graphics\Public;$(SolutionDir)Tetris++\Libraries\GLFW\include;$(SolutionDir)Tetris++\Libraries\glew-2.1.0\include;$(SolutionDir)Tetris++\Libraries\freetype\include;$(SolutionDir)Tetris++\Source\Framework\HeaderLibraries</AdditionalIncludeDirectories>
       <AdditionalHeaderUnitDependencies>
       </AdditionalHeaderUnitDependencies>
       <LanguageStandard>stdcpp20</LanguageStandard>
