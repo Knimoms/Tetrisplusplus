@@ -1,5 +1,6 @@
 #include "GameMode.h"
 #include "Tetromino.h"
+#include "TetrominoPreview.h"
 #include "DroppedBlocksContainer.h"
 #include "Event.h"
 #include "Command.h"
@@ -8,7 +9,7 @@
 #include <chrono>
 
 GameMode::GameMode()
-	:m_RNG(std::bind(std::uniform_int_distribution<int>(0, 6), std::mt19937(std::chrono::high_resolution_clock::now().time_since_epoch().count())))
+	:m_RNG(std::bind(std::uniform_int_distribution<int>(0, 6), std::mt19937((unsigned int)std::chrono::high_resolution_clock::now().time_since_epoch().count())))
 {
 	m_AllTetrominoShapes =
 	{
@@ -76,6 +77,22 @@ GameMode::GameMode()
 			{240.f / 255.f, 0.f, 0.f}
 		})
 	};
+	float brightness = 0.4f;
+	std::vector<Vertex> vertices = {
+		{ { 9.5f, 19.5f}, {0.1f, 0.1f, 0.1f}, brightness },
+		{ {12.5f, 19.5f}, {0.1f, 0.1f, 0.1f}, brightness },
+	    { {12.5f, -0.5f}, {0.1f, 0.1f, 0.1f}, brightness },
+		{ { 9.5f, -0.5f}, {0.1f, 0.1f, 0.1f}, brightness }
+	};
+
+	std::vector<unsigned int> indices = {
+		0, 1, 2,
+		2, 3, 0
+	};
+
+	m_SidebarBackground = std::make_shared<Mesh>(vertices, indices);
+
+	Game::GetGameInstance().GetRenderer()->AddRenderEntry(this, m_SidebarBackground.get(), nullptr, nullptr, 0);
 
 	for (int i = 0; i < 7; ++i)
 		m_AllTetrominoMeshes.push_back(Tetromino::GenerateMeshFromMat5(m_AllTetrominoShapes[i].shape, m_AllTetrominoShapes[i].color));
@@ -123,7 +140,10 @@ void GameMode::StartGame()
 	m_Level = 1;
 	m_RowsCompletedThisLevel = 0;
 
-	SpawnRandomTetromino();
+	AddTetrominoPreview();
+	AddTetrominoPreview();
+
+	SpawnTetromino();
 }
 
 void GameMode::LevelUp()
@@ -131,6 +151,18 @@ void GameMode::LevelUp()
 	++m_Level;
 	m_DropDelaySeconds *= LEVELUP_SPEED_MULTIPLIER;
 	m_RowsCompletedThisLevel = 0;
+}
+
+void GameMode::AddTetrominoPreview()
+{
+	if (m_TetrominoPreviews.size() > 1)
+		m_TetrominoPreviews.erase(m_TetrominoPreviews.begin());
+
+	if (m_TetrominoPreviews.size() > 0)
+		m_TetrominoPreviews[0]->LiftPreview();
+
+	unsigned int shapeIndex = m_RNG();
+	m_TetrominoPreviews.push_back(std::make_shared<TetrominoPreview>(m_AllTetrominoMeshes[shapeIndex].get(), shapeIndex));
 }
 
 #include "iostream"
@@ -145,16 +177,18 @@ void GameMode::DroppedContainerFinishedAdding(int completedRows)
 
 	system("CLS");
 	std::cout << "Score: " <<  m_Score << " Level: " << m_Level << " Completed Rows: " << m_RowsCompletedThisLevel << std::endl;
-	SpawnRandomTetromino();
+	SpawnTetromino();
 }
 
-void GameMode::SpawnRandomTetromino()
+void GameMode::SpawnTetromino()
 {
-	int i = m_RNG();
+	unsigned int i = m_TetrominoPreviews[0]->GetShapeIndex();
 	auto newTetromino = SpawnGameObject<Tetromino>(m_AllTetrominoMeshes[i], m_AllTetrominoShapes[i].shape, m_AllTetrominoShapes[i].color, m_DroppedBlocksContainer.get());
 	newTetromino->GetDroppedEvent().AddCommand(m_TetrominoDroppedCommand);
 
 	m_CurrentTetromino = newTetromino;
+
+	AddTetrominoPreview();
 
 	if (!newTetromino->ValidateCurrentTransform())
 	{

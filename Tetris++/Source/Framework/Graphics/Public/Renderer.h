@@ -8,7 +8,7 @@ class Shader;
 
 struct RenderEntry
 {
-	unsigned long id;
+	unsigned long long id;
 	void* owner;
 	Mesh* mesh;
 	Transform* transform;
@@ -27,7 +27,7 @@ public:
 	void RenderFrame();
 	void DrawRenderEntry(RenderEntry& renderEntry);
 
-	unsigned long AddRenderEntry(void* inOwner, Mesh* inMesh, Transform* inTransform, Shader* inShader, int renderPriority);
+	unsigned long long AddRenderEntry(void* inOwner, Mesh* inMesh, Transform* inTransform, Shader* inShader, int renderPriority);
 	void RemoveRenderEntries(void* inOwner);
 	void RemoveSpecificRenderEntry(unsigned int inRenderEntryID);
 

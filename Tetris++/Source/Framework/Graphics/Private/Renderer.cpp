@@ -19,8 +19,9 @@ void Renderer::DrawRenderEntry(RenderEntry& renderEntry)
 	renderEntry.shader->Bind();
 
 	glm::mat4 model = glm::translate(glm::mat4(1), { renderEntry.transform->position, 0.f });
-	model = glm::scale(model, { renderEntry.transform->scale, 1.0f});
 	model = glm::rotate(model, glm::radians(renderEntry.transform->rotation), { 0, 0, 1 });
+	model = glm::scale(model, { renderEntry.transform->scale, 0.f});
+
 	glm::mat4 mvp = m_ProjectionMatrix * model;
 	
 	renderEntry.shader->SetUniformMat4f("u_MVP", mvp);
@@ -31,9 +32,9 @@ void Renderer::DrawRenderEntry(RenderEntry& renderEntry)
 
 }
 
-unsigned long Renderer::AddRenderEntry(void* inOwner, Mesh* inMesh, Transform* inTransform, Shader* inShader, int renderPriority)
+unsigned long long Renderer::AddRenderEntry(void* inOwner, Mesh* inMesh, Transform* inTransform, Shader* inShader, int renderPriority)
 {
-	unsigned long id = (unsigned long)inOwner + (unsigned long)inMesh + (unsigned long)inTransform + (unsigned long)inShader;
+	unsigned long long id = (unsigned long long)inOwner + (unsigned long long)inMesh + (unsigned long long)inTransform + (unsigned long long)inShader;
 
 	m_RenderEntries.push_back({ id, inOwner, inMesh, inTransform? inTransform : &Transform::ZeroTransform, inShader? inShader : &Shader::GetDefaultShader(), renderPriority });
 	std::sort(m_RenderEntries.begin(), m_RenderEntries.end(), [](RenderEntry const& left, RenderEntry const& right) -> bool

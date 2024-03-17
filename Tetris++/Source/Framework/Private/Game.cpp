@@ -73,8 +73,8 @@ GLFWwindow* Game::CreateWindow()
 
 	if (!m_WindowHeight)
 	{
-		m_WindowHeight = monitorResolution[1] * 0.8f;
-		m_WindowWidth = m_WindowHeight * 0.65f;
+		m_WindowHeight = (int)((float)monitorResolution[1] * 0.8f);
+		m_WindowWidth = (int)((float)m_WindowHeight * 0.65f);
 	}
 
 	window = glfwCreateWindow(m_WindowWidth, m_WindowHeight, m_GameName.c_str(), nullptr, nullptr);
