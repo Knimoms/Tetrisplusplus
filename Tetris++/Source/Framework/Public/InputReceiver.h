@@ -12,8 +12,6 @@ public:
 	~InputReceiver();
 	virtual void SetupInput() = 0;
 
-	inline InputHandler* GetInputHandler() const { return m_InputHandler; }
-
 	template<typename T>
 	void AddInput(int key, KeyAction executeOn, T* inObject, void (T::* inMethod)(void))
 	{

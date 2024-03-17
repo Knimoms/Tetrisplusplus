@@ -34,7 +34,7 @@ class GameMode : public GameObject, InputReceiver
 private:
 	std::shared_ptr<DroppedBlocksContainer> m_DroppedBlocksContainer;
 	std::shared_ptr<Tetromino> m_CurrentTetromino;
-	std::vector<ShapeColorCombination> m_AllTetrominoShapes;
+	static std::vector<ShapeColorCombination> m_AllTetrominoShapes;
 	std::vector<std::shared_ptr<Mesh>> m_AllTetrominoMeshes;
 
 	

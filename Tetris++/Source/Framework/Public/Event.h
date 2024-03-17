@@ -21,7 +21,8 @@ public:
 	void RemoveCommand(std::shared_ptr<Command<T>> removingCommand)
 	{
 		typename std::vector<std::shared_ptr<Command<T>>>::iterator position = std::find(m_CommandsOnEmit.begin(), m_CommandsOnEmit.end(), removingCommand);
-		m_CommandsOnEmit.erase(position);
+		if(position != m_CommandsOnEmit.end())
+			m_CommandsOnEmit.erase(position);
 	}
 
 	void Emit(T param1)
