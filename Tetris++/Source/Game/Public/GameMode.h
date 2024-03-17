@@ -37,7 +37,6 @@ private:
 	static std::vector<ShapeColorCombination> m_AllTetrominoShapes;
 	std::vector<std::shared_ptr<Mesh>> m_AllTetrominoMeshes;
 
-	
 	std::vector<std::shared_ptr<TetrominoPreview>> m_TetrominoPreviews;
 	std::shared_ptr<Mesh> m_SidebarBackground;
 
@@ -48,7 +47,6 @@ private:
 	float LastFallSecondsAgo = 0.f;
 
 	bool b_GameOver = true;
-
 
 	float m_Score = 0.f;
 	unsigned int m_Level = 1;
