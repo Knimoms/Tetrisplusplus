@@ -18,9 +18,21 @@ private:
 	std::string m_FragmentFilePath;
 	unsigned int m_RendererID;
 
+	mutable std::unordered_map<std::string, int> m_UniformLocationCache;
+
 public:
 	Shader(const std::string& vertexFilepath, const std::string& fragmentFilepath);
 	~Shader();
+
+	void SetUniformMat4f(const std::string& name, const glm::mat4& matrix) const;
+	void SetUniform1f(const std::string& name, float value) const;
+
+	static Shader& GetDefaultShader()
+	{
+		static Shader defaultShader("Resources/Shader/Default.vert", "Resources/Shader/Default.frag");
+
+		return defaultShader;
+	}
 
 	void Bind() const;
 	static void Unbind();
@@ -29,5 +41,7 @@ protected:
 	std::string ReadShaderFile(const std::string& filepath);
 	unsigned int CompileShader(unsigned int type, const std::string& source);
 	unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader);
+
+	unsigned int GetUniformLocation(const std::string& name) const;
 
 };

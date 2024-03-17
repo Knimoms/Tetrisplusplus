@@ -105,9 +105,10 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Tetris++\Source;$(SolutionDir)Tetris++\Source\Game\Public;$(SolutionDir)Tetris++\Source\Graphics\Public;$(SolutionDir)Tetris++\Libraries\GLFW\include;$(SolutionDir)Tetris++\Libraries\glew-2.1.0\include;$(SolutionDir)Tetris++\Source\HeaderLibraries</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Tetris++\Source;$(SolutionDir)Tetris++\Source\Framework\Public;$(SolutionDir)Tetris++\Source\Game\Public;$(SolutionDir)Tetris++\Source\Framework\Graphics\Public;$(SolutionDir)Tetris++\Libraries\GLFW\include;$(SolutionDir)Tetris++\Libraries\glew-2.1.0\include;$(SolutionDir)Tetris++\Source\Framework\HeaderLibraries</AdditionalIncludeDirectories>
       <AdditionalHeaderUnitDependencies>
       </AdditionalHeaderUnitDependencies>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -124,9 +125,10 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Tetris++\Source;$(SolutionDir)Tetris++\Source\Game\Public;$(SolutionDir)Tetris++\Source\Graphics\Public;$(SolutionDir)Tetris++\Libraries\GLFW\include;$(SolutionDir)Tetris++\Libraries\glew-2.1.0\include;$(SolutionDir)Tetris++\Source\HeaderLibraries</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Tetris++\Source;$(SolutionDir)Tetris++\Source\Framework\Public;$(SolutionDir)Tetris++\Source\Game\Public;$(SolutionDir)Tetris++\Source\Framework\Graphics\Public;$(SolutionDir)Tetris++\Libraries\GLFW\include;$(SolutionDir)Tetris++\Libraries\glew-2.1.0\include;$(SolutionDir)Tetris++\Source\Framework\HeaderLibraries</AdditionalIncludeDirectories>
       <AdditionalHeaderUnitDependencies>
       </AdditionalHeaderUnitDependencies>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,24 +140,42 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Game\Private\Game.cpp" />
-    <ClCompile Include="Source\Graphics\Private\Renderer.cpp" />
-    <ClCompile Include="Source\Graphics\Private\Shader.cpp" />
-    <ClCompile Include="Source\Graphics\Private\Mesh.cpp" />
-    <ClCompile Include="Source\Graphics\Private\ElementBuffer.cpp" />
-    <ClCompile Include="Source\Graphics\Private\VertexBuffer.cpp" />
-    <ClCompile Include="Source\Graphics\Private\VertexArray.cpp" />
+    <ClCompile Include="Source\Framework\Private\MeshObject.cpp" />
+    <ClCompile Include="Source\Game\Private\DroppedBlocksContainer.cpp" />
+    <ClCompile Include="Source\Game\Private\GameMode.cpp" />
+    <ClCompile Include="Source\Framework\Private\GameObject.cpp" />
+    <ClCompile Include="Source\Framework\Private\Game.cpp" />
+    <ClCompile Include="Source\Framework\Private\InputHandler.cpp" />
+    <ClCompile Include="Source\Framework\Private\InputReceiver.cpp" />
+    <ClCompile Include="Source\Framework\Graphics\Private\Renderer.cpp" />
+    <ClCompile Include="Source\Framework\Graphics\Private\Shader.cpp" />
+    <ClCompile Include="Source\Framework\Graphics\Private\Mesh.cpp" />
+    <ClCompile Include="Source\Framework\Graphics\Private\ElementBuffer.cpp" />
+    <ClCompile Include="Source\Framework\Graphics\Private\VertexBuffer.cpp" />
+    <ClCompile Include="Source\Framework\Graphics\Private\VertexArray.cpp" />
+    <ClCompile Include="Source\Game\Private\Tetromino.cpp" />
+    <ClCompile Include="Source\Game\Private\TetrominoPreview.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Game\Public\Game.h" />
-    <ClInclude Include="Source\Graphics\Public\Renderer.h" />
-    <ClInclude Include="Source\Graphics\Public\Shader.h" />
-    <ClInclude Include="Source\Graphics\Public\Mesh.h" />
-    <ClInclude Include="Source\Graphics\Public\ElementBuffer.h" />
-    <ClInclude Include="Source\Graphics\Public\VertexBuffer.h" />
-    <ClInclude Include="Source\Graphics\Public\VertexBufferLayout.h" />
+    <ClInclude Include="Source\Framework\Public\MeshObject.h" />
+    <ClInclude Include="Source\Game\Public\DroppedBlocksContainer.h" />
+    <ClInclude Include="Source\Game\Public\GameMode.h" />
+    <ClInclude Include="Source\Framework\Public\Event.h" />
+    <ClInclude Include="Source\Framework\Public\Command.h" />
+    <ClInclude Include="Source\Framework\Public\GameObject.h" />
+    <ClInclude Include="Source\Framework\Public\Game.h" />
+    <ClInclude Include="Source\Framework\Public\InputHandler.h" />
+    <ClInclude Include="Source\Framework\Public\InputReceiver.h" />
+    <ClInclude Include="Source\Framework\Graphics\Public\Renderer.h" />
+    <ClInclude Include="Source\Framework\Graphics\Public\Shader.h" />
+    <ClInclude Include="Source\Framework\Graphics\Public\Mesh.h" />
+    <ClInclude Include="Source\Framework\Graphics\Public\ElementBuffer.h" />
+    <ClInclude Include="Source\Framework\Graphics\Public\VertexBuffer.h" />
+    <ClInclude Include="Source\Framework\Graphics\Public\VertexBufferLayout.h" />
     <ClInclude Include="Source\Macros.h" />
-    <ClInclude Include="Source\Graphics\Public\VertexArray.h" />
+    <ClInclude Include="Source\Framework\Graphics\Public\VertexArray.h" />
+    <ClInclude Include="Source\Game\Public\Tetromino.h" />
+    <ClInclude Include="Source\Game\Public\TetrominoPreview.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -22,5 +22,6 @@
   <ItemGroup>
     <None Include="Resources\Shader\Default.frag" />
     <None Include="Resources\Shader\Default.vert" />
+    <None Include="Resources\Shader\RemoveAnimShader.vert" />
   </ItemGroup>
 </Project>
