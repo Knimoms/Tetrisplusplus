@@ -15,10 +15,14 @@ class VertexBuffer
 {
 private:
 	unsigned int m_RendererID;
+	bool b_DynamicBuffer;
 
 public:
 	VertexBuffer(const std::vector<Vertex>& vertices);
+	VertexBuffer(int maxVertexCount);
 	~VertexBuffer();
+
+	void SetVertices(const std::vector<Vertex>& vertices);
 
 	void Bind() const;
 	static void Unbind();
