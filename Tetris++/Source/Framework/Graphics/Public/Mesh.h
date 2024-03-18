@@ -25,11 +25,17 @@ private:
 
 	VertexArray m_VertexArray;
 
+	bool b_DynamicMesh;
+
 public:
 	Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
+	Mesh(int maxVertexCount, int maxIndexCount);
 
 	inline const std::vector<Vertex>& GetVertices() const { return m_Vertices; }
+	void SetVertices(const std::vector<Vertex>& vertices);
+
 	inline const std::vector<unsigned int>& GetIndices() const { return m_Indices; }
+	void SetIndices(const std::vector<unsigned int>& indices);
 
 	inline const ElementBuffer& GetElementBuffer() const { return m_ElementBuffer; }
 
