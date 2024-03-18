@@ -28,6 +28,8 @@ DroppedBlocksContainer::DroppedBlocksContainer()
 
 	m_AnimShader->Bind();
 	m_AnimShader->SetUniform1f("u_AnimLengthSeconds", m_RemoveAnimationLengthSeconds);
+
+	SetMesh(std::make_shared<Mesh>(200 * Mesh::GetCubeVertices().size(), 200 * Mesh::GetCubeIndices().size()));
 }
 
 void DroppedBlocksContainer::Update(float DeltaTimeSeconds)
@@ -132,7 +134,8 @@ void DroppedBlocksContainer::GenerateMesh()
 
 		}		
 
-	SetMesh(std::make_shared<Mesh>(vertices, indices));
+	GetMesh()->SetVertices(vertices);
+	GetMesh()->SetIndices(indices);
 }
 
 bool DroppedBlocksContainer::IsBlockAtPosition(int x, int y)
@@ -171,7 +174,6 @@ void DroppedBlocksContainer::RemoveRow(int rowY)
 {
 	for(int i = 0; i < 10; ++i)
 		m_ColorMatrix[rowY][i] = {0.f, 0.f, 0.f, 0.f};
-
 }
 
 void DroppedBlocksContainer::StartRemoveAnimation(int rowY)
