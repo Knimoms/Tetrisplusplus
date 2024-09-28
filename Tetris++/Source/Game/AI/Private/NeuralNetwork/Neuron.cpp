@@ -15,30 +15,24 @@ Neuron::Neuron(double inValue)
 
 double Neuron::GetActivatedValue() const
 {
-    static double valueOnLastOperation = -1.;
-    static double cachedActivatedValue = -1.;
-
-    if (m_Value != valueOnLastOperation)
+    if (m_Value != m_ValueOnLastOperation)
     {
-        valueOnLastOperation = m_Value;
-        cachedActivatedValue = m_Value / (1 + abs(m_Value));
+        m_ValueOnLastOperation = m_Value;
+        m_CachedActivatedValue = m_Value / (1 + abs(m_Value));
     }
 
-    return cachedActivatedValue;
+    return m_CachedActivatedValue;
 }
 
 double Neuron::GetDerivedValue() const
 {
-    static double activatedValueOnLastOperation = -1.;
-    static double cachedDerivedValue = -1.;
-
     double activatedValue = GetActivatedValue();
 
-    if (activatedValue != activatedValueOnLastOperation)
+    if (activatedValue != m_ActivatedValueOnLastOperation)
     {
-        activatedValueOnLastOperation = activatedValue;
-        cachedDerivedValue = activatedValue * (1 - activatedValue);
+        m_ActivatedValueOnLastOperation = activatedValue;
+        m_CachedDerivedValue = activatedValue * (1 - activatedValue);
     }
 
-    return cachedDerivedValue;
+    return m_CachedDerivedValue;
 }

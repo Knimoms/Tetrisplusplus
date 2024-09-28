@@ -1,4 +1,4 @@
-﻿#include "NeuralNetwork/NeuralNetwork.h"
+#include "NeuralNetwork/NeuralNetwork.h"
 #include "NeuralNetwork/Layer.h"
 #include "NeuralNetwork/Matrix.h"
 
@@ -27,6 +27,11 @@ NeuralNetwork::NeuralNetwork(const std::vector<int>& topology)
     }
 
     m_Layers.push_back(std::make_shared<Layer>(topology[maxTopIndex]));
+}
+
+NeuralNetwork::NeuralNetwork(const std::string& fileName)
+{
+    Load(fileName);
 }
 
 void NeuralNetwork::FeedForward() const
@@ -65,9 +70,11 @@ std::string NeuralNetwork::ToString() const
     return outputString;
 }
 
-void NeuralNetwork::Save(const std::string& fileNameAppend) const
+std::string NeuralNetwork::s_SaveFolder = "Save/AI/NeuralNetwork/";
+
+void NeuralNetwork::Save(const std::string& fileName) const
 {
-    std::ofstream o("Save/AI/NeuralNetwork/" + fileNameAppend + ".json");
+    std::ofstream outFilestream(s_SaveFolder + fileName + ".json");
 
     int weightMatricesNum = (int)m_WeightMatrices.size();
     int layersNum = (int)m_Layers.size();
@@ -83,15 +90,48 @@ void NeuralNetwork::Save(const std::string& fileNameAppend) const
         std::string matrixPrefix = "matrix;" + std::to_string(i) + ";";
         auto currentMatrix = m_WeightMatrices[i];
 
-        saveJSON[matrixPrefix + "rows"] = currentMatrix->GetNumRows();
-        saveJSON[matrixPrefix + "column"] = currentMatrix->GetNumColumns();
-
         for (unsigned int row = 0; row < currentMatrix->GetNumRows(); ++row)
             for (unsigned int column = 0; column < currentMatrix->GetNumColumns(); ++column)
                 saveJSON[matrixPrefix + std::to_string(row) + ";" + std::to_string(column)] = currentMatrix->GetValue(
                     row, column);
     }
 
-    o << saveJSON << std::endl;
-    o.close();
+    outFilestream << saveJSON << std::endl;
+    outFilestream.close();
+}
+
+void NeuralNetwork::Load(const std::string& fileName)
+{
+    m_Layers.clear();
+    m_WeightMatrices.clear();
+
+    std::ifstream inFilestream(s_SaveFolder + fileName + ".json");
+
+    if (inFilestream.fail())
+        return;
+
+    nlohmann::json saveJSON;
+    inFilestream >> saveJSON;
+
+    const int maxLayersIndex = (int)saveJSON["layers"] - 1;
+
+    for (int i = 0; i < maxLayersIndex; ++i)
+    {
+        const int neuronsInLayer = saveJSON["layer;" + std::to_string(i)];
+        auto currentMatrix = std::make_shared<
+            Matrix>(neuronsInLayer, saveJSON["layer;" + std::to_string(i + 1)], false);
+
+        m_WeightMatrices.push_back(currentMatrix);
+        m_Layers.push_back(std::make_shared<Layer>(neuronsInLayer));
+
+        std::string matrixPrefix = "matrix;" + std::to_string(i) + ";";
+
+        for (unsigned int row = 0; row < currentMatrix->GetNumRows(); ++row)
+            for (unsigned int column = 0; column < currentMatrix->GetNumColumns(); ++column)
+                currentMatrix->SetValue(row, column,
+                                        saveJSON[matrixPrefix + std::to_string(row) + ";" + std::to_string(column)]);
+    }
+
+    m_Layers.push_back(std::make_shared<Layer>(saveJSON["layer;" + std::to_string(maxLayersIndex)]));
+    inFilestream.close();
 }

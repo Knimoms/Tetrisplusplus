@@ -19,11 +19,16 @@ public:
 
 public:
     NeuralNetwork(const std::vector<int>& topology);
+    NeuralNetwork(const std::string& fileName);
 
 public:
     void FeedForward() const;
     std::string ToString() const;
 
+private:
+    static std::string s_SaveFolder;
+
 public:
-    void Save(const std::string& fileNameAppend) const;
+    void Save(const std::string& fileName) const;
+    void Load(const std::string& fileName);
 };
