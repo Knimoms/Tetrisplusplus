@@ -2,7 +2,6 @@
 #include "GameObject.h"
 #include "InputReceiver.h"
 #include "Command.h"
-#include "Event.h"
 
 #include "glm/glm.hpp"
 #include <memory>
@@ -21,11 +20,11 @@ struct ShapeColorCombination
 	glm::vec3 color;
 };
 
-#define START_DELAY 0.6f
-#define COMPLETED_ROWS_TO_LEVELUP 10
-#define LEVELUP_SPEED_MULTIPLIER 0.9f
-#define BASESCORE_ADD 1000.0f
-#define MULTIROW_SCORE_MULTIPLIER 1.25f
+constexpr float START_DELAY = 0.6f;
+constexpr int COMPLETED_ROWS_TO_LEVELUP = 10;
+constexpr float LEVELUP_SPEED_MULTIPLIER =  0.9f;
+constexpr float BASESCORE_ADD = 1000.0f;
+constexpr float MULTIROW_SCORE_MULTIPLIER = 1.25f;
 
 typedef std::_Binder<std::_Unforced, std::uniform_int_distribution<int>, std::mt19937> CappedRNG;
 
@@ -56,7 +55,7 @@ private:
 
 public:
 	GameMode();
-
+	
 	virtual void SetupInput() override;
 	virtual void Init() override;
 	virtual void Update(float DeltaTimeSeconds) override;

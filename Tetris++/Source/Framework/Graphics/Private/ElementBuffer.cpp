@@ -25,7 +25,7 @@ ElementBuffer::~ElementBuffer()
 void ElementBuffer::SetIndices(const std::vector<unsigned int>& indices)
 {
 	Bind();
-	m_Count = indices.size();
+	m_Count = (unsigned int)indices.size();
 	glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indices.size() * sizeof(unsigned int), indices.data());
 }
 
