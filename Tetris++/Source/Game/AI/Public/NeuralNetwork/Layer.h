@@ -11,6 +11,9 @@ private:
     std::pmr::vector<std::shared_ptr<Neuron>> m_Neurons;
 
 public:
+    inline int GetNeuronsNum() const { return (int)m_Neurons.size(); }
+
+public:
     Layer(unsigned int numNeurons);
 
 public:

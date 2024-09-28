@@ -23,4 +23,7 @@ public:
 public:
     void FeedForward() const;
     std::string ToString() const;
+
+public:
+    void Save(const std::string& fileNameAppend) const;
 };

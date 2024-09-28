@@ -2,6 +2,8 @@
 #include "NeuralNetwork/Layer.h"
 #include "NeuralNetwork/Matrix.h"
 
+#include "json/json.hpp"
+#include <fstream>
 #include <iostream>
 
 void NeuralNetwork::SetCurrentInput(const std::vector<double>& input)
@@ -11,9 +13,7 @@ void NeuralNetwork::SetCurrentInput(const std::vector<double>& input)
     const int inputSize = (int)input.size();
 
     for (int i = 0; i < inputSize; ++i)
-    {
         m_Layers[0]->SetNeuronValueAtIndex(i, input[i]);
-    }
 }
 
 NeuralNetwork::NeuralNetwork(const std::vector<int>& topology)
@@ -32,9 +32,7 @@ NeuralNetwork::NeuralNetwork(const std::vector<int>& topology)
 void NeuralNetwork::FeedForward() const
 {
     int layersNum = (int)m_Layers.size();
-    
-    std::cout << m_Layers[layersNum-1]->GetActivatedValueMatrix()->ToString() << "\n";
-    
+
     for (int i = 0; i < layersNum - 1; ++i)
     {
         auto neuronMatrix = i ? m_Layers[i]->GetActivatedValueMatrix() : m_Layers[i]->GetValueMatrix();
@@ -48,10 +46,6 @@ void NeuralNetwork::FeedForward() const
             m_Layers[i + 1]->SetNeuronValueAtIndex(j, resultMatrix->GetValue(0, j));
         }
     }
-    
-    std::cout << "----------------------------------\n";
-    std::cout << m_Layers[layersNum-1]->GetActivatedValueMatrix()->ToString() << "\n";
-    
 }
 
 std::string NeuralNetwork::ToString() const
@@ -69,4 +63,35 @@ std::string NeuralNetwork::ToString() const
         outputString += m_Layers[i]->GetActivatedValueMatrix()->ToString();
 
     return outputString;
+}
+
+void NeuralNetwork::Save(const std::string& fileNameAppend) const
+{
+    std::ofstream o("Save/AI/NeuralNetwork/" + fileNameAppend + ".json");
+
+    int weightMatricesNum = (int)m_WeightMatrices.size();
+    int layersNum = (int)m_Layers.size();
+
+    nlohmann::json saveJSON;
+    saveJSON["layers"] = layersNum;
+
+    for (int i = 0; i < layersNum; ++i)
+        saveJSON["layer;" + std::to_string(i)] = m_Layers[i]->GetNeuronsNum();
+
+    for (int i = 0; i < weightMatricesNum; ++i)
+    {
+        std::string matrixPrefix = "matrix;" + std::to_string(i) + ";";
+        auto currentMatrix = m_WeightMatrices[i];
+
+        saveJSON[matrixPrefix + "rows"] = currentMatrix->GetNumRows();
+        saveJSON[matrixPrefix + "column"] = currentMatrix->GetNumColumns();
+
+        for (unsigned int row = 0; row < currentMatrix->GetNumRows(); ++row)
+            for (unsigned int column = 0; column < currentMatrix->GetNumColumns(); ++column)
+                saveJSON[matrixPrefix + std::to_string(row) + ";" + std::to_string(column)] = currentMatrix->GetValue(
+                    row, column);
+    }
+
+    o << saveJSON << std::endl;
+    o.close();
 }
