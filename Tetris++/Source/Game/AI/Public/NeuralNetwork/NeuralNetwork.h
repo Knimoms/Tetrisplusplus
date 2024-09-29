@@ -16,8 +16,11 @@ private:
 
 public:
     void SetCurrentInput(const std::vector<double>& input);
+    std::vector<double> GetOutputVector() const;
+    std::shared_ptr<Matrix> GetOutputMatrix() const;
 
 public:
+    NeuralNetwork();
     NeuralNetwork(const std::vector<int>& topology);
     NeuralNetwork(const std::string& fileName);
 
@@ -27,8 +30,10 @@ public:
 
 private:
     static std::string s_SaveFolder;
+    static std::string s_AutoSavePrefix;
 
 public:
+    void AutoSave() const;
     void Save(const std::string& fileName) const;
     void Load(const std::string& fileName);
 };

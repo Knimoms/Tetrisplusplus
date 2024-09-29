@@ -1,4 +1,4 @@
-#include "NeuralNetwork/NeuralNetwork.h"
+﻿#include "NeuralNetwork/NeuralNetwork.h"
 #include "NeuralNetwork/Layer.h"
 #include "NeuralNetwork/Matrix.h"
 
@@ -8,12 +8,65 @@
 
 void NeuralNetwork::SetCurrentInput(const std::vector<double>& input)
 {
-    m_CurrentInput = input;
-
     const int inputSize = (int)input.size();
+
+    if (m_Layers.empty() || m_Layers[0]->GetNeuronsNum() < inputSize)
+        return;
+
+    m_CurrentInput = input;
 
     for (int i = 0; i < inputSize; ++i)
         m_Layers[0]->SetNeuronValueAtIndex(i, input[i]);
+}
+
+std::vector<double> NeuralNetwork::GetOutputVector() const
+{
+    if (m_Layers.empty())
+        return {};
+
+    int neuronsNum = (int)m_Layers.size();
+
+    auto outputMatrix = m_Layers[neuronsNum - 1]->GetActivatedValueMatrix();
+    std::vector<double> outputVector;
+
+    for (unsigned int i = 0; i < outputMatrix->GetNumColumns(); ++i)
+        outputVector.push_back(outputMatrix->GetValue(0, i));
+
+    return outputVector;
+}
+
+std::shared_ptr<Matrix> NeuralNetwork::GetOutputMatrix() const
+{
+    if (m_Layers.empty())
+        return nullptr;
+
+    return m_Layers[m_Layers.size() - 1]->GetActivatedValueMatrix();
+}
+
+bool IsFileOlderThan(const std::filesystem::path& inFile, const std::filesystem::path& compareFile)
+{
+    return std::filesystem::last_write_time(inFile) <
+        std::filesystem::last_write_time(compareFile);
+}
+
+std::filesystem::path GetLastFileInDirectory(const std::string& directoryPath,
+                                             const std::string& fileNameSubstring = "")
+{
+    std::filesystem::path latestFile;
+
+    for (auto& entry : std::filesystem::directory_iterator(directoryPath))
+        if ((fileNameSubstring.empty() || entry.path().string().find(fileNameSubstring) != std::string::npos) &&
+            (latestFile.empty() || IsFileOlderThan(latestFile, entry.path())))
+            latestFile = entry.path();
+
+    std::cout << latestFile << " " << fileNameSubstring << std::endl;
+    return latestFile;
+}
+
+
+NeuralNetwork::NeuralNetwork()
+{
+    Load(GetLastFileInDirectory(s_SaveFolder, s_AutoSavePrefix).string());
 }
 
 NeuralNetwork::NeuralNetwork(const std::vector<int>& topology)
@@ -71,6 +124,18 @@ std::string NeuralNetwork::ToString() const
 }
 
 std::string NeuralNetwork::s_SaveFolder = "Save/AI/NeuralNetwork/";
+std::string NeuralNetwork::s_AutoSavePrefix = "NN_autosave_";
+
+void NeuralNetwork::AutoSave() const
+{
+    std::ostringstream outStringStream;
+
+    outStringStream << std::chrono::duration_cast<std::chrono::seconds>(
+        std::chrono::system_clock::now().time_since_epoch()).count();
+    std::string saveName = s_AutoSavePrefix + outStringStream.str();
+
+    Save(saveName);
+}
 
 void NeuralNetwork::Save(const std::string& fileName) const
 {
@@ -83,16 +148,16 @@ void NeuralNetwork::Save(const std::string& fileName) const
     saveJSON["layers"] = layersNum;
 
     for (int i = 0; i < layersNum; ++i)
-        saveJSON["layer;" + std::to_string(i)] = m_Layers[i]->GetNeuronsNum();
+        saveJSON["layer" + std::to_string(i)] = m_Layers[i]->GetNeuronsNum();
 
     for (int i = 0; i < weightMatricesNum; ++i)
     {
-        std::string matrixPrefix = "matrix;" + std::to_string(i) + ";";
         auto currentMatrix = m_WeightMatrices[i];
+        std::string matrixId = "matrix" + std::to_string(i);
 
         for (unsigned int row = 0; row < currentMatrix->GetNumRows(); ++row)
             for (unsigned int column = 0; column < currentMatrix->GetNumColumns(); ++column)
-                saveJSON[matrixPrefix + std::to_string(row) + ";" + std::to_string(column)] = currentMatrix->GetValue(
+                saveJSON[matrixId][std::to_string(row) + std::to_string(column)] = currentMatrix->GetValue(
                     row, column);
     }
 
@@ -102,13 +167,13 @@ void NeuralNetwork::Save(const std::string& fileName) const
 
 void NeuralNetwork::Load(const std::string& fileName)
 {
-    m_Layers.clear();
-    m_WeightMatrices.clear();
-
     std::ifstream inFilestream(s_SaveFolder + fileName + ".json");
 
     if (inFilestream.fail())
         return;
+
+    m_Layers.clear();
+    m_WeightMatrices.clear();
 
     nlohmann::json saveJSON;
     inFilestream >> saveJSON;
@@ -117,21 +182,21 @@ void NeuralNetwork::Load(const std::string& fileName)
 
     for (int i = 0; i < maxLayersIndex; ++i)
     {
-        const int neuronsInLayer = saveJSON["layer;" + std::to_string(i)];
+        const int neuronsInLayer = saveJSON["layer" + std::to_string(i)];
         auto currentMatrix = std::make_shared<
-            Matrix>(neuronsInLayer, saveJSON["layer;" + std::to_string(i + 1)], false);
+            Matrix>(neuronsInLayer, saveJSON["layer" + std::to_string(i + 1)], false);
 
         m_WeightMatrices.push_back(currentMatrix);
         m_Layers.push_back(std::make_shared<Layer>(neuronsInLayer));
 
-        std::string matrixPrefix = "matrix;" + std::to_string(i) + ";";
+        std::string matrixId = "matrix" + std::to_string(i);
 
         for (unsigned int row = 0; row < currentMatrix->GetNumRows(); ++row)
             for (unsigned int column = 0; column < currentMatrix->GetNumColumns(); ++column)
                 currentMatrix->SetValue(row, column,
-                                        saveJSON[matrixPrefix + std::to_string(row) + ";" + std::to_string(column)]);
+                                        saveJSON[matrixId][std::to_string(row) + std::to_string(column)]);
     }
 
-    m_Layers.push_back(std::make_shared<Layer>(saveJSON["layer;" + std::to_string(maxLayersIndex)]));
+    m_Layers.push_back(std::make_shared<Layer>(saveJSON["layer" + std::to_string(maxLayersIndex)]));
     inFilestream.close();
 }
