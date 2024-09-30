@@ -138,7 +138,7 @@ void DroppedBlocksContainer::GenerateMesh()
 	GetMesh()->SetIndices(indices);
 }
 
-bool DroppedBlocksContainer::IsBlockAtPosition(int x, int y)
+bool DroppedBlocksContainer::IsBlockAtPosition(int x, int y) const
 {
 	return (x < 10 && x > -1 && y < 20 && y > -1)? (bool)m_ColorMatrix[y][x][0] : false;
 }
@@ -224,4 +224,22 @@ void DroppedBlocksContainer::DropRows()
 	}
 
 	GenerateMesh();
+}
+
+std::vector<double> DroppedBlocksContainer::GetColumnHeights() const
+{
+	std::vector<double> columnHeights;
+
+	for(int i = 0; i < 10; ++i)
+	{
+		int j = 0;
+		for(; j < 20; ++j)
+			if(IsBlockAtPosition(i, j))
+				break;
+			
+		columnHeights.push_back(j);
+	}
+		
+
+	return columnHeights;
 }

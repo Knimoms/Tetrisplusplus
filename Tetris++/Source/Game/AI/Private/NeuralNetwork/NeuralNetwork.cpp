@@ -43,6 +43,31 @@ std::shared_ptr<Matrix> NeuralNetwork::GetOutputMatrix() const
     return m_Layers[m_Layers.size() - 1]->GetActivatedValueMatrix();
 }
 
+int NeuralNetwork::GetHighestOutputValueIndex() const
+{
+    auto outputMatrix = GetOutputMatrix();
+
+    if(!outputMatrix)
+        return -1;
+
+    int highestValueIndex = -1;
+    double highestValue = -1.;
+
+    unsigned int columnsNum = outputMatrix->GetNumColumns();
+    
+    for(unsigned int i = 0; i < columnsNum; ++i)
+    {
+        double currentValue = outputMatrix->GetValue(0, i);
+        if(highestValueIndex < 0 || currentValue > highestValue)
+        {
+            highestValue = currentValue;
+            highestValueIndex = (int)i;
+        }
+    }
+
+    return highestValueIndex;
+}
+
 bool IsFileOlderThan(const std::filesystem::path& inFile, const std::filesystem::path& compareFile)
 {
     return std::filesystem::last_write_time(inFile) <
@@ -71,15 +96,16 @@ NeuralNetwork::NeuralNetwork()
 
 NeuralNetwork::NeuralNetwork(const std::vector<int>& topology)
 {
-    const int maxTopIndex = (int)topology.size() - 1;
+    GenerateLayersAndMatrices(topology);
+}
 
-    for (int i = 0; i < maxTopIndex; ++i)
-    {
-        m_WeightMatrices.push_back(std::make_shared<Matrix>(topology[i], topology[i + 1], true));
-        m_Layers.push_back(std::make_shared<Layer>(topology[i]));
-    }
+NeuralNetwork::NeuralNetwork(const std::vector<int>& topology, const std::string& filePrefix)
+    :m_FilePrefix(filePrefix)
+{
+    Load(GetLastFileInDirectory(s_SaveFolder, filePrefix).string());
 
-    m_Layers.push_back(std::make_shared<Layer>(topology[maxTopIndex]));
+    if(m_Layers.empty())
+        GenerateLayersAndMatrices(topology);    
 }
 
 NeuralNetwork::NeuralNetwork(const std::string& fileName)
@@ -104,6 +130,19 @@ void NeuralNetwork::FeedForward() const
             m_Layers[i + 1]->SetNeuronValueAtIndex(j, resultMatrix->GetValue(0, j));
         }
     }
+}
+
+void NeuralNetwork::GenerateLayersAndMatrices(const std::vector<int>& topology)
+{
+    const int maxTopIndex = (int)topology.size() - 1;
+
+    for (int i = 0; i < maxTopIndex; ++i)
+    {
+        m_WeightMatrices.push_back(std::make_shared<Matrix>(topology[i], topology[i + 1], true));
+        m_Layers.push_back(std::make_shared<Layer>(topology[i]));
+    }
+
+    m_Layers.push_back(std::make_shared<Layer>(topology[maxTopIndex]));
 }
 
 std::string NeuralNetwork::ToString() const
@@ -132,9 +171,8 @@ void NeuralNetwork::AutoSave() const
 
     outStringStream << std::chrono::duration_cast<std::chrono::seconds>(
         std::chrono::system_clock::now().time_since_epoch()).count();
-    std::string saveName = s_AutoSavePrefix + outStringStream.str();
 
-    Save(saveName);
+    Save(s_AutoSavePrefix + outStringStream.str());
 }
 
 void NeuralNetwork::Save(const std::string& fileName) const

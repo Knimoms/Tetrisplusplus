@@ -5,16 +5,16 @@
 #include "Shader.h"
 #include "DroppedBlocksContainer.h"
 
-Tetromino::Tetromino(bool shapeMatrix[5][5], const glm::vec3& color, DroppedBlocksContainer* droppedBlocksC)
-	:m_Color(color)
+Tetromino::Tetromino(char tetrominoType, bool shapeMatrix[5][5], const glm::vec3& color, DroppedBlocksContainer* droppedBlocksC)
+	:m_TetrominoType(tetrominoType), m_Color(color)
 {
 	SetMesh(GenerateMeshFromMat5(shapeMatrix, color));
 	SetBlockOffsetsWithMat5(shapeMatrix);
 
 }
 
-Tetromino::Tetromino(std::shared_ptr<Mesh> mesh, bool shapeMatrix[5][5], const glm::vec3& color, DroppedBlocksContainer* droppedBlocksC)
-	:m_Color(color), m_DroppedBlockContainer(droppedBlocksC)
+Tetromino::Tetromino(char tetrominoType, std::shared_ptr<Mesh> mesh, bool shapeMatrix[5][5], const glm::vec3& color, DroppedBlocksContainer* droppedBlocksC)
+	:m_TetrominoType(tetrominoType), m_Color(color), m_DroppedBlockContainer(droppedBlocksC)
 {
 	SetMesh(mesh);
 	SetBlockOffsetsWithMat5(shapeMatrix);

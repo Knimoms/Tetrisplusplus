@@ -71,10 +71,10 @@ TEST(DroppedBlockContainerTest, AddingTetromioTest) {
 		0, 0, 0, 0, 0
 	};
 
-	Tetromino* t1 = new Tetromino(shapeMat, {1.0f, 1.0f, 1.0f}, &dpc);
+	Tetromino* t1 = new Tetromino(0, shapeMat, {1.0f, 1.0f, 1.0f}, &dpc);
 	t1->SetTransform({{1.f, 19.f}});
 	
-	Tetromino* t2 = new Tetromino(shapeMat, { 1.0f, 1.0f, 1.0f }, &dpc);
+	Tetromino* t2 = new Tetromino(0, shapeMat, { 1.0f, 1.0f, 1.0f }, &dpc);
 	t2->SetTransform({ {5.f, 19.f} });
 
 	bool shapeMat2[5][5]
@@ -86,7 +86,7 @@ TEST(DroppedBlockContainerTest, AddingTetromioTest) {
 		0, 0, 0, 0, 0
 	};
 	
-	Tetromino* t3 = new Tetromino(shapeMat2, { 1.0f, 1.0f, 1.0f }, &dpc);
+	Tetromino* t3 = new Tetromino(0, shapeMat2, { 1.0f, 1.0f, 1.0f }, &dpc);
 	t3->SetTransform({ {8.f, 18.f}});
 	
 	dpc.AddTetromino(t1);

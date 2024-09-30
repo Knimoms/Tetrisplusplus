@@ -10,6 +10,7 @@ class DroppedBlocksContainer;
 class Tetromino : public MeshObject, InputReceiver
 {
 private:
+	char m_TetrominoType;
 	glm::ivec2 m_BlockOffsets[3];
 	glm::vec3 m_Color;
 
@@ -24,8 +25,8 @@ private:
 	float m_LastInputSecondsAgo = 0.f;
 	
 public:
-	Tetromino(bool shapeMatrix[5][5], const glm::vec3& color, DroppedBlocksContainer* droppedBlocksC);
-	Tetromino(std::shared_ptr<Mesh> mesh, bool shapeMatrix[5][5], const glm::vec3& color, DroppedBlocksContainer* droppedBlocksC);
+	Tetromino(char tetrominoType, bool shapeMatrix[5][5], const glm::vec3& color, DroppedBlocksContainer* droppedBlocksC);
+	Tetromino(char tetrominoType, std::shared_ptr<Mesh> mesh, bool shapeMatrix[5][5], const glm::vec3& color, DroppedBlocksContainer* droppedBlocksC);
 
 	virtual void SetupInput() override;
 	virtual void Init() override;
@@ -52,7 +53,8 @@ public:
 	void Rotate_Pressed();
 
 public:
-
+	inline char GetTetrominoType() const { return m_TetrominoType; }
+	
 	void SetBlockOffsetsWithMat5(bool matrix[5][5]);
 	inline glm::ivec2(&GetBlockOffsets())[3] { return m_BlockOffsets; }
 

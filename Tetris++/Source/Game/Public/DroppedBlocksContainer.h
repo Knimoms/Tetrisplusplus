@@ -30,7 +30,7 @@ public:
 	void AddTetromino(Tetromino* addingTetromino);
 	void GenerateMesh();
 	
-	bool IsBlockAtPosition(int x, int y);
+	bool IsBlockAtPosition(int x, int y) const;
 
 	glm::ivec4 GetCompletedRows();
 	void RemoveRow(int rowY);
@@ -41,5 +41,8 @@ public:
 	void DropRows();
 
 	inline Event<int>& GetAddingTetrominoFinishedEvent() { return m_AddingTetrominoFinishedEvent; }
+
+public:	
+	std::vector<double> GetColumnHeights() const;
 };
 

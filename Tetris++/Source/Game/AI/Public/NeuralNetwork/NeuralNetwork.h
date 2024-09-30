@@ -12,6 +12,8 @@ private:
     std::vector<std::shared_ptr<Layer>> m_Layers;
     std::vector<std::shared_ptr<Matrix>> m_WeightMatrices;
 
+    std::string m_FilePrefix;
+
     std::vector<double> m_CurrentInput;
 
 public:
@@ -19,13 +21,17 @@ public:
     std::vector<double> GetOutputVector() const;
     std::shared_ptr<Matrix> GetOutputMatrix() const;
 
+    int GetHighestOutputValueIndex() const;
+
 public:
     NeuralNetwork();
     NeuralNetwork(const std::vector<int>& topology);
+    NeuralNetwork(const std::vector<int>& topology, const std::string& filePrefix);
     NeuralNetwork(const std::string& fileName);
 
 public:
     void FeedForward() const;
+    void GenerateLayersAndMatrices(const std::vector<int>& topology);
     std::string ToString() const;
 
 private:
