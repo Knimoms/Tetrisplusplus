@@ -25,6 +25,7 @@ private:
 public:
 	DroppedBlocksContainer();
 
+	virtual void Init() override;
 	virtual void Update(float DeltaTimeSeconds) override;
 
 	void AddTetromino(Tetromino* addingTetromino);

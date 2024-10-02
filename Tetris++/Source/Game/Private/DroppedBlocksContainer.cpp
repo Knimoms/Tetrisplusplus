@@ -28,7 +28,11 @@ DroppedBlocksContainer::DroppedBlocksContainer()
 
 	m_AnimShader->Bind();
 	m_AnimShader->SetUniform1f("u_AnimLengthSeconds", m_RemoveAnimationLengthSeconds);
+}
 
+void DroppedBlocksContainer::Init()
+{
+	MeshObject::Init();
 	SetMesh(std::make_shared<Mesh>(200 * Mesh::GetCubeVertices().size(), 200 * Mesh::GetCubeIndices().size()));
 }
 

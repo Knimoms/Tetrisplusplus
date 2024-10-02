@@ -57,6 +57,8 @@ public:
     inline std::shared_ptr<DroppedBlocksContainer> GetDroppedBlocksContainer() { return m_DroppedBlocksContainer; }
     inline std::shared_ptr<Tetromino> GetCurrentTetromino() { return m_CurrentTetromino; }
 
+    inline bool IsGameOver() const { return b_GameOver; }
+
 public:
     GameMode();
 

@@ -3,9 +3,11 @@
 #include "InputHandler.h"
 #include "GameMode.h"
 
-#include "GL/glew.h"
 #include "GLFW/glfw3.h"
 #include <chrono>
+
+#include "TetrisAIController.h"
+#include "NeuralNetwork/NeuralNetwork.h"
 
 Game::Game()
 	:m_Renderer(std::make_shared<Renderer>())
@@ -18,9 +20,11 @@ void Game::Run()
 {
 	m_Renderer->Init();
 
-	std::shared_ptr<GameMode> gameMode = GameObject::SpawnGameObject<GameMode>();
-
+	m_GameMode = GameObject::SpawnGameObject<GameMode>();
 	auto lastTimestamp = std::chrono::high_resolution_clock::now();
+
+	auto AI = GameObject::SpawnGameObject<TetrisAIController>();
+
 
 	while (!glfwWindowShouldClose(m_Window))
 	{

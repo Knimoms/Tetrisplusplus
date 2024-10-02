@@ -9,7 +9,7 @@ private:
 
 public:
 	InputReceiver();
-	~InputReceiver();
+	virtual ~InputReceiver();
 	virtual void SetupInput() = 0;
 
 	template<typename T>

@@ -6,6 +6,7 @@
 #include <string>
 #include <memory>
 
+class GameMode;
 class Renderer;
 class InputHandler;
 struct GLFWwindow;
@@ -13,36 +14,41 @@ struct GLFWwindow;
 class Game
 {
 public:
-	static Game& GetGameInstance()
-	{
-		static Game game;
-		return game;
-	}
+    static Game& GetGameInstance()
+    {
+        static Game game;
+        return game;
+    }
 
 private:
-	std::string m_GameName = "Tetris++";
-	int m_WindowWidth = 0;
-	int m_WindowHeight = 0;
+    std::string m_GameName = "Tetris++";
+    int m_WindowWidth = 0;
+    int m_WindowHeight = 0;
 
-	std::shared_ptr<Renderer> m_Renderer;
-	std::shared_ptr<InputHandler> m_InputHandler;
-	GLFWwindow* m_Window;
+    std::shared_ptr<Renderer> m_Renderer;
+    std::shared_ptr<InputHandler> m_InputHandler;
+    GLFWwindow* m_Window;
 
-	Event<float> m_UpdateEvent;
+    Event<float> m_UpdateEvent;
 
 private:
-	Game();
+    Game();
 
 public:
-	Game(Game const&) = delete;
-	void operator=(Game const&) = delete;
+    Game(Game const&) = delete;
+    void operator=(Game const&) = delete;
 
-	void Run();
+private:
+    std::shared_ptr<GameMode> m_GameMode;
 
-	inline InputHandler* GetInputHandler() { return m_InputHandler.get(); }
-	inline Renderer* GetRenderer() { return m_Renderer.get(); }
+public:
+    inline std::shared_ptr<GameMode> GetGameMode() const { return m_GameMode; }
 
-	inline Event<float>& GetUpdateEvent() { return m_UpdateEvent; }
+public:
+    void Run();
 
+    inline InputHandler* GetInputHandler() { return m_InputHandler.get(); }
+    inline Renderer* GetRenderer() { return m_Renderer.get(); }
+
+    inline Event<float>& GetUpdateEvent() { return m_UpdateEvent; }
 };
-

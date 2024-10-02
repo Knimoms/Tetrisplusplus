@@ -24,6 +24,12 @@ TetrisAIController::TetrisAIController()
 
 void TetrisAIController::Update(float DeltaTimeSeconds)
 {
+    if (m_PlayingGameMode->IsGameOver())
+    {
+        m_PlayingGameMode->StartGame();
+        return;
+    }
+
     std::vector<double> newInputs;
     std::vector<double> columnHeights = m_PlayingGameMode->GetDroppedBlocksContainer()->GetColumnHeights();
     newInputs.insert(newInputs.end(), columnHeights.begin(), columnHeights.end());

@@ -93,7 +93,7 @@ void Renderer::RemoveRenderEntries(void* inOwner)
 {
 	std::vector<RenderEntry>::iterator position; 
 
-	while((position = GetFirstRenderEntry(inOwner)) != m_RenderEntries.end())
+	while(!m_RenderEntries.empty() && (position = GetFirstRenderEntry(inOwner)) != m_RenderEntries.end())
 		m_RenderEntries.erase(position);
 }
 
@@ -111,11 +111,11 @@ void Renderer::RemoveSpecificRenderEntry(unsigned int inID)
 }
 
 std::vector<RenderEntry>::iterator Renderer::GetFirstRenderEntry(void* inOwner)
-{
-	return std::find_if(m_RenderEntries.begin(), m_RenderEntries.end(),
-		[inOwner](const RenderEntry& renderEntry) -> bool {
-			return (renderEntry.owner == inOwner);
-		});
+{	
+	return std::ranges::find_if(m_RenderEntries,
+	                            [inOwner](const RenderEntry& renderEntry) -> bool {
+		                            return (renderEntry.owner == inOwner);
+	                            });
 }
 
 void Renderer::SetBackgroundColor(const glm::vec3& inColor)

@@ -8,24 +8,24 @@ InputHandler::InputHandler(GLFWwindow* inWindow)
 
 std::vector<KeyCommand>::iterator InputHandler::GetInputPosition(void* owner, int key, KeyAction executeOn)
 {
-	return std::find_if(m_KeyCommands.begin(), m_KeyCommands.end(),
-		[owner, key, executeOn](const KeyCommand& keycommand) -> bool { 
-		return (keycommand.owner == owner) && (keycommand.key == key) && (keycommand.executeAction == executeOn); 
-		});
+	return std::ranges::find_if(m_KeyCommands,
+	                            [owner, key, executeOn](const KeyCommand& keycommand) -> bool { 
+		                            return (keycommand.owner == owner) && (keycommand.key == key) && (keycommand.executeAction == executeOn); 
+	                            });
 }
 
 std::vector<KeyCommand>::iterator InputHandler::GetFirstInputPosition(void* owner)
 {
-	return std::find_if(m_KeyCommands.begin(), m_KeyCommands.end(),
-		[owner](const KeyCommand& keycommand) -> bool {
-			return (keycommand.owner == owner);
-		});
+	return std::ranges::find_if(m_KeyCommands,
+	                            [owner](const KeyCommand& keycommand) -> bool {
+		                            return (keycommand.owner == owner);
+	                            });
 }
 
 void InputHandler::RemoveInputs(void* owner)
 {
 	std::vector<KeyCommand>::iterator position;
-	while((position = GetFirstInputPosition(owner)) != m_KeyCommands.end())
+	while(!m_KeyCommands.empty() && (position = GetFirstInputPosition(owner)) != m_KeyCommands.end())
 		m_KeyCommands.erase(position);
 }
 
