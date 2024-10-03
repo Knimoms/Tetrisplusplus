@@ -101,7 +101,7 @@ void Tetromino::Rotate()
 
 	newRotation += 90.f;
 	if (newRotation > 360.f)
-		newRotation += 0.f;
+		newRotation -= 360.f;
 
 	glm::ivec2 newBlockOffsets[3];
 

@@ -1,4 +1,4 @@
-﻿#include "NeuralNetwork/Matrix.h"
+#include "NeuralNetwork/Matrix.h"
 
 #include <format>
 #include <random>
@@ -70,24 +70,6 @@ std::string Matrix::ToString() const
     return outputString;
 }
 
-std::shared_ptr<Matrix> Matrix::operator*(const Matrix& matrix)
-{
-    if (m_NumColumns != matrix.m_NumRows)
-        return nullptr;
-
-    auto outputMatrix = std::make_shared<Matrix>(m_NumRows, matrix.m_NumColumns, false);
-
-    for (unsigned int i = 0; i < m_NumRows; ++i)
-        for (unsigned int j = 0; j < matrix.m_NumColumns; ++j)
-            for (unsigned int k = 0; k < matrix.m_NumRows; ++k)
-            {
-                double result = GetValue(i, k) * matrix.GetValue(k, j);
-                outputMatrix->SetValue(i, j, result);
-            }
-
-    return outputMatrix;
-}
-
 Matrix::operator std::vector<double>() const
 {
     std::vector<double> result;
@@ -97,4 +79,22 @@ Matrix::operator std::vector<double>() const
             result.push_back(GetValue(i, j));
 
     return result;
+}
+
+std::shared_ptr<Matrix> Matrix::Multiply(std::shared_ptr<Matrix> matrix) const
+{
+    if (m_NumColumns != matrix->m_NumRows)
+        return nullptr;
+
+    auto outputMatrix = std::make_shared<Matrix>(m_NumRows, matrix->m_NumColumns, false);
+
+    for (unsigned int i = 0; i < m_NumRows; ++i)
+        for (unsigned int j = 0; j < matrix->m_NumColumns; ++j)
+            for (unsigned int k = 0; k < m_NumColumns; ++k)
+            {
+                double result = GetValue(i, k) * matrix->GetValue(k, j);
+                outputMatrix->SetValue(i, j, outputMatrix->GetValue(i, j) + result);
+            }
+
+    return outputMatrix;
 }
