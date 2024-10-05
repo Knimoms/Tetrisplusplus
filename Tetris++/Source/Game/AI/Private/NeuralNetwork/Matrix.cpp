@@ -1,4 +1,4 @@
-#include "NeuralNetwork/Matrix.h"
+﻿#include "NeuralNetwork/Matrix.h"
 
 #include <format>
 #include <random>
@@ -17,6 +17,26 @@ void Matrix::SetValue(unsigned int row, unsigned int column, double inValue)
         return;
 
     m_Values[column][row] = inValue;
+}
+
+void Matrix::SetValues(const std::shared_ptr<Matrix>& valueMatrix, double mutationRate)
+{
+    if (valueMatrix->GetNumColumns() != m_NumColumns || valueMatrix->GetNumRows() != m_NumRows)
+        return;
+
+    for (unsigned int i = 0; i < m_NumColumns; ++i)
+        for (unsigned int j = 0; j < m_NumRows; ++j)
+        {
+            double mutationRoll = GetRandomValue();
+
+            if (mutationRoll > mutationRate)
+            {
+                SetValue(j, i, valueMatrix->GetValue(j, i));
+                continue;
+            }
+
+            SetValue(j, i, GetRandomValue());
+        }
 }
 
 Matrix::Matrix(unsigned int numRows, unsigned int numColumns, bool bRandom)

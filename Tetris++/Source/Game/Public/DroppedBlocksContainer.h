@@ -43,7 +43,7 @@ public:
 
 	inline Event<int>& GetAddingTetrominoFinishedEvent() { return m_AddingTetrominoFinishedEvent; }
 
-public:	
-	std::vector<double> GetColumnHeights() const;
+public:
+	std::array<double, 10> GetColumnHeights() const;
 };
 

@@ -15,6 +15,8 @@ private:
     
     static std::vector<int> s_Topology;
 
+    bool b_StartedPlaying = false;
+
 public:
     TetrisAIController();
 
@@ -31,4 +33,5 @@ private:
 
 public:
     virtual void Update(float DeltaTimeSeconds) override;
+    void SetFitnessByScore(double inScore);
 };

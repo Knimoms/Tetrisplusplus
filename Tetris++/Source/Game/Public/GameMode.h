@@ -9,6 +9,9 @@
 #include <random>
 #include <functional>
 
+#include "TetrominoPreview.h"
+
+class TetrisAIController;
 class Tetromino;
 class TetrominoPreview;
 class DroppedBlocksContainer;
@@ -57,15 +60,21 @@ public:
     inline std::shared_ptr<DroppedBlocksContainer> GetDroppedBlocksContainer() { return m_DroppedBlocksContainer; }
     inline std::shared_ptr<Tetromino> GetCurrentTetromino() { return m_CurrentTetromino; }
 
+    inline unsigned int GetNextTetrominoShapeIndex() const { return m_TetrominoPreviews[0]->GetShapeIndex(); }
+
     inline bool IsGameOver() const { return b_GameOver; }
 
 public:
-    GameMode();
+    GameMode(bool bSpawnAI);
 
     virtual void SetupInput() override;
     virtual void Init() override;
     virtual void Update(float DeltaTimeSeconds) override;
 
+private:
+    std::shared_ptr<TetrisAIController> m_PlayingAI;
+
+public:
     void StartGame();
     void LevelUp();
 

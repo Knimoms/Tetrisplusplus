@@ -93,9 +93,10 @@ std::vector<ShapeColorCombination> GameMode::m_AllTetrominoShapes =
         })
 };
 
-GameMode::GameMode()
+GameMode::GameMode(bool bSpawnAI)
     : m_RNG(std::bind(std::uniform_int_distribution<int>(0, 6),
-                      std::mt19937((unsigned int)std::chrono::high_resolution_clock::now().time_since_epoch().count())))
+                      std::mt19937(
+                          (unsigned int)std::chrono::high_resolution_clock::now().time_since_epoch().count())))
 {
     float brightness = 0.4f;
     std::vector<Vertex> vertices = {
@@ -119,6 +120,9 @@ GameMode::GameMode()
             Tetromino::GenerateMeshFromMat5(m_AllTetrominoShapes[i].shape, m_AllTetrominoShapes[i].color));
 
     SetupInput();
+
+    if (bSpawnAI)
+        m_PlayingAI = GameObject::SpawnGameObject<TetrisAIController>();
 }
 
 void GameMode::SetupInput()
@@ -148,8 +152,6 @@ void GameMode::Update(float DeltaTimeSeconds)
     }
 }
 
-std::shared_ptr<TetrisAIController> AI;
-
 void GameMode::StartGame()
 {
     b_GameOver = false;
@@ -159,9 +161,6 @@ void GameMode::StartGame()
     m_DroppedBlocksContainer = SpawnGameObject<DroppedBlocksContainer>();
     m_DroppedBlocksContainer->GetAddingTetrominoFinishedEvent().AddCommand(
         std::make_shared<ObjectCommand<GameMode, int>>(this, &GameMode::DroppedContainerFinishedAdding));
-
-    AI = GameObject::SpawnGameObject<TetrisAIController>();
-
 
     m_DropDelaySeconds = START_DELAY;
     m_Score = 0.f;
@@ -224,6 +223,8 @@ void GameMode::SpawnTetromino()
     if (!newTetromino->ValidateCurrentTransform())
     {
         b_GameOver = true;
+
+        m_PlayingAI->SetFitnessByScore(m_Score);
 
         system("CLS");
         std::cout << "GAMEOVER" << std::endl;

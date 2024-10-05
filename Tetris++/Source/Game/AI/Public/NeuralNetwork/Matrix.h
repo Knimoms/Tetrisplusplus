@@ -17,6 +17,8 @@ public:
     double GetValue(unsigned int row, unsigned int column) const;
     void SetValue(unsigned int row, unsigned int column, double inValue);
 
+    void SetValues(const std::shared_ptr<Matrix>& valueMatrix, double mutationRate = 0.f);
+
 public:
     Matrix(unsigned int numRows, unsigned int numColumns, bool bRandom);
 
@@ -27,6 +29,7 @@ public:
     std::shared_ptr<Matrix> Transpose() const;
     std::string ToString() const;
 
-    std::shared_ptr<Matrix> operator*(const Matrix& matrix);
     explicit operator std::vector<double>() const;
+
+    std::shared_ptr<Matrix> Multiply(std::shared_ptr<Matrix> matrix) const;
 };

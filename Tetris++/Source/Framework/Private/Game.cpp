@@ -20,11 +20,8 @@ void Game::Run()
 {
 	m_Renderer->Init();
 
-	m_GameMode = GameObject::SpawnGameObject<GameMode>();
+	m_GameMode = GameObject::SpawnGameObject<GameMode>(true);
 	auto lastTimestamp = std::chrono::high_resolution_clock::now();
-
-	auto AI = GameObject::SpawnGameObject<TetrisAIController>();
-
 
 	while (!glfwWindowShouldClose(m_Window))
 	{

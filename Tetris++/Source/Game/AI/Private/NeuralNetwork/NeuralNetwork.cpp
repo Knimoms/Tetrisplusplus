@@ -26,11 +26,14 @@ std::vector<double> NeuralNetwork::GetOutputVector() const
 
     int neuronsNum = (int)m_Layers.size();
 
-    auto outputMatrix = m_Layers[neuronsNum - 1]->GetActivatedValueMatrix();
+    auto outputMatrix = m_Layers[neuronsNum - 1]->GetValueMatrix();
     std::vector<double> outputVector;
 
     for (unsigned int i = 0; i < outputMatrix->GetNumColumns(); ++i)
-        outputVector.push_back(outputMatrix->GetValue(0, i));
+    {
+        double value = outputMatrix->GetValue(0, i);
+        outputVector.push_back(value);
+    }
 
     return outputVector;
 }
@@ -47,18 +50,18 @@ int NeuralNetwork::GetHighestOutputValueIndex() const
 {
     auto outputMatrix = GetOutputMatrix();
 
-    if(!outputMatrix)
+    if (!outputMatrix)
         return -1;
 
     int highestValueIndex = -1;
     double highestValue = -1.;
 
     unsigned int columnsNum = outputMatrix->GetNumColumns();
-    
-    for(unsigned int i = 0; i < columnsNum; ++i)
+
+    for (unsigned int i = 0; i < columnsNum; ++i)
     {
         double currentValue = outputMatrix->GetValue(0, i);
-        if(highestValueIndex < 0 || currentValue > highestValue)
+        if (highestValueIndex < 0 || currentValue > highestValue)
         {
             highestValue = currentValue;
             highestValueIndex = (int)i;
@@ -66,6 +69,11 @@ int NeuralNetwork::GetHighestOutputValueIndex() const
     }
 
     return highestValueIndex;
+}
+
+void NeuralNetwork::SetFitness(double inFitness)
+{
+    m_Fitness = inFitness;
 }
 
 bool IsFileOlderThan(const std::filesystem::path& inFile, const std::filesystem::path& compareFile)
@@ -84,28 +92,106 @@ std::filesystem::path GetLastFileInDirectory(const std::string& directoryPath,
             (latestFile.empty() || IsFileOlderThan(latestFile, entry.path())))
             latestFile = entry.path();
 
-    std::cout << latestFile << " " << fileNameSubstring << std::endl;
     return latestFile;
+}
+
+double GetFitnessFromFile(const std::string& filePath)
+{
+    std::ifstream inFilestream(filePath + ".json");
+
+    nlohmann::json saveJSON;
+    inFilestream >> saveJSON;
+
+    double fitness = saveJSON["fitness"];
+    inFilestream.close();
+
+    return fitness;
+}
+
+std::array<unsigned int, 2> GetGenerationDataFromSaveFile(const std::string& filePath)
+{
+    std::stringstream pathStream(filePath);
+    std::string cacheString;
+
+    std::getline(pathStream, cacheString, '_');
+    std::getline(pathStream, cacheString, '_');
+
+    std::array<unsigned int, 2> output;
+    output[0] = std::stoi(cacheString);
+
+    std::getline(pathStream, cacheString, '_');
+    output[1] = std::stoi(cacheString);
+
+    return output;
+}
+
+std::filesystem::path GetBestFileFromGenerationInDirectory(const std::string& directoryPath,
+                                                           const std::string& fileNameSubstring,
+                                                           unsigned int generation)
+{
+    std::filesystem::path bestFile;
+    double bestFileFitness = 0.f;
+
+    for (auto& entry : std::filesystem::directory_iterator(directoryPath))
+    {
+        auto generationData = GetGenerationDataFromSaveFile(entry.path().string());
+
+        if ((entry.path().string().find(fileNameSubstring) == std::string::npos) || generationData[0] != generation)
+            continue;
+
+        if (double entryFitness = GetFitnessFromFile(entry.path().string()); bestFile.empty() || entryFitness >
+            bestFileFitness)
+        {
+            bestFile = entry.path();
+            bestFileFitness = entryFitness;
+        }
+    }
+
+    return bestFile;
 }
 
 
 NeuralNetwork::NeuralNetwork()
 {
-    Load(GetLastFileInDirectory(s_SaveFolder, s_AutoSavePrefix).string());
+    Load(GetLastFileInDirectory(s_SaveFolder, m_FilePrefix).string());
+}
+
+NeuralNetwork::NeuralNetwork(const NeuralNetwork& parent, float mutationRate)
+    : m_FilePrefix(parent.m_FilePrefix), m_Generation(parent.m_Generation + 1), m_GenerationIndex(GetHighestExistingGenerationIndex() + 1), m_Fitness(0)
+{
+    const int maxLayerIndex = (int)m_Layers.size() - 1;
+
+    for (int i = 0; i < maxLayerIndex; ++i)
+    {
+        m_WeightMatrices.push_back(std::make_shared<Matrix>(parent.m_Layers[i]->GetNeuronsNum(),
+                                                            parent.m_Layers[i + 1]->GetNeuronsNum(), false));
+        m_Layers.push_back(std::make_shared<Layer>(parent.m_Layers[i]->GetNeuronsNum()));
+    }
+
+    m_Layers.push_back(std::make_shared<Layer>(parent.m_Layers[maxLayerIndex]->GetNeuronsNum()));
+
+    const int weightMatricesNum = (int)m_WeightMatrices.size();
+
+    for (int i = 0; i < weightMatricesNum; ++i)
+        m_WeightMatrices[i]->SetValues(parent.m_WeightMatrices[i], mutationRate);
 }
 
 NeuralNetwork::NeuralNetwork(const std::vector<int>& topology)
+    : m_GenerationIndex(GetHighestExistingGenerationIndex() + 1)
 {
     GenerateLayersAndMatrices(topology);
 }
 
 NeuralNetwork::NeuralNetwork(const std::vector<int>& topology, const std::string& filePrefix)
-    :m_FilePrefix(filePrefix)
+    : m_FilePrefix(filePrefix)
 {
     Load(GetLastFileInDirectory(s_SaveFolder, filePrefix).string());
 
-    if(m_Layers.empty())
-        GenerateLayersAndMatrices(topology);    
+    if (m_Layers.empty())
+    {
+        GenerateLayersAndMatrices(topology);
+        m_GenerationIndex = GetHighestExistingGenerationIndex() + 1;
+    }
 }
 
 NeuralNetwork::NeuralNetwork(const std::string& fileName)
@@ -122,7 +208,7 @@ void NeuralNetwork::FeedForward() const
         auto neuronMatrix = i ? m_Layers[i]->GetActivatedValueMatrix() : m_Layers[i]->GetValueMatrix();
         auto weightMatrix = m_WeightMatrices[i];
 
-        auto resultMatrix = *neuronMatrix * *weightMatrix;
+        auto resultMatrix = neuronMatrix->Multiply(weightMatrix);
 
         unsigned int numColums = resultMatrix->GetNumColumns();
         for (unsigned int j = 0; j < numColums; ++j)
@@ -163,21 +249,33 @@ std::string NeuralNetwork::ToString() const
 }
 
 std::string NeuralNetwork::s_SaveFolder = "Save/AI/NeuralNetwork/";
-std::string NeuralNetwork::s_AutoSavePrefix = "NN_autosave_";
+
+unsigned int NeuralNetwork::GetHighestExistingGenerationIndex() const
+{
+    unsigned int highestIndex = 0;
+
+    for (auto& entry : std::filesystem::directory_iterator(s_SaveFolder))
+    {
+        auto generationData = GetGenerationDataFromSaveFile(entry.path().string());
+
+        if ((entry.path().string().find(m_FilePrefix) == std::string::npos) || generationData[0] != m_Generation)
+            continue;
+
+        if (highestIndex < generationData[1])
+            highestIndex = generationData[1];
+    }
+
+    return highestIndex;
+}
 
 void NeuralNetwork::AutoSave() const
 {
-    std::ostringstream outStringStream;
-
-    outStringStream << std::chrono::duration_cast<std::chrono::seconds>(
-        std::chrono::system_clock::now().time_since_epoch()).count();
-
-    Save(s_AutoSavePrefix + outStringStream.str());
+    Save(m_FilePrefix);
 }
 
 void NeuralNetwork::Save(const std::string& fileName) const
 {
-    std::ofstream outFilestream(s_SaveFolder + fileName + ".json");
+    std::ofstream outFilestream(s_SaveFolder + fileName + "_" + std::to_string(m_Generation) + "_" + std::to_string(m_GenerationIndex) + "_.json");
 
     int weightMatricesNum = (int)m_WeightMatrices.size();
     int layersNum = (int)m_Layers.size();
@@ -198,6 +296,8 @@ void NeuralNetwork::Save(const std::string& fileName) const
                 saveJSON[matrixId][std::to_string(row) + std::to_string(column)] = currentMatrix->GetValue(
                     row, column);
     }
+
+    saveJSON["fitness"] = m_Fitness;
 
     outFilestream << saveJSON << std::endl;
     outFilestream.close();
@@ -236,5 +336,12 @@ void NeuralNetwork::Load(const std::string& fileName)
     }
 
     m_Layers.push_back(std::make_shared<Layer>(saveJSON["layer" + std::to_string(maxLayersIndex)]));
+    m_Fitness = saveJSON["fitness"];
+
+    auto generationData = GetGenerationDataFromSaveFile(s_SaveFolder + fileName + ".json");
+
+    m_Generation = generationData[0];
+    m_GenerationIndex = generationData[1];
+
     inFilestream.close();
 }

@@ -1,19 +1,22 @@
 #include "TetrisAIController.h"
 
+#include <array>
 #include <iostream>
 
 #include "DroppedBlocksContainer.h"
 #include "Game.h"
 #include "GameMode.h"
 #include "Tetromino.h"
+#include "NeuralNetwork/Matrix.h"
 
 std::vector<int> TetrisAIController::s_Topology = {
     10 + //Column heights
     1 + //Tetromino type
     1 + //Tetromino position x
     1 + //Tetromino position y
-    1, //Tetromino rotation
-    10, 10, // Hidden layers
+    1 + //Tetromino rotation
+    1,  // Next Tetromino
+    9, 8, 7, // Hidden layers
     5 // Output ()
 };
 
@@ -24,14 +27,21 @@ TetrisAIController::TetrisAIController()
 
 void TetrisAIController::Update(float DeltaTimeSeconds)
 {
+    if(!m_PlayingGameMode)
+        m_PlayingGameMode = Game::GetGameInstance().GetGameMode();
+    
     if (m_PlayingGameMode->IsGameOver())
     {
-        m_PlayingGameMode->StartGame();
+        if(!b_StartedPlaying)
+            m_PlayingGameMode->StartGame();
+        
         return;
     }
 
+    b_StartedPlaying = true;
+
     std::vector<double> newInputs;
-    std::vector<double> columnHeights = m_PlayingGameMode->GetDroppedBlocksContainer()->GetColumnHeights();
+    auto columnHeights = m_PlayingGameMode->GetDroppedBlocksContainer()->GetColumnHeights();
     newInputs.insert(newInputs.end(), columnHeights.begin(), columnHeights.end());
 
     auto currentTetromino = m_PlayingGameMode->GetCurrentTetromino();
@@ -46,6 +56,7 @@ void TetrisAIController::Update(float DeltaTimeSeconds)
     newInputs.push_back(transform.position.y);
 
     newInputs.push_back(transform.rotation);
+    newInputs.push_back(m_PlayingGameMode->GetNextTetrominoShapeIndex());
 
     m_NeuralNetwork.SetCurrentInput(newInputs);
 
@@ -56,19 +67,30 @@ void TetrisAIController::Update(float DeltaTimeSeconds)
     {
     case NoMove:
         break;
+        
     case MoveLeft:
         currentTetromino->MoveLeft();
         break;
+        
     case MoveRight:
         currentTetromino->MoveRight();
         break;
+        
     case MoveDown:
         currentTetromino->Fall();
         break;
+        
     case Rotate:
         currentTetromino->Rotate_Pressed();
         break;
-    default:
-        std::cout << "Invalid Action triggered by AI" << std::endl;
+        
+    case InvalidAction:
+        std::cout << "Invalid Action triggered by AI" << '\n';
     }
+}
+
+void TetrisAIController::SetFitnessByScore(double inScore)
+{
+    m_NeuralNetwork.SetFitness(inScore);
+    m_NeuralNetwork.AutoSave();
 }
