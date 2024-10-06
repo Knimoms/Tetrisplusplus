@@ -102,7 +102,7 @@ unsigned int Shader::CreateShader(const std::string& vertexShader, const std::st
 
 		glGetProgramInfoLog(program, length, &length, message);
 
-		std::cout << "Failed to link shader!" << length << std::endl;
+		std::cout << "Failed to link shader!" << std::endl;
 		std::cout << message << std::endl;
 
 		glDeleteProgram(program);

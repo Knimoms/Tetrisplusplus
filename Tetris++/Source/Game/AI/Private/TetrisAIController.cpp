@@ -17,12 +17,14 @@ std::vector<int> TetrisAIController::s_Topology = {
     1 + //Tetromino rotation
     1,  // Next Tetromino
     9, 8, 7, // Hidden layers
-    5 // Output ()
+    4 // Output ()
 };
 
-TetrisAIController::TetrisAIController()
-    : m_PlayingGameMode(Game::GetGameInstance().GetGameMode()), m_NeuralNetwork(s_Topology, "tetrisAI")
+TetrisAIController::TetrisAIController(bool bTrain)
+    : m_PlayingGameMode(Game::GetGameInstance().GetGameMode()), m_NeuralNetwork(s_Topology, "tetrisAI"), b_Training(bTrain)
 {
+    if(bTrain)
+        m_NeuralNetwork = NeuralNetwork(m_NeuralNetwork, 0.05f);
 }
 
 void TetrisAIController::Update(float DeltaTimeSeconds)
@@ -64,10 +66,7 @@ void TetrisAIController::Update(float DeltaTimeSeconds)
     Actions nextAction = (Actions)m_NeuralNetwork.GetHighestOutputValueIndex();
 
     switch (nextAction)
-    {
-    case NoMove:
-        break;
-        
+    {        
     case MoveLeft:
         currentTetromino->MoveLeft();
         break;
@@ -87,10 +86,29 @@ void TetrisAIController::Update(float DeltaTimeSeconds)
     case InvalidAction:
         std::cout << "Invalid Action triggered by AI" << '\n';
     }
+    
+    m_UsedActions[nextAction] = true;
 }
 
-void TetrisAIController::SetFitnessByScore(double inScore)
+void TetrisAIController::EvaluateFitnessWithScore(double inScore)
 {
+    m_FitnessScore = 0.f;
+    m_FitnessScore += inScore;
+
+    for(int i = 0; i < 4; ++i)
+        if(m_UsedActions[i])
+            inScore += 100.f;
+    
     m_NeuralNetwork.SetFitness(inScore);
-    m_NeuralNetwork.AutoSave();
+
+    if(b_Training)
+    {
+        m_NeuralNetwork.AutoSave();
+        Game::GetGameInstance().StopGame();
+    }
+}
+
+void TetrisAIController::EvaluateLastAIGenerations()
+{
+    NeuralNetwork::FilterGenerationsForBest("tetrisAI");
 }

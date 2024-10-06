@@ -35,7 +35,7 @@ void Matrix::SetValues(const std::shared_ptr<Matrix>& valueMatrix, double mutati
                 continue;
             }
 
-            SetValue(j, i, GetRandomValue());
+            SetValue(j, i, valueMatrix->GetValue(j, i) + GetRandomValue(-0.5, 0.5));
         }
 }
 
@@ -54,11 +54,11 @@ Matrix::Matrix(unsigned int numRows, unsigned int numColumns, bool bRandom)
     }
 }
 
-double Matrix::GetRandomValue()
+double Matrix::GetRandomValue(double bottom, double top)
 {
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dis(0., 1.);
+    std::uniform_real_distribution<> dis(bottom, top);
 
     return dis(gen);
 }

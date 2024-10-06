@@ -1,4 +1,6 @@
 #pragma once
+#include <array>
+
 #include "GameObject.h"
 #include <memory>
 
@@ -17,21 +19,29 @@ private:
 
     bool b_StartedPlaying = false;
 
+    bool b_Training;
+
+    double m_FitnessScore = 0.f;
+
 public:
-    TetrisAIController();
+    TetrisAIController(bool bTrain);
 
 private:
     enum Actions
     {
         InvalidAction   = -1,
-        NoMove          = 0,
-        MoveLeft        = 1,
-        MoveRight       = 2,
-        MoveDown        = 3,
-        Rotate          = 4
+        MoveLeft     = 0,
+        MoveRight    = 1,
+        MoveDown     = 2,
+        Rotate       = 3
     };
 
+    std::array<bool, 4> m_UsedActions;
+    
 public:
     virtual void Update(float DeltaTimeSeconds) override;
-    void SetFitnessByScore(double inScore);
+    void EvaluateFitnessWithScore(double inScore);
+
+public:
+    static void EvaluateLastAIGenerations();
 };

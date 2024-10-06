@@ -93,7 +93,7 @@ std::vector<ShapeColorCombination> GameMode::m_AllTetrominoShapes =
         })
 };
 
-GameMode::GameMode(bool bSpawnAI)
+GameMode::GameMode(bool bSpawnAI, bool bTrainAI)
     : m_RNG(std::bind(std::uniform_int_distribution<int>(0, 6),
                       std::mt19937(
                           (unsigned int)std::chrono::high_resolution_clock::now().time_since_epoch().count())))
@@ -122,7 +122,7 @@ GameMode::GameMode(bool bSpawnAI)
     SetupInput();
 
     if (bSpawnAI)
-        m_PlayingAI = GameObject::SpawnGameObject<TetrisAIController>();
+        m_PlayingAI = GameObject::SpawnGameObject<TetrisAIController>(bTrainAI);
 }
 
 void GameMode::SetupInput()
@@ -224,7 +224,8 @@ void GameMode::SpawnTetromino()
     {
         b_GameOver = true;
 
-        m_PlayingAI->SetFitnessByScore(m_Score);
+        if(m_PlayingAI)
+            m_PlayingAI->EvaluateFitnessWithScore(m_Score);
 
         system("CLS");
         std::cout << "GAMEOVER" << std::endl;

@@ -23,7 +23,7 @@ public:
     Matrix(unsigned int numRows, unsigned int numColumns, bool bRandom);
 
 protected:
-    static double GetRandomValue();
+    static double GetRandomValue(double bottom = 0., double top = 1.);
 
 public:
     std::shared_ptr<Matrix> Transpose() const;

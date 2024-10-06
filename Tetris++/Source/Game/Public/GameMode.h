@@ -65,7 +65,7 @@ public:
     inline bool IsGameOver() const { return b_GameOver; }
 
 public:
-    GameMode(bool bSpawnAI);
+    GameMode(bool bSpawnAI, bool bTrainAI = false);
 
     virtual void SetupInput() override;
     virtual void Init() override;

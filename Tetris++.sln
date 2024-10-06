@@ -41,6 +41,7 @@ Global
 		{B62178F9-A476-43DC-BF21-D44E7FAC831E}.Release|x64.Build.0 = Release|x64
 		{B62178F9-A476-43DC-BF21-D44E7FAC831E}.Release|x86.ActiveCfg = Release|Win32
 		{B62178F9-A476-43DC-BF21-D44E7FAC831E}.Release|x86.Build.0 = Release|Win32
+		{B62178F9-A476-43DC-BF21-D44E7FAC831E}.Debug|x64.Deploy.0 = Debug|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

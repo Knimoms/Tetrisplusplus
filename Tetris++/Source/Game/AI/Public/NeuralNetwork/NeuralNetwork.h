@@ -35,7 +35,7 @@ public:
     NeuralNetwork(const NeuralNetwork& parent, float mutationRate = 0.0f);
     NeuralNetwork(const std::vector<int>& topology);
     NeuralNetwork(const std::vector<int>& topology, const std::string& filePrefix);
-    NeuralNetwork(const std::string& fileName);
+    NeuralNetwork(const std::string& filePath);
 
 public:
     void FeedForward() const;
@@ -49,7 +49,10 @@ protected:
     unsigned int GetHighestExistingGenerationIndex() const;
 
 public:
-    void AutoSave() const;
-    void Save(const std::string& fileName) const;
-    void Load(const std::string& fileName);
+    void AutoSave();
+    void Save(const std::string& fileName);
+    void Load(const std::string& filePath);
+
+public:
+   static void FilterGenerationsForBest(const std::string& filePrefix);
 };

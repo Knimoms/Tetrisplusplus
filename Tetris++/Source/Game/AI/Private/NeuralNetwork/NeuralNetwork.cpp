@@ -95,9 +95,51 @@ std::filesystem::path GetLastFileInDirectory(const std::string& directoryPath,
     return latestFile;
 }
 
+std::array<unsigned int, 2> GetGenerationDataFromSaveFile(const std::string& filePath)
+{
+    std::stringstream pathStream(filePath);
+    std::string cacheString;
+
+    std::getline(pathStream, cacheString, '_');
+
+    std::array<unsigned int, 2> output;
+
+    for (int i = 0; i < 2 && std::getline(pathStream, cacheString, '_'); ++i)
+        output[i] = std::stoi(cacheString);
+
+    return output;
+}
+
+std::filesystem::path GetParentFromLastGenInDirectory(const std::string& directoryPath,
+                                                      const std::string& fileNameSubstring = "")
+{
+    std::filesystem::path parentFile;
+    unsigned int latestGen = 0;
+
+    for (auto& entry : std::filesystem::directory_iterator(directoryPath))
+    {
+        if ((!fileNameSubstring.empty() && entry.path().string().find(fileNameSubstring) == std::string::npos) || entry.
+            path().string().find("parent.json") == std::string::npos)
+            continue;
+
+        auto generationData = GetGenerationDataFromSaveFile(entry.path().string());
+
+        if (parentFile.empty() || latestGen < generationData[0])
+        {
+            parentFile = entry.path();
+            latestGen = generationData[0];
+        }
+    }
+
+    return parentFile;
+}
+
 double GetFitnessFromFile(const std::string& filePath)
 {
-    std::ifstream inFilestream(filePath + ".json");
+    std::ifstream inFilestream(filePath);
+
+    if (inFilestream.fail())
+        return 0.f;
 
     nlohmann::json saveJSON;
     inFilestream >> saveJSON;
@@ -106,23 +148,6 @@ double GetFitnessFromFile(const std::string& filePath)
     inFilestream.close();
 
     return fitness;
-}
-
-std::array<unsigned int, 2> GetGenerationDataFromSaveFile(const std::string& filePath)
-{
-    std::stringstream pathStream(filePath);
-    std::string cacheString;
-
-    std::getline(pathStream, cacheString, '_');
-    std::getline(pathStream, cacheString, '_');
-
-    std::array<unsigned int, 2> output;
-    output[0] = std::stoi(cacheString);
-
-    std::getline(pathStream, cacheString, '_');
-    output[1] = std::stoi(cacheString);
-
-    return output;
 }
 
 std::filesystem::path GetBestFileFromGenerationInDirectory(const std::string& directoryPath,
@@ -157,9 +182,10 @@ NeuralNetwork::NeuralNetwork()
 }
 
 NeuralNetwork::NeuralNetwork(const NeuralNetwork& parent, float mutationRate)
-    : m_FilePrefix(parent.m_FilePrefix), m_Generation(parent.m_Generation + 1), m_GenerationIndex(GetHighestExistingGenerationIndex() + 1), m_Fitness(0)
+    : m_FilePrefix(parent.m_FilePrefix), m_Generation(parent.m_Generation + 1),
+      m_GenerationIndex(GetHighestExistingGenerationIndex() + 1), m_Fitness(0)
 {
-    const int maxLayerIndex = (int)m_Layers.size() - 1;
+    const int maxLayerIndex = (int)parent.m_Layers.size() - 1;
 
     for (int i = 0; i < maxLayerIndex; ++i)
     {
@@ -185,7 +211,7 @@ NeuralNetwork::NeuralNetwork(const std::vector<int>& topology)
 NeuralNetwork::NeuralNetwork(const std::vector<int>& topology, const std::string& filePrefix)
     : m_FilePrefix(filePrefix)
 {
-    Load(GetLastFileInDirectory(s_SaveFolder, filePrefix).string());
+    Load(GetParentFromLastGenInDirectory(s_SaveFolder, filePrefix).string());
 
     if (m_Layers.empty())
     {
@@ -194,9 +220,9 @@ NeuralNetwork::NeuralNetwork(const std::vector<int>& topology, const std::string
     }
 }
 
-NeuralNetwork::NeuralNetwork(const std::string& fileName)
+NeuralNetwork::NeuralNetwork(const std::string& filePath)
 {
-    Load(fileName);
+    Load(filePath);
 }
 
 void NeuralNetwork::FeedForward() const
@@ -268,14 +294,18 @@ unsigned int NeuralNetwork::GetHighestExistingGenerationIndex() const
     return highestIndex;
 }
 
-void NeuralNetwork::AutoSave() const
+void NeuralNetwork::AutoSave()
 {
     Save(m_FilePrefix);
 }
 
-void NeuralNetwork::Save(const std::string& fileName) const
+void NeuralNetwork::Save(const std::string& fileName)
 {
-    std::ofstream outFilestream(s_SaveFolder + fileName + "_" + std::to_string(m_Generation) + "_" + std::to_string(m_GenerationIndex) + "_.json");
+    m_GenerationIndex = GetHighestExistingGenerationIndex() + 1;
+    
+    std::ofstream outFilestream(
+        s_SaveFolder + fileName + "_" + std::to_string(m_Generation) + "_" + std::to_string(m_GenerationIndex) +
+        "_.json");
 
     int weightMatricesNum = (int)m_WeightMatrices.size();
     int layersNum = (int)m_Layers.size();
@@ -299,13 +329,13 @@ void NeuralNetwork::Save(const std::string& fileName) const
 
     saveJSON["fitness"] = m_Fitness;
 
-    outFilestream << saveJSON << std::endl;
+    outFilestream << saveJSON;
     outFilestream.close();
 }
 
-void NeuralNetwork::Load(const std::string& fileName)
+void NeuralNetwork::Load(const std::string& filePath)
 {
-    std::ifstream inFilestream(s_SaveFolder + fileName + ".json");
+    std::ifstream inFilestream(filePath);
 
     if (inFilestream.fail())
         return;
@@ -338,10 +368,65 @@ void NeuralNetwork::Load(const std::string& fileName)
     m_Layers.push_back(std::make_shared<Layer>(saveJSON["layer" + std::to_string(maxLayersIndex)]));
     m_Fitness = saveJSON["fitness"];
 
-    auto generationData = GetGenerationDataFromSaveFile(s_SaveFolder + fileName + ".json");
+    auto generationData = GetGenerationDataFromSaveFile(s_SaveFolder + filePath + ".json");
 
     m_Generation = generationData[0];
     m_GenerationIndex = generationData[1];
 
     inFilestream.close();
+}
+
+
+void NeuralNetwork::FilterGenerationsForBest(const std::string& filePrefix)
+{
+    std::vector<unsigned int> generationsWithMultipleFiles;
+    std::vector<unsigned int> encounteredGenerations;
+
+    for (auto& entry : std::filesystem::directory_iterator(s_SaveFolder))
+    {
+        if ((entry.path().string().find(filePrefix) == std::string::npos))
+            continue;
+
+        auto generationData = GetGenerationDataFromSaveFile(entry.path().string());
+        if (std::ranges::find(encounteredGenerations, generationData[0]) == encounteredGenerations.end())
+        {
+            encounteredGenerations.push_back(generationData[0]);
+            continue;
+        }
+
+        if (std::ranges::find(generationsWithMultipleFiles, generationData[0]) == generationsWithMultipleFiles.end())
+            generationsWithMultipleFiles.push_back(generationData[0]);
+    }
+
+    int numGensMultipleFiles = (int)generationsWithMultipleFiles.size();
+    std::vector<std::filesystem::path> bestFilesOfGenerations;
+
+    bestFilesOfGenerations.reserve(numGensMultipleFiles);
+
+    for (int i = 0; i < numGensMultipleFiles; ++i)
+        bestFilesOfGenerations.push_back(
+            GetBestFileFromGenerationInDirectory(s_SaveFolder, filePrefix, generationsWithMultipleFiles[i]));
+
+    for (auto& entry : std::filesystem::directory_iterator(s_SaveFolder))
+    {
+        if ((entry.path().string().find(filePrefix) == std::string::npos))
+            continue;
+
+        auto generationData = GetGenerationDataFromSaveFile(entry.path().string());
+
+        if (std::ranges::find(generationsWithMultipleFiles, generationData[0]) == generationsWithMultipleFiles.end() ||
+            entry.path().string().find("parent.json") != std::string::npos)
+            continue;
+
+        if (std::ranges::find(bestFilesOfGenerations, entry.path()) != bestFilesOfGenerations.end())
+        {
+            std::string path = entry.path().string();
+            path.erase(path.find(".json"), 5);
+
+            std::filesystem::rename(entry.path(), path + "parent.json");
+            continue;
+        }
+
+        std::filesystem::remove(entry.path().string());
+    }
 }

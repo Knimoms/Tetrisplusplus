@@ -44,11 +44,16 @@ private:
 public:
     inline std::shared_ptr<GameMode> GetGameMode() const { return m_GameMode; }
 
+private:
+    bool b_RunGame = true;
+
 public:
-    void Run();
+    void Run(const std::string& arguments);
 
     inline InputHandler* GetInputHandler() { return m_InputHandler.get(); }
     inline Renderer* GetRenderer() { return m_Renderer.get(); }
 
     inline Event<float>& GetUpdateEvent() { return m_UpdateEvent; }
+
+    void StopGame();
 };
