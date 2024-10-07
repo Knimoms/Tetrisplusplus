@@ -1,10 +1,14 @@
 @echo off
 
+set batchdir=%~dp0
+
+cd /d ".\GameTetris++"
+
 set "count=20"
 
 :train_ai
 for /L %%i in (1,1,%count%) do (
-    start /min "" "GameTetris++.exe" aitrain dropworsegens
+    start /min "" "..\x64\Debug\GameTetris++.exe" aitrain dropworsegens
 )
 
 :check_if_tetris1_running
@@ -15,7 +19,7 @@ if "%ERRORLEVEL%"=="0" (
 )
 
 for /L %%i in (1,1,%count%) do (
-    start /min "" "GameTetris++.exe" aitrain dropworsegens
+    start /min "" "..\x64\Debug\GameTetris++.exe" aitrain dropworsegens
 )
 
 :check_if_tetris2_running
@@ -25,7 +29,7 @@ if "%ERRORLEVEL%"=="0" (
     goto check_if_tetris2_running
 )
 
-start /min "" "GameTetris++.exe" evaluate skipgame
+start /min "" "..\x64\Debug\GameTetris++.exe" evaluate skipgame
 
 :check_if_tetrisEvaluate_running
 tasklist /FI "IMAGENAME eq GameTetris++.exe" 2>NUL | find /I "GameTetris++.exe" >NUL
