@@ -1,5 +1,2 @@
-
-"C:\dev\Tetrisplusplus\x64\Debug\GameTetris++.exe"
-
-
+start "" "GameTetris++.exe" aitrain
 

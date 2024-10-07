@@ -18,11 +18,4 @@ private:
 
 public:
     double GetActivatedValue() const;
-
-private:
-    mutable double m_ActivatedValueOnLastOperation = -1.;
-    mutable double m_CachedDerivedValue;
-
-public:
-    double GetDerivedValue() const;
 };

@@ -39,14 +39,3 @@ std::shared_ptr<Matrix> Layer::GetActivatedValueMatrix() const
 
     return matrix;
 }
-
-std::shared_ptr<Matrix> Layer::GetDerivedValueMatrix() const
-{
-    int neuronsNum = (int)m_Neurons.size();
-    auto matrix = std::make_shared<Matrix>(1, neuronsNum, false);
-
-    for (int i = 0; i < neuronsNum; ++i)
-        matrix->SetValue(0, i, m_Neurons[i]->GetDerivedValue());
-
-    return matrix;
-}

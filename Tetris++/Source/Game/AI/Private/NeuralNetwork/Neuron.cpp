@@ -18,21 +18,8 @@ double Neuron::GetActivatedValue() const
     if (m_Value != m_ValueOnLastOperation)
     {
         m_ValueOnLastOperation = m_Value;
-        m_CachedActivatedValue = m_Value / (1 + abs(m_Value));
+        m_CachedActivatedValue = 0.5 * (1 + m_Value / (1 + abs(m_Value)));
     }
 
     return m_CachedActivatedValue;
-}
-
-double Neuron::GetDerivedValue() const
-{
-    double activatedValue = GetActivatedValue();
-
-    if (activatedValue != m_ActivatedValueOnLastOperation)
-    {
-        m_ActivatedValueOnLastOperation = activatedValue;
-        m_CachedDerivedValue = activatedValue * (1 - activatedValue);
-    }
-
-    return m_CachedDerivedValue;
 }
