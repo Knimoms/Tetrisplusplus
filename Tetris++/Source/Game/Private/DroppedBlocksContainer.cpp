@@ -30,6 +30,9 @@ DroppedBlocksContainer::DroppedBlocksContainer()
 
     m_AnimShader->Bind();
     m_AnimShader->SetUniform1f("u_AnimLengthSeconds", m_RemoveAnimationLengthSeconds);
+
+    if(Game::GetGameInstance().IsTrainingAI())
+        m_RemoveAnimationLengthSeconds = -1.f;
 }
 
 void DroppedBlocksContainer::Init()

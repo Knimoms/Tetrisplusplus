@@ -31,6 +31,11 @@ private:
 
     Event<float> m_UpdateEvent;
 
+    bool b_TrainingAI;
+
+public:
+    inline bool IsTrainingAI() const { return b_TrainingAI; }
+
 private:
     Game();
 

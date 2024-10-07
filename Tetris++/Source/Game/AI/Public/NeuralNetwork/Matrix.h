@@ -26,7 +26,6 @@ protected:
     static double GetRandomValue(double bottom = 0., double top = 1.);
 
 public:
-    std::shared_ptr<Matrix> Transpose() const;
     std::string ToString() const;
 
     explicit operator std::vector<double>() const;

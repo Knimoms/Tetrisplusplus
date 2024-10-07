@@ -34,10 +34,10 @@ void Game::Run(const std::string& arguments)
 
     m_Renderer->Init();
 
-    bool bTrainAI = arguments.find("aitrain") != std::string::npos;
+    b_TrainingAI = arguments.find("aitrain") != std::string::npos;
 
-    m_GameMode = GameObject::SpawnGameObject<GameMode>(bTrainAI || arguments.find("aiplay") != std::string::npos,
-                                                       bTrainAI);
+    m_GameMode = GameObject::SpawnGameObject<GameMode>(b_TrainingAI || arguments.find("aiplay") != std::string::npos,
+                                                       b_TrainingAI);
     auto lastTimestamp = std::chrono::high_resolution_clock::now();
 
     while (!glfwWindowShouldClose(m_Window) && b_RunGame)

@@ -4,17 +4,14 @@
 
 #include "json/json.hpp"
 #include <fstream>
-#include <iostream>
 
-void NeuralNetwork::SetCurrentInput(const std::vector<double>& input)
+void NeuralNetwork::SetCurrentInput(const std::vector<double>& input) const
 {
     const int inputSize = (int)input.size();
 
     if (m_Layers.empty() || m_Layers[0]->GetNeuronsNum() < inputSize)
         return;
-
-    m_CurrentInput = input;
-
+    
     for (int i = 0; i < inputSize; ++i)
         m_Layers[0]->SetNeuronValueAtIndex(i, input[i]);
 }

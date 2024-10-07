@@ -63,17 +63,6 @@ double Matrix::GetRandomValue(double bottom, double top)
     return dis(gen);
 }
 
-std::shared_ptr<Matrix> Matrix::Transpose() const
-{
-    auto transposedMatrix = std::make_shared<Matrix>(m_NumColumns, m_NumRows, false);
-
-    for (unsigned int i = 0; i < m_NumRows; ++i)
-        for (unsigned int j = 0; j < m_NumColumns; ++j)
-            transposedMatrix->SetValue(j, i, GetValue(i, j));
-
-    return transposedMatrix;
-}
-
 std::string Matrix::ToString() const
 {
     std::string outputString;

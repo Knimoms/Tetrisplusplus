@@ -17,7 +17,7 @@ private:
 	glm::ivec4 m_CompletedRows;
 	bool b_RemoveAnimRunning = false;
 
-	const float m_RemoveAnimationLengthSeconds = 1.f;
+	float m_RemoveAnimationLengthSeconds = 1.f;
 	float m_RemoveAnimationRunningForSeconds = 0.f;
 
 	Event<int> m_AddingTetrominoFinishedEvent; //Parameter returns number of completed Rows

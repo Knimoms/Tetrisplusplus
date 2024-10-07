@@ -1,6 +1,5 @@
 ﻿#include "NeuralNetwork/Neuron.h"
 
-#include <iostream>
 #include <cmath>
 
 void Neuron::SetValue(double inValue)

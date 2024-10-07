@@ -24,7 +24,7 @@ TetrisAIController::TetrisAIController(bool bTrain)
     : m_PlayingGameMode(Game::GetGameInstance().GetGameMode()), m_NeuralNetwork(s_Topology, "tetrisAI"), b_Training(bTrain)
 {
     if(bTrain)
-        m_NeuralNetwork = NeuralNetwork(m_NeuralNetwork, 0.05f);
+        m_NeuralNetwork = NeuralNetwork(m_NeuralNetwork, 0.03f);
 }
 
 void TetrisAIController::Update(float DeltaTimeSeconds)
@@ -97,7 +97,7 @@ void TetrisAIController::EvaluateFitnessWithScore(double inScore)
 
     for(int i = 0; i < 4; ++i)
         if(m_UsedActions[i])
-            m_FitnessScore += 100.f;
+            m_FitnessScore += 500.f;
 
     double averageRowThickness = ((double)m_PlayingGameMode->GetDroppedBlocksContainer()->GetNumDroppedBlocks()) / 20;
     
