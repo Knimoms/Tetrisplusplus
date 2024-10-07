@@ -97,7 +97,7 @@ void TetrisAIController::EvaluateFitnessWithScore(double inScore)
 
     for(int i = 0; i < 4; ++i)
         if(m_UsedActions[i])
-            m_FitnessScore += 500.f;
+            m_FitnessScore += 100.f;
 
     double averageRowThickness = ((double)m_PlayingGameMode->GetDroppedBlocksContainer()->GetNumDroppedBlocks()) / 20;
     
