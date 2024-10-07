@@ -2,6 +2,7 @@
 
 #include <format>
 #include <random>
+#include <string>
 
 double Matrix::GetValue(unsigned int row, unsigned int column) const
 {
