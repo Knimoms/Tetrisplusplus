@@ -244,7 +244,7 @@ void GameMode::SpawnTetromino()
     }
 }
 
-void GameMode::CurrentTetrominoDropped() const
+void GameMode::CurrentTetrominoDropped()
 {
     if (b_GameOver)
         return;

@@ -85,5 +85,5 @@ public:
     void DroppedContainerFinishedAdding(int completedRows);
     void SpawnTetromino();
 
-    void CurrentTetrominoDropped() const;
+    void CurrentTetrominoDropped();
 };

@@ -23,6 +23,8 @@ private:
 
 	float m_HoldingInputForSeconds = 0.f;
 	float m_LastInputSecondsAgo = 0.f;
+
+	bool b_Dropped = false;
 	
 public:
 	Tetromino(char tetrominoType, bool shapeMatrix[5][5], const glm::vec3& color, DroppedBlocksContainer* droppedBlocksC);

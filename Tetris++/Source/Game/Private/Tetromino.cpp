@@ -73,6 +73,9 @@ void Tetromino::Update(float DeltaTimeSeconds)
 
 void Tetromino::MoveLeft()
 {
+	if(b_Dropped)
+		return;
+	
 	glm::vec2 newPosition = m_Transform.position;
 	newPosition[0] -= 1.f;
 	SetPosition(newPosition);
@@ -80,6 +83,9 @@ void Tetromino::MoveLeft()
 
 void Tetromino::MoveRight()
 {
+	if(b_Dropped)
+		return;
+	
 	glm::vec2 newPosition = m_Transform.position;
 	newPosition[0] += 1.f;
 	SetPosition(newPosition);
@@ -87,16 +93,24 @@ void Tetromino::MoveRight()
 
 void Tetromino::Fall()
 {
+	if(b_Dropped)
+		return;
+	
 	glm::vec2 newPosition = m_Transform.position;
 	newPosition[1] += 1.f;
 
 	if (!SetPosition(newPosition))
+	{
+		b_Dropped = true;
 		m_DroppedEvent.Emit();
-
+	}
 }
 
 void Tetromino::Rotate()
 {
+	if(b_Dropped)
+		return;
+	
 	float newRotation = m_Transform.rotation;
 
 	newRotation += 90.f;
