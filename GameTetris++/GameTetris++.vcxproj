@@ -105,6 +105,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Tetris++\Source;$(SolutionDir)Tetris++\Source\Framework\Public;$(SolutionDir)Tetris++\Source\Game\Public;$(SolutionDir)Tetris++\Source\Game\AI\Public;$(SolutionDir)Tetris++\Source\Framework\Graphics\Public;$(SolutionDir)Tetris++\Libraries\GLFW\include;$(SolutionDir)Tetris++\Libraries\glew-2.1.0\include;$(SolutionDir)Tetris++\Source\Framework\HeaderLibraries</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -122,6 +123,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Tetris++\Source;$(SolutionDir)Tetris++\Source\Framework\Public;$(SolutionDir)Tetris++\Source\Game\Public;$(SolutionDir)Tetris++\Source\Game\AI\Public;$(SolutionDir)Tetris++\Source\Framework\Graphics\Public;$(SolutionDir)Tetris++\Libraries\GLFW\include;$(SolutionDir)Tetris++\Libraries\glew-2.1.0\include;$(SolutionDir)Tetris++\Source\Framework\HeaderLibraries</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
