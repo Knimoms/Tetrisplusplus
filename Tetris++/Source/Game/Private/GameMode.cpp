@@ -122,7 +122,10 @@ GameMode::GameMode(bool bSpawnAI, bool bTrainAI)
     SetupInput();
 
     if (bSpawnAI)
+    {
         m_PlayingAI = GameObject::SpawnGameObject<TetrisAIController>(bTrainAI);
+        m_StartLevel = bTrainAI ? 30 : 1;
+    }
 }
 
 void GameMode::SetupInput()
@@ -165,6 +168,10 @@ void GameMode::StartGame()
     m_DropDelaySeconds = START_DELAY;
     m_Score = 0.f;
     m_Level = 1;
+
+    while (m_Level < m_StartLevel)
+        LevelUp();
+    
     m_RowsCompletedThisLevel = 0;
 
     system("CLS");

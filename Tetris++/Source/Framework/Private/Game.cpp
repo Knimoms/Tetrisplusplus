@@ -25,6 +25,9 @@ void Game::Run(const std::string& arguments)
 {
     if (arguments.find("evaluate") != std::string::npos)
         TetrisAIController::EvaluateLastAIGenerations();
+
+    if (arguments.find("dropworsegens") != std::string::npos)
+        TetrisAIController::DropGensWorseThanLast();
     
     if (arguments.find("skipgame") != std::string::npos)
         return;

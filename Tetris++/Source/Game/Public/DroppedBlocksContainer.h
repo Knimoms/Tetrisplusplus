@@ -45,5 +45,6 @@ public:
 
 public:
 	std::array<double, 10> GetColumnHeights() const;
+	int GetNumDroppedBlocks() const;
 };
 

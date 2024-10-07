@@ -44,4 +44,5 @@ public:
 
 public:
     static void EvaluateLastAIGenerations();
+    static void DropGensWorseThanLast();
 };

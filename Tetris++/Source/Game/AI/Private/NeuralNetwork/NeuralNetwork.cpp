@@ -302,7 +302,7 @@ void NeuralNetwork::AutoSave()
 void NeuralNetwork::Save(const std::string& fileName)
 {
     m_GenerationIndex = GetHighestExistingGenerationIndex() + 1;
-    
+
     std::ofstream outFilestream(
         s_SaveFolder + fileName + "_" + std::to_string(m_Generation) + "_" + std::to_string(m_GenerationIndex) +
         "_.json");
@@ -376,6 +376,34 @@ void NeuralNetwork::Load(const std::string& filePath)
     inFilestream.close();
 }
 
+std::string NeuralNetwork::GetBestFile(const std::string& filePrefix)
+{
+    std::string bestFile;
+    double bestFitness = 0.f;
+    unsigned int bestGeneration = 0;
+
+    for (auto& entry : std::filesystem::directory_iterator(s_SaveFolder))
+    {
+        if ((entry.path().string().find(filePrefix) == std::string::npos))
+            continue;
+
+        auto generationData = GetGenerationDataFromSaveFile(entry.path().string());
+        double currentFitness = GetFitnessFromFile(entry.path().string());
+
+        if (!bestFile.empty() && currentFitness < bestFitness)
+            continue;
+
+        if (currentFitness == bestFitness && generationData[0] <= bestGeneration)
+            continue;
+
+        bestFile = entry.path().string();
+        bestFitness = currentFitness;
+        bestGeneration = generationData[0];
+    }
+
+    return bestFile;
+}
+
 
 void NeuralNetwork::FilterGenerationsForBest(const std::string& filePrefix)
 {
@@ -428,5 +456,23 @@ void NeuralNetwork::FilterGenerationsForBest(const std::string& filePrefix)
         }
 
         std::filesystem::remove(entry.path().string());
+    }
+}
+
+void NeuralNetwork::ResetToBestGeneration(const std::string& filePrefix)
+{
+    std::string bestFile = GetBestFile(filePrefix);
+
+    auto bestGenerationData = GetGenerationDataFromSaveFile(bestFile);
+
+    for (auto& entry : std::filesystem::directory_iterator(s_SaveFolder))
+    {
+        if ((entry.path().string().find(filePrefix) == std::string::npos))
+            continue;
+
+        auto generationData = GetGenerationDataFromSaveFile(entry.path().string());
+
+        if (generationData[0] > bestGenerationData[0])
+            std::filesystem::remove(entry.path().string());
     }
 }

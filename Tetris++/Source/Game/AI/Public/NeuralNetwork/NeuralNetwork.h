@@ -54,5 +54,8 @@ public:
     void Load(const std::string& filePath);
 
 public:
-   static void FilterGenerationsForBest(const std::string& filePrefix);
+    static std::string GetBestFile(const std::string& filePrefix);
+    static void FilterGenerationsForBest(const std::string& filePrefix);
+
+    static void ResetToBestGeneration(const std::string& filePrefix);
 };

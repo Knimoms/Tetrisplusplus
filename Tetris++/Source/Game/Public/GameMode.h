@@ -56,6 +56,8 @@ private:
 
     float m_DropDelaySeconds = START_DELAY;
 
+    unsigned int m_StartLevel = 1;
+
 public:
     inline std::shared_ptr<DroppedBlocksContainer> GetDroppedBlocksContainer() { return m_DroppedBlocksContainer; }
     inline std::shared_ptr<Tetromino> GetCurrentTetromino() { return m_CurrentTetromino; }

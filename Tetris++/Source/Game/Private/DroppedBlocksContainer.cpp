@@ -248,3 +248,14 @@ std::array<double, 10> DroppedBlocksContainer::GetColumnHeights() const
 
     return columnHeights;
 }
+
+int DroppedBlocksContainer::GetNumDroppedBlocks() const
+{
+    int totalDroppedBlocks = 0;
+    
+    for (int i = 0; i < 10; ++i)
+        for (int j = 0; j < 20; ++j)
+            totalDroppedBlocks += IsBlockAtPosition(i, j);
+    
+    return totalDroppedBlocks;
+}

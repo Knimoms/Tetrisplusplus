@@ -97,9 +97,13 @@ void TetrisAIController::EvaluateFitnessWithScore(double inScore)
 
     for(int i = 0; i < 4; ++i)
         if(m_UsedActions[i])
-            inScore += 100.f;
+            m_FitnessScore += 100.f;
+
+    double averageRowThickness = ((double)m_PlayingGameMode->GetDroppedBlocksContainer()->GetNumDroppedBlocks()) / 20;
     
-    m_NeuralNetwork.SetFitness(inScore);
+    m_FitnessScore += averageRowThickness * 100;
+    
+    m_NeuralNetwork.SetFitness(m_FitnessScore);
 
     if(b_Training)
     {
@@ -111,4 +115,10 @@ void TetrisAIController::EvaluateFitnessWithScore(double inScore)
 void TetrisAIController::EvaluateLastAIGenerations()
 {
     NeuralNetwork::FilterGenerationsForBest("tetrisAI");
+}
+
+void TetrisAIController::DropGensWorseThanLast()
+{
+    NeuralNetwork::ResetToBestGeneration("tetrisAI");
+
 }
