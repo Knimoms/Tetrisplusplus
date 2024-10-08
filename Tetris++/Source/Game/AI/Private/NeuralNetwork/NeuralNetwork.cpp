@@ -138,11 +138,13 @@ double GetFitnessFromFile(const std::string& filePath)
     if (inFilestream.fail())
         return 0.f;
 
-    if(!nlohmann::json::accept(inFilestream))
+    std::string fileString;
+    inFilestream >> fileString;
+    
+    if(!nlohmann::json::accept(fileString))
         return -2000000000000.;
 
-    nlohmann::json saveJSON;
-    inFilestream >> saveJSON;
+    nlohmann::json saveJSON = nlohmann::json::parse(fileString);
 
     double fitness = saveJSON["fitness"];
     inFilestream.close();
@@ -337,14 +339,16 @@ void NeuralNetwork::Load(const std::string& filePath)
 {
     std::ifstream inFilestream(filePath);
 
-    if (inFilestream.fail() || !nlohmann::json::accept(inFilestream))
+    std::string fileString;
+    inFilestream >> fileString;
+
+    if (inFilestream.fail() || !nlohmann::json::accept(fileString))
         return;
 
     m_Layers.clear();
     m_WeightMatrices.clear();
 
-    nlohmann::json saveJSON;
-    inFilestream >> saveJSON;
+    nlohmann::json saveJSON = nlohmann::json::parse(fileString);
 
     const int maxLayersIndex = (int)saveJSON["layers"] - 1;
 
