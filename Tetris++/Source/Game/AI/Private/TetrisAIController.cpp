@@ -15,15 +15,16 @@ std::vector<int> TetrisAIController::s_Topology = {
     1 + //Tetromino position x
     1 + //Tetromino position y
     1 + //Tetromino rotation
-    1,  // Next Tetromino
+    1, // Next Tetromino
     9, 8, 7, // Hidden layers
     4 // Output ()
 };
 
 TetrisAIController::TetrisAIController(bool bTrain)
-    : m_PlayingGameMode(Game::GetGameInstance().GetGameMode()), m_NeuralNetwork(s_Topology, "tetrisAI"), b_Training(bTrain)
+    : m_PlayingGameMode(Game::GetGameInstance().GetGameMode()), m_NeuralNetwork(s_Topology, "tetrisAI"),
+      b_Training(bTrain)
 {
-    if(bTrain)
+    if (bTrain)
         m_NeuralNetwork = NeuralNetwork(m_NeuralNetwork, 0.03f);
 }
 
@@ -37,14 +38,14 @@ void TetrisAIController::Init()
 
 void TetrisAIController::Update(float DeltaTimeSeconds)
 {
-    if(!m_PlayingGameMode)
+    if (!m_PlayingGameMode)
         m_PlayingGameMode = Game::GetGameInstance().GetGameMode();
-    
+
     if (m_PlayingGameMode->IsGameOver())
     {
-        if(!b_StartedPlaying)
+        if (!b_StartedPlaying)
             m_PlayingGameMode->StartGame();
-        
+
         return;
     }
 
@@ -56,12 +57,12 @@ void TetrisAIController::Update(float DeltaTimeSeconds)
 
     const auto currentTetromino = m_PlayingGameMode->GetCurrentTetromino();
 
-    if(currentTetromino.get() != m_CurrentTetromino && currentTetromino)
+    if (currentTetromino.get() != m_CurrentTetromino && currentTetromino)
     {
         m_CurrentTetromino = currentTetromino.get();
         m_CurrentTetromino->GetDroppedEvent().AddCommand(m_TetrominoDroppedCommand);
     }
-        
+
     if (!currentTetromino)
         return;
 
@@ -80,45 +81,48 @@ void TetrisAIController::Update(float DeltaTimeSeconds)
     Actions nextAction = (Actions)m_NeuralNetwork.GetHighestOutputValueIndex();
 
     switch (nextAction)
-    {        
+    {
     case MoveLeft:
         currentTetromino->MoveLeft();
         break;
-        
+
     case MoveRight:
         currentTetromino->MoveRight();
         break;
-        
+
     case MoveDown:
         currentTetromino->Fall();
         break;
-        
+
     case Rotate:
         currentTetromino->Rotate_Pressed();
         break;
-        
+
     case InvalidAction:
         std::cout << "Invalid Action triggered by AI" << '\n';
     }
-    
+
     m_UsedActions[nextAction] = true;
 }
 
 void TetrisAIController::EvaluateFitnessWithScore(double inScore)
 {
+    double avgTerrainHeight = ((double)m_TotalTerrainHeightsSum) / m_DroppedTetrominos;
+
+    m_FitnessScore -= avgTerrainHeight < 5 ? 0. : 250. * avgTerrainHeight;
     m_FitnessScore += inScore;
 
-    for(int i = 0; i < 4; ++i)
-        if(m_UsedActions[i])
+    for (int i = 0; i < 4; ++i)
+        if (m_UsedActions[i])
             m_FitnessScore += 500.f;
 
     double averageRowThickness = ((double)m_PlayingGameMode->GetDroppedBlocksContainer()->GetNumDroppedBlocks()) / 20;
-    
+
     m_FitnessScore += averageRowThickness * 100;
-    
+
     m_NeuralNetwork.SetFitness(m_FitnessScore);
 
-    if(b_Training)
+    if (b_Training)
     {
         m_NeuralNetwork.AutoSave();
         Game::GetGameInstance().StopGame();
@@ -133,15 +137,10 @@ void TetrisAIController::EvaluateLastAIGenerations()
 void TetrisAIController::DropGensWorseThanLast()
 {
     NeuralNetwork::ResetToBestGeneration("tetrisAI");
-
 }
 
 void TetrisAIController::CurrentTetrominoDropped()
 {
-    int terrainHeight = m_PlayingGameMode->GetDroppedBlocksContainer()->GetTerrainHeight();
-
-    if(terrainHeight < 5)
-        return;
-
-    m_FitnessScore -= terrainHeight * 50;
+    m_TotalTerrainHeightsSum += m_PlayingGameMode->GetDroppedBlocksContainer()->GetTerrainHeight();
+    ++m_DroppedTetrominos;
 }

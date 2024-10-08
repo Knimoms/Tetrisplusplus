@@ -43,6 +43,8 @@ private:
     std::array<bool, 4> m_UsedActions;
 
     Tetromino* m_CurrentTetromino;
+    int m_TotalTerrainHeightsSum = 0;
+    int m_DroppedTetrominos = 0;
     
 public:
     virtual void Update(float DeltaTimeSeconds) override;
