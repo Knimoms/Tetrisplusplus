@@ -27,6 +27,14 @@ TetrisAIController::TetrisAIController(bool bTrain)
         m_NeuralNetwork = NeuralNetwork(m_NeuralNetwork, 0.03f);
 }
 
+void TetrisAIController::Init()
+{
+    GameObject::Init();
+
+    m_TetrominoDroppedCommand = std::shared_ptr<Command<void>>(
+        new ObjectCommand<TetrisAIController, void>(this, &TetrisAIController::CurrentTetrominoDropped));
+}
+
 void TetrisAIController::Update(float DeltaTimeSeconds)
 {
     if(!m_PlayingGameMode)
@@ -46,8 +54,14 @@ void TetrisAIController::Update(float DeltaTimeSeconds)
     auto columnHeights = m_PlayingGameMode->GetDroppedBlocksContainer()->GetColumnHeights();
     newInputs.insert(newInputs.end(), columnHeights.begin(), columnHeights.end());
 
-    auto currentTetromino = m_PlayingGameMode->GetCurrentTetromino();
+    const auto currentTetromino = m_PlayingGameMode->GetCurrentTetromino();
 
+    if(currentTetromino.get() != m_CurrentTetromino && currentTetromino)
+    {
+        m_CurrentTetromino = currentTetromino.get();
+        m_CurrentTetromino->GetDroppedEvent().AddCommand(m_TetrominoDroppedCommand);
+    }
+        
     if (!currentTetromino)
         return;
 
@@ -92,7 +106,6 @@ void TetrisAIController::Update(float DeltaTimeSeconds)
 
 void TetrisAIController::EvaluateFitnessWithScore(double inScore)
 {
-    m_FitnessScore = 0.f;
     m_FitnessScore += inScore;
 
     for(int i = 0; i < 4; ++i)
@@ -121,4 +134,14 @@ void TetrisAIController::DropGensWorseThanLast()
 {
     NeuralNetwork::ResetToBestGeneration("tetrisAI");
 
+}
+
+void TetrisAIController::CurrentTetrominoDropped()
+{
+    int terrainHeight = m_PlayingGameMode->GetDroppedBlocksContainer()->GetTerrainHeight();
+
+    if(terrainHeight < 5)
+        return;
+
+    m_FitnessScore -= terrainHeight * 50;
 }

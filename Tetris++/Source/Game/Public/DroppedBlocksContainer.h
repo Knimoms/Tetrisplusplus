@@ -28,6 +28,7 @@ public:
 	virtual void Init() override;
 	virtual void Update(float DeltaTimeSeconds) override;
 
+public:
 	void AddTetromino(Tetromino* addingTetromino);
 	void GenerateMesh();
 	
@@ -44,7 +45,9 @@ public:
 	inline Event<int>& GetAddingTetrominoFinishedEvent() { return m_AddingTetrominoFinishedEvent; }
 
 public:
-	std::array<double, 10> GetColumnHeights() const;
+	std::array<int, 10> GetColumnHeights() const;
 	int GetNumDroppedBlocks() const;
+
+	int GetTerrainHeight() const;
 };
 

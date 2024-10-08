@@ -59,8 +59,8 @@ private:
     unsigned int m_StartLevel = 1;
 
 public:
-    inline std::shared_ptr<DroppedBlocksContainer> GetDroppedBlocksContainer() { return m_DroppedBlocksContainer; }
-    inline std::shared_ptr<Tetromino> GetCurrentTetromino() { return m_CurrentTetromino; }
+    inline const std::shared_ptr<DroppedBlocksContainer>& GetDroppedBlocksContainer() { return m_DroppedBlocksContainer; }
+    inline const std::shared_ptr<Tetromino>& GetCurrentTetromino() { return m_CurrentTetromino; }
 
     inline unsigned int GetNextTetrominoShapeIndex() const { return m_TetrominoPreviews[0]->GetShapeIndex(); }
 

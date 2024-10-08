@@ -6,6 +6,7 @@
 
 #include "NeuralNetwork/NeuralNetwork.h"
 
+class Tetromino;
 class GameMode;
 class Game;
 
@@ -18,13 +19,16 @@ private:
     static std::vector<int> s_Topology;
 
     bool b_StartedPlaying = false;
-
+    
     bool b_Training;
-
     double m_FitnessScore = 0.f;
+
+    std::shared_ptr<Command<void>> m_TetrominoDroppedCommand;
+
 
 public:
     TetrisAIController(bool bTrain);
+    virtual void Init() override;
 
 private:
     enum Actions
@@ -37,6 +41,8 @@ private:
     };
 
     std::array<bool, 4> m_UsedActions;
+
+    Tetromino* m_CurrentTetromino;
     
 public:
     virtual void Update(float DeltaTimeSeconds) override;
@@ -45,4 +51,6 @@ public:
 public:
     static void EvaluateLastAIGenerations();
     static void DropGensWorseThanLast();
+
+    void CurrentTetrominoDropped();
 };

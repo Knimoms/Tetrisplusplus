@@ -235,9 +235,9 @@ void DroppedBlocksContainer::DropRows()
     GenerateMesh();
 }
 
-std::array<double, 10> DroppedBlocksContainer::GetColumnHeights() const
+std::array<int, 10> DroppedBlocksContainer::GetColumnHeights() const
 {
-    std::array<double, 10> columnHeights;
+    std::array<int, 10> columnHeights;
 
     for (int i = 0; i < 10; ++i)
     {
@@ -261,4 +261,23 @@ int DroppedBlocksContainer::GetNumDroppedBlocks() const
             totalDroppedBlocks += IsBlockAtPosition(i, j);
     
     return totalDroppedBlocks;
+}
+
+int DroppedBlocksContainer::GetTerrainHeight() const
+{
+    auto columnHeights = GetColumnHeights();
+
+    int lowestHeight = (int)columnHeights[0];
+    int heigestHeight = (int)columnHeights[0];
+    
+    for(int i = 1; i < 10; ++i)
+    {
+        if(columnHeights[i] < lowestHeight)
+            lowestHeight = (int)columnHeights[i];
+
+        if(columnHeights[i] > heigestHeight)
+            heigestHeight = (int)columnHeights[i];
+    }
+
+    return heigestHeight - lowestHeight;
 }
