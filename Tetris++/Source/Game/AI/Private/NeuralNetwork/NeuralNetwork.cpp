@@ -1,4 +1,4 @@
-﻿#include "NeuralNetwork/NeuralNetwork.h"
+#include "NeuralNetwork/NeuralNetwork.h"
 #include "NeuralNetwork/Layer.h"
 #include "NeuralNetwork/Matrix.h"
 
@@ -137,6 +137,9 @@ double GetFitnessFromFile(const std::string& filePath)
 
     if (inFilestream.fail())
         return 0.f;
+
+    if(!nlohmann::json::accept(inFilestream))
+        return -2000000000000.;
 
     nlohmann::json saveJSON;
     inFilestream >> saveJSON;
@@ -334,7 +337,7 @@ void NeuralNetwork::Load(const std::string& filePath)
 {
     std::ifstream inFilestream(filePath);
 
-    if (inFilestream.fail())
+    if (inFilestream.fail() || !nlohmann::json::accept(inFilestream))
         return;
 
     m_Layers.clear();
